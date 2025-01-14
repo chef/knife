@@ -8,7 +8,6 @@ group(:development, :test) do
   gem "crack", "< 0.4.6" # due to https://github.com/jnunemaker/crack/pull/75
   gem "rake", ">= 12.3.3"
   gem "rspec"
-  gem "chef-bin", path: "../chef-bin"
 end
 
 group(:omnibus_package, :pry) do
@@ -22,6 +21,7 @@ group(:chefstyle) do
 end
 
 gem "ohai", git: "https://github.com/chef/ohai.git", branch: "main"
-gem "chef", path: ".."
-gem "chef-utils", path: File.expand_path("../chef-utils", __dir__) if File.exist?(File.expand_path("../chef-utils", __dir__))
-gem "chef-config", path: File.expand_path("../chef-config", __dir__) if File.exist?(File.expand_path("../chef-config", __dir__))
+gem "chef", git: "https://github.com/chef/chef.git", branch: "main"
+# gem "chef", path: "../chef"
+# gem "chef-utils",
+# gem "chef-config", path: File.expand_path("../chef/chef-config", __dir__) if File.exist?(File.expand_path("../chef/chef-config", __dir__))
