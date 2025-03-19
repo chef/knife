@@ -578,7 +578,6 @@ class Chef
         bootstrap_path = upload_bootstrap(content)
         perform_bootstrap(bootstrap_path)
         plugin_finalize
-        warn_license_usage
       ensure
         connection.del_file!(bootstrap_path) if connection && bootstrap_path
       end
