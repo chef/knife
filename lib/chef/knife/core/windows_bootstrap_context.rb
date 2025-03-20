@@ -335,8 +335,8 @@ class Chef
         # Build a URL that will redirect to the correct Chef Infra msi download.
         def msi_url(machine_os = nil, machine_arch = nil, download_context = nil)
           if config[:msi_url].nil? || config[:msi_url].empty?
-            url = if config[:license_url]
-                    format(config[:license_url], config[:channel]) + "/chef/download?p=windows"
+            url = if config[:license_url] && !config[:omnitruck_url].empty?
+                    format(config[:omnitruck_url], config[:channel]+"/chef/download")+"&p=windows"
                   else
                     "https://omnitruck.chef.io/chef/download?p=windows"
                   end
