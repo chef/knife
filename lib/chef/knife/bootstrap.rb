@@ -1200,6 +1200,7 @@ class Chef
         license = Chef::Utils::LicensingHandler.validate!
         config[:license_url] = license.install_sh_url
         config[:license_id] = license.license_key
+        config[:omnitruck_url] = license.omnitruck_url
         config[:license_type] = license.license_type
       end
     end
