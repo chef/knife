@@ -1,5 +1,5 @@
 # Package metadata
-export HAB_BLDR_CHANNEL="stable"
+export HAB_BLDR_CHANNEL="LTS-2024"
 export HAB_REFRESH_CHANNEL="LTS-2024"
 pkg_name=knife
 # _chef_client_ruby="core/ruby3_1"
