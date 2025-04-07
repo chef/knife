@@ -38,7 +38,7 @@ pipelines:
       public: true
   - habitat/build:
       env:
-        - - HAB_NOCOLORING: "true"
+        - HAB_NOCOLORING: "true"
         - HAB_NONINTERACTIVE: "true"
         - HAB_STUDIO_SECRET_HAB_NONINTERACTIVE: "true"
   - habitat/test:
