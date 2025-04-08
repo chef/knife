@@ -35,7 +35,6 @@ artifact_channels:
 pipelines:
   - verify:
       description: Pull Request validation tests
-      public: true
   - habitat/build:
       env:
         - HAB_NONINTERACTIVE: "true"
