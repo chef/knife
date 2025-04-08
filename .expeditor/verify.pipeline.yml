@@ -12,7 +12,7 @@ expeditor:
 steps:
   - label: run-specs-ruby-3.1
     command:
-      - .expeditor/run_linux_tests.sh rake test
+      - .expeditor/run_linux_tests.sh rake spec
     expeditor:
       executor:
         docker:
@@ -23,7 +23,7 @@ steps:
 
   - label: run-specs-ruby-3.3
     command:
-      - .expeditor/run_linux_tests.sh rake test
+      - .expeditor/run_linux_tests.sh rake spec
     expeditor:
       executor:
         docker:
@@ -34,7 +34,7 @@ steps:
 
   - label: run-specs-windows-ruby-3.1
     command:
-      - powershell .expeditor/run_windows_tests.ps1 rake test
+      - powershell .expeditor/run_windows_tests.ps1 rake spec
     expeditor:
       executor:
         docker:
@@ -50,7 +50,7 @@ steps:
 
   - label: run-specs-windows-ruby-3.3
     command:
-      - powershell .expeditor/run_windows_tests.ps1 rake test
+      - powershell .expeditor/run_windows_tests.ps1 rake spec
     expeditor:
       executor:
         docker:
