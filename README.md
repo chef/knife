@@ -17,6 +17,7 @@ rake aborted!
 
 Running `gem install C:/Users/loomis/Documents/GitHub/knife-prototype/knife/pkg/knife-19.0.68.gem` failed with the following output:
 
+
 ERROR:  Could not find a valid gem 'chef' (>= 19) (required by 'C:/Users/loomis/Documents/GitHub/knife-prototype/knife/pkg/knife-19.0.68.gem' (>= 0)) in any repository
 ERROR:  Possible alternatives: chef
 
