@@ -6,7 +6,6 @@ gem install git
 
 
 
-bundle config build.chef --without-win32-event-log
 bundle config --local path vendor/bundle
 Write-Host "--- cloning chef for  install"
 
