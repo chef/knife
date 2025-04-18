@@ -8,6 +8,10 @@ cd chef ; bundle install; cd chef-utils; gem build chef-utils.gemspec; gem insta
 cd chef-config; gem build chef-config.gemspec; gem install chef-config-*.gem ; cd ..;
 gem build chef-universal-mingw-ucrt.gemspec; gem install chef-*.gem ; cd ..;
 
+Write-Host "--- checking current Dir"
+dir
+pwd
+Write-Host "--- checking current Dir"
 bundle config set --local without docs development profile
 bundle install --jobs=7 --retry=3
 Write-Host "--- bundle  install done"
