@@ -61,7 +61,7 @@ GIT
       unf_ext (~> 0.0.8.2)
       uuidtools (>= 2.1.5, < 3.0)
       vault (~> 0.18.2)
-    chef (19.0.68-universal-mingw-ucrt)
+    chef (19.1.14-universal-mingw-ucrt)
           addressable
           aws-sdk-s3 (~> 1.91)
           aws-sdk-secretsmanager (~> 1.46)
