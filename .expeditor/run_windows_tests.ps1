@@ -10,8 +10,8 @@ bundle config --local path vendor/bundle
 Write-Host "--- cloning chef for  install"
 
 git clone https://github.com/chef/chef.git
-cd chef ; bundle install; cd chef-config; gem build chef-config.gemspec; gem install chef-config-*.gem ; cd ..
 cd chef ; cd chef-utils; gem build chef-utils.gemspec; gem install chef-utils-*.gem ; cd ..
+cd chef ; bundle install; cd chef-config; gem build chef-config.gemspec; gem install chef-config-*.gem ; cd ..
 cd chef ; gem build chef-universal-mingw-ucrt.gemspec; gem install chef-*.gem ; cd ..
 
 bundle config set --local without docs development profile
