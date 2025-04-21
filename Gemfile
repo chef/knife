@@ -2,7 +2,6 @@ source "https://rubygems.org"
 
 gemspec
 
-gem "knife", path: "."
 gem "syslog"
 gem "ostruct"
 gem "csv"

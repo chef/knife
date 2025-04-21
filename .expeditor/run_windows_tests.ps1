@@ -9,7 +9,7 @@ Write-Host "--- cloning chef for  install"
 #gem build chef-universal-mingw-ucrt.gemspec; gem install chef-*.gem ; cd ..;
 bundle config --local path vendor/bundle
 gem install win32ole
-gem install ffi-libarchive
+# gem install ffi-libarchive
 bundle install --jobs=7 --retry=3
 Write-Host "--- bundle  install done"
 
