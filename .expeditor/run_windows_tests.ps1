@@ -1,6 +1,6 @@
 $ErrorActionPreference="stop"
 Write-Host "--- bundle install"
-ridk install 3
+ridk install 1 2 3 --silent
 bundle config --local path vendor/bundle
 Write-Host "--- cloning chef for  install"
 #git clone https://github.com/chef/chef.git
