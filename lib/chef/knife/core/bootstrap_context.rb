@@ -193,7 +193,7 @@ class Chef
           end
           s << " -E #{bootstrap_environment}" unless bootstrap_environment.nil?
           s << " --no-color" unless config[:color]
-          s << " --chef-license-key #{config[:license_id]}" unless config[:disable_license_activation]
+          s << " --chef-license-key #{config[:license_id]}" if config[:license_id] && !config[:disable_license_activation]
           s
         end
 
