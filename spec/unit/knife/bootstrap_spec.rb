@@ -1956,7 +1956,7 @@ describe Chef::Knife::Bootstrap do
 
   it "verifies that a server to bootstrap was given as a command line arg" do
     knife.name_args = nil
-    expect(knife).to receive(:check_license)
+    expect(knife).to receive(:check_eula_license)
     expect { knife.run }.to raise_error(SystemExit)
     expect(stderr.string).to match(/ERROR:.+FQDN or ip/)
   end
