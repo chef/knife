@@ -186,7 +186,30 @@ describe Chef::Knife::Core::WindowsBootstrapContext do
   end
 
   describe "#start_chef" do
-    it "returns the expected string" do
+    it "returns the expected string with default values" do
+      expect(bootstrap_context.start_chef).to eq(
+        <<~EOH
+          SET "PATH=%SYSTEM32%;%SystemRoot%;%SYSTEM32%\\Wbem;%SYSTEM32%\\WindowsPowerShell\\v1.0\\;C:\\ruby\\bin;C:\\opscode\\chef\\bin;C:\\opscode\\chef\\embedded\\bin;%PATH%"
+          chef-client -c C:\\chef\\client.rb -j C:\\chef\\first-boot.json
+        EOH
+      )
+    end
+
+    it "returns the expected string with license_id" do
+      config[:license_id] = "123"
+
+      expect(bootstrap_context.start_chef).to eq(
+        <<~EOH
+          SET "PATH=%SYSTEM32%;%SystemRoot%;%SYSTEM32%\\Wbem;%SYSTEM32%\\WindowsPowerShell\\v1.0\\;C:\\ruby\\bin;C:\\opscode\\chef\\bin;C:\\opscode\\chef\\embedded\\bin;%PATH%"
+          chef-client -c C:\\chef\\client.rb -j C:\\chef\\first-boot.json --chef-license-key 123
+        EOH
+      )
+    end
+
+    it "exclude the license key argument when disable_license_activation is true" do
+      config[:disable_license_activation] = true
+      config[:license_id] = "123"
+
       expect(bootstrap_context.start_chef).to eq(
         <<~EOH
           SET "PATH=%SYSTEM32%;%SystemRoot%;%SYSTEM32%\\Wbem;%SYSTEM32%\\WindowsPowerShell\\v1.0\\;C:\\ruby\\bin;C:\\opscode\\chef\\bin;C:\\opscode\\chef\\embedded\\bin;%PATH%"
