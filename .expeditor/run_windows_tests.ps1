@@ -11,6 +11,16 @@ bundle config --local path vendor/bundle
 gem install win32ole
 gem install ffi-libarchive
 bundle install --jobs=7 --retry=3
+
+# Generate binstubs for knife so `bundle exec knife` works
+bundle binstubs knife --path ./bin --force
+
+# Optionally make sure bin is in the PATH
+$env:PATH = "$PSScriptRoot\bin;$env:PATH"
+
+# Check that it worked
+bundle exec knife --version
+
 Write-Host "--- bundle  install done"
 
 Write-Host "+++ bundle exec task"
