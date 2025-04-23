@@ -1,7 +1,6 @@
 source "https://rubygems.org"
 
-gemspec
-
+gem "knife", path: "."
 gem "syslog"
 gem "ostruct"
 gem "csv"
@@ -37,4 +36,5 @@ gem "chef-utils", git: "https://github.com/chef/chef", branch: "main", glob: "ch
 
 platforms :mswin, :mingw, :x64_mingw do
   gem "fiddle"
+  gem "win32ole"
 end
