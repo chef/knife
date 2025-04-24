@@ -10,6 +10,7 @@ Write-Host "--- cloning chef for  install"
 bundle config --local path vendor/bundle
 gem install win32ole
 gem install ffi-libarchive
+gem install chef-powershell
 bundle install --jobs=7 --retry=3
 
 # Generate binstubs for knife so `bundle exec knife` works
