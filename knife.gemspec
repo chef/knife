@@ -1,9 +1,9 @@
 $:.unshift(File.dirname(__FILE__) + "/lib")
-require_relative "lib/chef/knife/version"
+# require_relative "lib/chef/knife/version"
 
 Gem::Specification.new do |s|
   s.name = "knife"
-  s.version = Chef::Knife::VERSION
+  s.version = "0.1.0"
   s.platform = Gem::Platform::RUBY
   s.extra_rdoc_files = ["LICENSE"]
   s.summary = "The knife CLI for Chef Infra."
@@ -15,16 +15,15 @@ Gem::Specification.new do |s|
 
   s.required_ruby_version = ">= 3.1"
 
-  # Add dependencies here
-  # s.add_dependency "chef", git: "https://github.com/chef/chef.git", branch: "main"
-  # s.add_dependency "chef-utils", git: "https://github.com/chef/chef.git", branch: "main", glob: "chef-utils/chef-utils.gemspec"
-  # s.add_dependency "chef-config", git: "https://github.com/chef/chef.git", branch: "main", glob: "chef-config/chef-config.gemspec"
-  # s.add_dependency "ohai", git: "https://github.com/chef/ohai.git", branch: "main"
+  s.add_dependency "chef-utils", ">= 19.0"
+  s.add_dependency "chef-config", ">= 19.0"
+  s.add_dependency "chef", ">= 19.0"
   s.add_dependency "train-core", "~> 3.10" # 3.2.28 fixes sudo prompts. See https://github.com/chef/chef/pull/9635
   s.add_dependency "train-winrm", ">= 0.2.5"
   s.add_dependency "license-acceptance", ">= 1.0.5", "< 3"
   s.add_dependency "mixlib-cli", ">= 2.1.1", "< 3.0"
   s.add_dependency "mixlib-archive", ">= 0.4", "< 2.0"
+  s.add_dependency "ohai", "~> 19.0"
   s.add_dependency "ffi", ">= 1.15" # 1.14 versions are broken on i386 windows
   s.add_dependency "ffi-yajl", "~> 2.2"
   s.add_dependency "net-ssh", ">= 5.1", "< 8"
