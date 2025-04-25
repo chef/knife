@@ -1,9 +1,9 @@
 $:.unshift(File.dirname(__FILE__) + "/lib")
-# require_relative "lib/chef/knife/version"
+require_relative "lib/chef/knife/version"
 
 Gem::Specification.new do |s|
   s.name = "knife"
-  s.version = "0.1.0"
+  s.version = Chef::Knife::VERSION
   s.platform = Gem::Platform::RUBY
   s.extra_rdoc_files = ["LICENSE"]
   s.summary = "The knife CLI for Chef Infra."
