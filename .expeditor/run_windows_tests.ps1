@@ -1,41 +1,24 @@
 $ErrorActionPreference="stop"
-Write-Host "--- Cloning chef repo"
-
-if (!(Test-Path "chef")) {
-  git clone https://github.com/chef/chef.git
-}
-
-Set-Location chef
-
-Write-Host "--- Cleaning up old bundle state"
-
-if (Test-Path "Gemfile.lock") {
-  Remove-Item "Gemfile.lock"
-}
-if (Test-Path "vendor/bundle") {
-  Remove-Item -Recurse -Force "vendor/bundle"
-}
-
-Write-Host "--- Configuring bundler path"
-bundle config set --local path vendor/bundle
-
-Write-Host "--- Installing dependencies"
-bundle install --jobs=7 --retry=3
-
-Write-Host "--- Installing native gems"
+Write-Host "--- bundle install"
+#ridk install 1 2 3
+#ridk enable
+Write-Host "--- cloning chef for  install"
+#git clone https://github.com/chef/chef.git
+#cd chef ; bundle install; cd chef-utils; gem build chef-utils.gemspec; gem install chef-utils-*.gem ; cd .. ;
+#cd chef-config; gem build chef-config.gemspec; gem install chef-config-*.gem ; cd ..;
+#gem build chef-universal-mingw-ucrt.gemspec; gem install chef-*.gem ; cd ..;
+bundle config --local path vendor/bundle
 gem install win32ole
 gem install ffi-libarchive
 gem install chef-powershell
 
-Write-Host "--- Generating binstubs"
-bundle binstubs knife --path ./bin --force
-
-# Add binstubs to PATH
-$env:PATH = "$PSScriptRoot\bin;$env:PATH"
+bundle install --jobs=7 --retry=3
+Write-Host "--- bundle  install done"
 
 Write-Host "--- Verifying knife"
 bundle exec knife --version
 
-Write-Host "--- Running tests"
+Write-Host "+++ bundle exec task"
 bundle exec rake spec
+
 if ($LASTEXITCODE -ne 0) { throw "$args failed" }
