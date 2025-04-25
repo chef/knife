@@ -35,6 +35,6 @@ gem "chef-utils", git: "https://github.com/chef/chef", branch: "main", glob: "ch
 # gem "chef-config", path: File.expand_path("../chef/chef-config", __dir__) if File.exist?(File.expand_path("../chef/chef-config", __dir__))
 
 platforms :mswin, :mingw, :x64_mingw do
-  gem "fiddle"
+  gem "fiddle", "<= 1.1.6"
   gem "win32ole"
 end
