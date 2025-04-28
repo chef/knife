@@ -15,17 +15,10 @@ Gem::Specification.new do |s|
 
   s.required_ruby_version = ">= 3.1"
 
-  if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('3.4.0')
-    s.add_dependency "chef-utils", ">= 19.0"
-    s.add_dependency "chef-config", ">= 19.0"
-    s.add_dependency "chef", ">= 19.0"
-    s.add_dependency "ohai", ">= 19.0"
-  else
-    s.add_dependency "chef-utils", "~> 18.0"
-    s.add_dependency "chef-config", "~> 18.0"
-    s.add_dependency "chef", "~> 18.0"
-    s.add_dependency "ohai", "~> 18.0"
-  end
+  s.add_dependency "chef-utils", ">= 19.0"
+  s.add_dependency "chef-config", ">= 19.0"
+  s.add_dependency "ohai", "~> 19.0"
+  s.add_dependency "chef", ">= 19.0"
   s.add_dependency "train-core", "~> 3.10" # 3.2.28 fixes sudo prompts. See https://github.com/chef/chef/pull/9635
   s.add_dependency "train-winrm", ">= 0.2.5"
   s.add_dependency "license-acceptance", ">= 1.0.5", "< 3"
