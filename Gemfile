@@ -30,7 +30,7 @@ if Gem::Version.new(RUBY_VERSION) < Gem::Version.new("3.4.0")
   gem "chef-utils", "~> 18.0"
   gem "chef", "~> 18.0"
   gem "chef-config", "~> 18.0"
-  gem "ohai", "~> 18.0"
+  gem "ohai", "~> 19.0"
 else
   gem "chef-utils", git: "https://github.com/chef/chef", branch: "main", glob: "chef-utils/chef-utils.gemspec"
   gem "chef-config", git: "https://github.com/chef/chef", branch: "main", glob: "chef-config/chef-config.gemspec"
