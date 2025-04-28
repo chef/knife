@@ -28,8 +28,8 @@ end
 
 gem "chef-utils", git: "https://github.com/chef/chef", branch: "main", glob: "chef-utils/chef-utils.gemspec"
 gem "chef-config", git: "https://github.com/chef/chef", branch: "main", glob: "chef-config/chef-config.gemspec"
-gem "ohai", git: "https://github.com/chef/ohai.git", branch: "main"
 gem "chef", git: "https://github.com/chef/chef.git", branch: "main"
+gem "ohai", git: "https://github.com/chef/ohai.git", branch: "main"
 
 platforms :mswin, :mingw, :x64_mingw do
   gem "fiddle", "<= 1.1.6"
