@@ -26,14 +26,17 @@ group(:chefstyle) do
   gem "chefstyle", git: "https://github.com/chef/chefstyle.git", branch: "main"
 end
 
-gem "chef-utils", git: "https://github.com/chef/chef", branch: "main", glob: "chef-utils/chef-utils.gemspec"
-gem "chef-config", git: "https://github.com/chef/chef", branch: "main", glob: "chef-config/chef-config.gemspec"
-gem "chef", git: "https://github.com/chef/chef.git", branch: "main"
-gem "ohai", git: "https://github.com/chef/ohai.git", branch: "main"
-
-# gem "chef", path: "../chef"
-# gem "chef-utils",
-# gem "chef-config", path: File.expand_path("../chef/chef-config", __dir__) if File.exist?(File.expand_path("../chef/chef-config", __dir__))
+if Gem::Version.new(RUBY_VERSION) < Gem::Version.new("3.4.0")
+  gem "chef-utils", "~> 18.0"
+  gem "chef", "~> 18.0"
+  gem "chef-config", "~> 18.0"
+  gem "ohai", "~> 18.0"
+else
+  gem "chef-utils", git: "https://github.com/chef/chef", branch: "main", glob: "chef-utils/chef-utils.gemspec"
+  gem "chef-config", git: "https://github.com/chef/chef", branch: "main", glob: "chef-config/chef-config.gemspec"
+  gem "chef", git: "https://github.com/chef/chef.git", branch: "main"
+  gem "ohai", git: "https://github.com/chef/ohai.git", branch: "main"
+end
 
 platforms :mswin, :mingw, :x64_mingw do
   gem "fiddle", "<= 1.1.6"
