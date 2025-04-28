@@ -26,10 +26,10 @@ group(:chefstyle) do
   gem "chefstyle", git: "https://github.com/chef/chefstyle.git", branch: "main"
 end
 
-gem "ohai", git: "https://github.com/chef/ohai.git", branch: "main"
 gem "chef-utils", git: "https://github.com/chef/chef", branch: "main", glob: "chef-utils/chef-utils.gemspec"
 gem "chef-config", git: "https://github.com/chef/chef", branch: "main", glob: "chef-config/chef-config.gemspec"
 gem "chef", git: "https://github.com/chef/chef.git", branch: "main"
+gem "ohai", git: "https://github.com/chef/ohai.git", branch: "main"
 
 # gem "chef", path: "../chef"
 # gem "chef-utils",
