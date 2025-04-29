@@ -43,6 +43,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency "chefstyle"
 
   s.add_dependency "proxifier2", "~> 1.1"
+  s.add_dependency "chef-licensing", "~> 1.0"
 
   s.bindir       = "bin"
   s.executables  = %w{ knife }
@@ -60,3 +61,4 @@ Gem::Specification.new do |s|
     "source_code_uri"   => "https://github.com/chef/chef/",
   }
 end
+

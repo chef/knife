@@ -45,16 +45,16 @@ describe Chef::Knife::Core::BootstrapContext do
   end
 
   describe "when in verbosity mode" do
-    let(:config) { { verbosity: 2, color: true } }
+    let(:config) { { verbosity: 2, color: true, license_id: "123" } }
     it "adds '-l debug' when verbosity is >= 2" do
-      expect(bootstrap_context.start_chef).to eq "chef-client -j /etc/chef/first-boot.json -l debug"
+      expect(bootstrap_context.start_chef).to eq "chef-client -j /etc/chef/first-boot.json -l debug --chef-license-key 123"
     end
   end
 
   describe "when no color value has been set in config" do
-    let(:config) { { color: false } }
+    let(:config) { { color: false, license_id: "123" } }
     it "adds '--no-color' when color is false" do
-      expect(bootstrap_context.start_chef).to eq "chef-client -j /etc/chef/first-boot.json --no-color"
+      expect(bootstrap_context.start_chef).to eq "chef-client -j /etc/chef/first-boot.json --no-color --chef-license-key 123"
     end
   end
 
@@ -282,6 +282,18 @@ describe Chef::Knife::Core::BootstrapContext do
       it "returns the version string 'latest'" do
         expect(bootstrap_context.version_to_install).to eq "latest"
       end
+    end
+  end
+
+  describe "when using disable_license_activation" do
+    let(:config) { { license_id: "123" } }
+    it "by default it should return license" do
+      expect(bootstrap_context.start_chef).to eq "chef-client -j /etc/chef/first-boot.json --no-color --chef-license-key 123"
+    end
+
+    it "doesn't return the chef-license-key in the start_chef command if it set" do
+      config[:disable_license_activation] = true
+      expect(bootstrap_context.start_chef).to eq "chef-client -j /etc/chef/first-boot.json --no-color"
     end
   end
 end
