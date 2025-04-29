@@ -14,6 +14,7 @@ knife 19.0.68 built to pkg/knife-19.0.68.gem.
 knife 19.0.68 built to pkg/knife-19.0.68.gem.
 rake aborted!
 rake aborted!
+
 Running `gem install C:/Users/loomis/Documents/GitHub/knife-prototype/knife/pkg/knife-19.0.68.gem` failed with the following output:
 
 
