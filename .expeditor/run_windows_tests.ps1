@@ -18,5 +18,5 @@ Write-Host "+++ bundle exec task"
 
 
 
-bundle exec $args
+RUBYOPT="-W0" bundle exec $args
 if ($LASTEXITCODE -ne 0) { throw "$args failed" }
