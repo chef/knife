@@ -73,6 +73,8 @@ binstubs/
 # Visual Studio Code files
 .vscode
 .idea
+
+bin/
 # ignore nodes generated during local testing
 # nodes/
 

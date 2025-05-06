@@ -4,10 +4,10 @@ Write-Host "--- bundle install"
 #ridk enable
 Write-Host "--- cloning chef for  install"
 gem install chef-utils
-git clone https://github.com/chef/chef.git
-cd chef ; bundle install; cd chef-utils; gem build chef-utils.gemspec; gem install chef-utils-*.gem ; cd .. ;
-cd chef-config; gem build chef-config.gemspec; gem install chef-config-*.gem ; cd ..;
-gem build chef-universal-mingw-ucrt.gemspec; gem install chef-*.gem ; cd ..;
+# git clone https://github.com/chef/chef.git
+# cd chef ; bundle install; cd chef-utils; gem build chef-utils.gemspec; gem install chef-utils-*.gem ; cd .. ;
+# cd chef-config; gem build chef-config.gemspec; gem install chef-config-*.gem ; cd ..;
+# gem build chef-universal-mingw-ucrt.gemspec; gem install chef-*.gem ; cd ..;
 bundle config --local path vendor/bundle
 gem install win32ole
 gem install ffi-libarchive
