@@ -4,6 +4,10 @@
 
 set -ue
 
+
+echo "--- gem source before add"
+gem source
+
 export USER="root"
 export LANG=C.UTF-8 LANGUAGE=C.UTF-8
 echo "---- getting chef gem"
