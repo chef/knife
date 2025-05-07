@@ -4,6 +4,10 @@
 
 set -ue
 
+echo "---- installing awscli"
+apt-get update && apt-get install -y awscli
+echo "---- awscli installed"
+
 echo "---- printing aws version"
 aws --version
 echo "---- printing aws version"
