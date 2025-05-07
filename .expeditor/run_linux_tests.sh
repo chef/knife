@@ -4,6 +4,10 @@
 
 set -ue
 
+echo "---- printing aws version"
+aws --version
+echo "---- printing aws version"
+
 export USER="root"
 export LANG=C.UTF-8 LANGUAGE=C.UTF-8
 echo "---- getting chef gem"
