@@ -27,9 +27,14 @@ group(:chefstyle) do
 end
 
 gem "ohai", git: "https://github.com/chef/ohai.git", branch: "main"
-gem "chef", git: "https://github.com/chef/chef.git", branch: "main"
-gem "chef-config", git: "https://github.com/chef/chef", branch: "main", glob: "chef-config/chef-config.gemspec"
-gem "chef-utils", git: "https://github.com/chef/chef", branch: "main", glob: "chef-utils/chef-utils.gemspec"
+# gem "chef", git: "https://github.com/chef/chef.git", branch: "main"
+# gem "chef-config", git: "https://github.com/chef/chef", branch: "main", glob: "chef-config/chef-config.gemspec"
+# gem "chef-utils", git: "https://github.com/chef/chef", branch: "main", glob: "chef-utils/chef-utils.gemspec"
+source "https://#{ENV['ARTIFACTORY_USERNAME']}:#{ENV['ARTIFACTORY_PASSWORD']}@artifactory-internal.ps.chef.co/artifactory/api/gems/omnibus-gems-local" do
+  gem "chef", ">=19"
+  gem "chef-config", ">=19"
+  gem "chef-utils", ">=19"
+end
 # gem "chef", path: "../chef"
 # gem "chef-utils",
 # gem "chef-config", path: File.expand_path("../chef/chef-config", __dir__) if File.exist?(File.expand_path("../chef/chef-config", __dir__))
