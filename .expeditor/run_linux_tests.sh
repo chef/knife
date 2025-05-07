@@ -11,10 +11,14 @@ echo "---- printing aws version"
 export USER="root"
 export LANG=C.UTF-8 LANGUAGE=C.UTF-8
 echo "---- getting chef gem"
-ARTIFACTORY_ENDPOINT="artifactory-internal.ps.chef.co/artifactory"
-ARTIFACTORY_USERNAME="buildkite"
-lita_password=$(aws ssm get-parameter --name "artifactory-lita-password" --with-decryption --query Parameter.Value --output text --region us-west-2)
-ARTIFACTORY_PASSWORD=$lita_password
+export ARTIFACTORY_BUILDKITE_TOKEN_PIPELINE="${ARTIFACTORY_BUILDKITE_TOKEN}"
+export ARTIFACTORY_ENDPOINT="https://artifactory-internal.ps.chef.co/artifactory"
+export ARTIFACTORY_USERNAME="buildkite"
+echo "--- gem source before add"
+gem source
+echo "--- gem source after add"
+gem source -a https://buildkite:$ARTIFACTORY_BUILDKITE_TOKEN_PIPELINE@artifactory-internal.ps.chef.co/artifactory/api/gems/omnibus-gems-local/
+gem source
 echo  "---- getting chef gem done"
 echo "--- bundle install"
 

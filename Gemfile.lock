@@ -31,9 +31,6 @@ PATH
   specs:
     knife (19.0.68)
       bcrypt_pbkdf (~> 1.1)
-      chef (>= 19.0)
-      chef-config (>= 19.0)
-      chef-utils (>= 19.0)
       chef-vault
       erubis (~> 2.7)
       ffi (>= 1.15)
