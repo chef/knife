@@ -3,7 +3,7 @@
 # This script runs a passed in command, but first setups up the bundler caching on the repo
 
 set -ue
-
+printenv
 export USER="root"
 export LANG=C.UTF-8 LANGUAGE=C.UTF-8
 echo "---- getting chef gem"
