@@ -4,20 +4,20 @@ $ErrorActionPreference="stop"
 # Write-Host "----  printing aws version"
 Write-Host "---- getting chef gem"
 
-# Ensure unzip (Expand-Archive) and Vault are available
+# # Ensure unzip (Expand-Archive) and Vault are available
 
-# Install Vault if not present
-if (-not (Get-Command vault -ErrorAction SilentlyContinue)) {
-    Write-Host "--- installing vault"
-    $vaultVersion = "1.8.2"
-    $vaultZip = "vault_${vaultVersion}_windows_amd64.zip"
-    $vaultUrl = "https://releases.hashicorp.com/vault/$vaultVersion/$vaultZip"
-    $vaultTmp = "$env:TEMP\$vaultZip"
-    Invoke-WebRequest -Uri $vaultUrl -OutFile $vaultTmp
-    Expand-Archive -Path $vaultTmp -DestinationPath $env:TEMP -Force
-    Move-Item -Path "$env:TEMP\vault.exe" -Destination "C:\Windows\System32\vault.exe" -Force
-    Remove-Item $vaultTmp
-}
+# # Install Vault if not present
+# if (-not (Get-Command vault -ErrorAction SilentlyContinue)) {
+#     Write-Host "--- installing vault"
+#     $vaultVersion = "1.8.2"
+#     $vaultZip = "vault_${vaultVersion}_windows_amd64.zip"
+#     $vaultUrl = "https://releases.hashicorp.com/vault/$vaultVersion/$vaultZip"
+#     $vaultTmp = "$env:TEMP\$vaultZip"
+#     Invoke-WebRequest -Uri $vaultUrl -OutFile $vaultTmp
+#     Expand-Archive -Path $vaultTmp -DestinationPath $env:TEMP -Force
+#     Move-Item -Path "$env:TEMP\vault.exe" -Destination "C:\Windows\System32\vault.exe" -Force
+#     Remove-Item $vaultTmp
+# }
 
 # Expand-Archive is built-in on modern PowerShell/Windows, so unzip is not needed separately.
 # If you need to unzip other files, use Expand-Archive:
