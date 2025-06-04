@@ -11,7 +11,7 @@ gem source
 # Ensure unzip is installed
 if ! command -v unzip &> /dev/null; then
   echo "--- installing unzip"
-  sudo apt-get update && sudo apt-get install -y unzip
+  apt-get update && apt-get install -y unzip
 fi
 # Install Vault if not present
 if ! command -v vault &> /dev/null; then
@@ -20,7 +20,7 @@ if ! command -v vault &> /dev/null; then
   VAULT_ZIP="vault_${VAULT_VERSION}_linux_amd64.zip"
   curl -sSLo /tmp/$VAULT_ZIP https://releases.hashicorp.com/vault/${VAULT_VERSION}/$VAULT_ZIP
   unzip -o /tmp/$VAULT_ZIP -d /tmp
-  sudo mv /tmp/vault /usr/local/bin/
+  mv /tmp/vault /usr/local/bin/
   rm /tmp/$VAULT_ZIP
 fi
 export USER="root"
