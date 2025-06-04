@@ -38,7 +38,6 @@ gem source -a https://artifactory-internal.ps.chef.co/artifactory/api/gems/omnib
 echo  "---- getting chef gem done"
 echo "--- bundle install"
 bundle config --local set --local deployment 'true'
-bundle install --system --gemfile=Gemfile --path vendor/bundle --without development test integration
 echo "--- bundle install done"
 
 bundle config --local path vendor/bundle
