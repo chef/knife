@@ -8,21 +8,6 @@ set -ue
 echo "--- gem source before add"
 gem source
 
-# # Ensure unzip is installed
-# if ! command -v unzip &> /dev/null; then
-#   echo "--- installing unzip"
-#   apt-get update && apt-get install -y unzip
-# fi
-# # Install Vault if not present
-# if ! command -v vault &> /dev/null; then
-#   echo "--- installing vault"
-#   VAULT_VERSION="1.8.2"
-#   VAULT_ZIP="vault_${VAULT_VERSION}_linux_amd64.zip"
-#   curl -sSLo /tmp/$VAULT_ZIP https://releases.hashicorp.com/vault/${VAULT_VERSION}/$VAULT_ZIP
-#   unzip -o /tmp/$VAULT_ZIP -d /tmp
-#   mv /tmp/vault /usr/local/bin/
-#   rm /tmp/$VAULT_ZIP
-# fi
 export USER="root"
 export LANG=C.UTF-8 LANGUAGE=C.UTF-8
 echo "---- getting chef gem"
@@ -37,7 +22,6 @@ echo "--- gem source after add"
 gem source -a https://artifactory-internal.ps.chef.co/artifactory/api/gems/omnibus-gems-local
 echo  "---- getting chef gem done"
 echo "--- bundle install"
-bundle config set --local disable_checksum_validation true
 bundle config --local path vendor/bundle
 bundle install --jobs=7 --retry=3
 echo "--- bundle install done"
