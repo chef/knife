@@ -31,9 +31,10 @@ export ARTIFACTORY_ENDPOINT="https://artifactory-internal.ps.chef.co/artifactory
 export ARTIFACTORY_USERNAME="REDACTED@chef.io"
 ARTIFACTORY_TOKEN=$(vault kv get -field token account/static/artifactory/buildkite)
 echo "--- gem source before add"
-gem source
+# List gem sources and remove trailing colons
+gem source | sed 's/:$//'
 echo "--- gem source after add"
-gem source -a https://artifactory-internal.ps.chef.co/artifactory/omnibus-gems-local/gems
+gem source -a https://artifactory-internal.ps.chef.co/artifactory/omnibus-gems-local/gems/
 echo  "---- getting chef gem done"
 echo "--- bundle install"
 bundle config --local set --local deployment 'true'

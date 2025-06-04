@@ -30,7 +30,7 @@ gem "ohai", git: "https://github.com/chef/ohai.git", branch: "main"
 # gem "chef", git: "https://github.com/chef/chef.git", branch: "main"
 # gem "chef-config", git: "https://github.com/chef/chef", branch: "main", glob: "chef-config/chef-config.gemspec"
 # gem "chef-utils", git: "https://github.com/chef/chef", branch: "main", glob: "chef-utils/chef-utils.gemspec"
-source "https://#{ENV['ARTIFACTORY_USERNAME']}:#{ENV['ARTIFACTORY_PASSWORD']}@artifactory-internal.ps.chef.co/artifactory/api/gems/omnibus-gems-local" do
+source "https://artifactory-internal.ps.chef.co/artifactory/omnibus-gems-local/gems/" do
   gem "chef", ">=19"
   gem "chef-config", ">=19"
   gem "chef-utils", ">=19"
