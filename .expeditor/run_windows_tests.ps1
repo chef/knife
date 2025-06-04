@@ -37,10 +37,7 @@ gem install win32ole
 gem install ffi-libarchive
 bundle install --jobs=7 --retry=3
 Write-Host "--- bundle  install done"
-
-Write-Host "+++ bundle exec task"
-
-
+bundle exec task
 
 $env:RUBYOPT="-W0"; bundle exec $args
 if ($LASTEXITCODE -ne 0) { throw "$args failed" }
