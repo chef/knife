@@ -37,11 +37,10 @@ echo "--- gem source after add"
 gem source -a https://artifactory-internal.ps.chef.co/artifactory/api/gems/omnibus-gems-local
 echo  "---- getting chef gem done"
 echo "--- bundle install"
-bundle config --local set --local deployment 'true'
-echo "--- bundle install done"
-
+bundle config set --local disable_checksum_validation true
 bundle config --local path vendor/bundle
 bundle install --jobs=7 --retry=3
+echo "--- bundle install done"
 
 echo "+++ bundle exec task"
 RUBYOPT="-W0" bundle exec $@
