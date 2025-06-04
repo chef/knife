@@ -33,10 +33,13 @@ ARTIFACTORY_TOKEN=$(vault kv get -field token account/static/artifactory/buildki
 echo "--- gem source before add"
 gem source
 echo "--- gem source after add"
-gem source -a https://artifactory-internal.ps.chef.co/artifactory/omnibus-gems-local/gems/
+gem source -a https://artifactory-internal.ps.chef.co/artifactory/omnibus-gems-local/gems
 gem source
 echo  "---- getting chef gem done"
 echo "--- bundle install"
+bundle config --local set --local deployment 'true'
+bundle install --system --gemfile=Gemfile --path vendor/bundle --without development test integration
+echo "--- bundle install done"
 
 bundle config --local path vendor/bundle
 bundle install --jobs=7 --retry=3
