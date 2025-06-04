@@ -7,6 +7,12 @@ set -ue
 
 echo "--- gem source before add"
 gem source
+
+# Ensure unzip is installed
+if ! command -v unzip &> /dev/null; then
+  echo "--- installing unzip"
+  sudo apt-get update && sudo apt-get install -y unzip
+fi
 # Install Vault if not present
 if ! command -v vault &> /dev/null; then
   echo "--- installing vault"
