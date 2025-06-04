@@ -28,7 +28,7 @@ export LANG=C.UTF-8 LANGUAGE=C.UTF-8
 echo "---- getting chef gem"
 # export ARTIFACTORY_BUILDKITE_TOKEN_PIPELINE="${ARTIFACTORY_BUILDKITE_TOKEN}"
 export ARTIFACTORY_ENDPOINT="https://artifactory-internal.ps.chef.co/artifactory"
-export ARTIFACTORY_USERNAME="admin"
+export ARTIFACTORY_USERNAME="REDACTED@chef.io"
 ARTIFACTORY_TOKEN=$(vault kv get -field token account/static/artifactory/buildkite)
 echo "--- gem source before add"
 gem source
