@@ -1,11 +1,11 @@
 $ErrorActionPreference="stop"
-Write-Host "---- printing aws version"
-aws --version
-Write-Host "----  printing aws version"
+# Write-Host "---- printing aws version"
+# aws --version
+# Write-Host "----  printing aws version"
 Write-Host "---- getting chef gem"
 
 $env:ARTIFACTORY_ENDPOINT="artifactory-internal.ps.chef.co/artifactory"
-$env:ARTIFACTORY_USERNAME="buildkite"
+$env:ARTIFACTORY_USERNAME="REDACTED@chef.io"
 $lita_password=aws ssm get-parameter --name "artifactory-lita-password" --with-decryption --query Parameter.Value --output text --region us-west-2
 $env:ARTIFACTORY_PASSWORD=$lita_password
 Write-Host "---- getting chef gem done"
