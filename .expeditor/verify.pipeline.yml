@@ -1,9 +1,9 @@
 ---
 expeditor:
-  # secrets:
-  #   ARTIFACTORY_TOKEN:
-  #     path: account/static/artifactory/buildkite
-  #     field: token
+  secrets:
+    ARTIFACTORY_TOKEN:
+      path: account/static/artifactory/buildkite
+      field: token
   cached_folders:
     - vendor
   defaults:
