@@ -32,7 +32,7 @@ require "chef/server_api" unless defined?(Chef::ServerAPI)
 require "http/authenticator" unless defined?(Chef::HTTP::Authenticator)
 require "http/http_request" unless defined?(Chef::HTTP::HTTPRequest)
 require "http" unless defined?(Chef::HTTP)
-require "chef/utils/licensing_handler"
+# require "chef/utils/licensing_handler"
 # End
 
 require "pp" unless defined?(PP)
@@ -217,7 +217,7 @@ class Chef
     #
     def self.run(args, options = {})
       # Check software entitlement
-      Chef::Utils::LicensingHandler.check_software_entitlement!(ui)
+      # Chef::Utils::LicensingHandler.check_software_entitlement!(ui)
       # Fallback debug logging. Normally the logger isn't configured until we
       # read the config, but this means any logging that happens before the
       # config file is read may be lost. If the KNIFE_DEBUG variable is set, we

@@ -3,9 +3,11 @@ require_relative "licensing_config"
 class Chef
   class Utils
     class LicensingHandler
+      LEGACY_OMNITRUCK_URL = "https://omnitruck.chef.io".freeze
+
       OMNITRUCK_URLS = {
-        "free"       => "https://chefdownload-trial.chef.io",
-        "trial"      => "https://chefdownload-trial.chef.io",
+        "free"       => "https://omnitruck.chef.io",
+        "trial"      => "https://omnitruck.chef.io",
         "commercial" => "https://chefdownload-commerical.chef.io",
       }.freeze
 
@@ -18,8 +20,10 @@ class Chef
 
       def omnitruck_url
         url = OMNITRUCK_URLS[license_type]
+        is_legacy = url.nil?
+        url ||= LEGACY_OMNITRUCK_URL
 
-        "#{url}/%s#{license_key ? "?license_id=#{license_key}" : ""}"
+        "#{url}/%s#{is_legacy ? "" : "?license_id=#{license_key}"}"
       end
 
       def install_sh_url
