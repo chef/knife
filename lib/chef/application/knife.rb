@@ -19,7 +19,7 @@ require "chef/application"
 require_relative "../knife"
 require "mixlib/log"
 require "ohai/config"
-require "chef/utils/licensing_handler"
+# require "chef/utils/licensing_handler"
 require "chef/knife/core/ui"
 module Net
   autoload :HTTP, "net/http"
@@ -163,7 +163,7 @@ class Chef::Application::Knife < Chef::Application
     ChefConfig::PathHelper.per_tool_home_environment = "KNIFE_HOME"
     Mixlib::Log::Formatter.show_time = false
     validate_and_parse_options
-    fetch_chef_license
+    # fetch_chef_license
     quiet_traps
     Chef::Knife.run(ARGV, options)
     exit 0
@@ -171,9 +171,9 @@ class Chef::Application::Knife < Chef::Application
 
   private
 
-  def fetch_chef_license
-    ChefLicensing.fetch_and_persist
-  end
+  # def fetch_chef_license
+  #   ChefLicensing.fetch_and_persist
+  # end
 
   def quiet_traps
     trap("TERM") do
