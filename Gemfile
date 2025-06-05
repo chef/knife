@@ -6,7 +6,7 @@ gem "ostruct"
 gem "csv"
 
 group(:development, :test) do
-  gem "cheffish", ">= 14" # testing only , but why didn't this need to explicit in chef?
+  gem "cheffish",">= 14" # testing only , but why didn't this need to explicit in chef?
   gem "webmock"
   gem "crack", "< 0.4.6" # due to https://github.com/jnunemaker/crack/pull/75
   gem "rake", ">= 12.3.3"
