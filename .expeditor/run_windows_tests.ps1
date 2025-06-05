@@ -35,8 +35,8 @@ Write-Host "---- getting chef gem done"
 bundle config --local path vendor/bundle
 gem install win32ole
 gem install ffi-libarchive
+bundle config --local path vendor/bundle
 bundle install --jobs=7 --retry=3
-bundle --full-index
 Write-Host "--- bundle  install done"
 
 Write-Host "+++ bundle exec task"
