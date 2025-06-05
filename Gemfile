@@ -23,7 +23,7 @@ group(:omnibus_package, :pry) do
 end
 
 group(:chefstyle) do
-  gem "chefstyle"
+  gem "chefstyle", git: "https://github.com/chef/chefstyle.git", branch: "main"
 end
 
 # gem "chef", git: "https://github.com/chef/chef.git", branch: "main"
