@@ -6,7 +6,7 @@ gem "ostruct"
 gem "csv"
 
 group(:development, :test) do
-  #gem "cheffish",">= 14" # testing only , but why didn't this need to explicit in chef?
+  gem "cheffish",">= 14" # testing only , but why didn't this need to explicit in chef?
   gem "webmock"
   gem "crack", "< 0.4.6" # due to https://github.com/jnunemaker/crack/pull/75
   gem "rake", ">= 12.3.3"
@@ -26,11 +26,10 @@ group(:chefstyle) do
   gem "chefstyle"
 end
 
-# gem "chef", git: "https://github.com/chef/chef.git", branch: "main"
+gem "chef", git: "https://github.com/chef/chef.git", branch: "main"
 # gem "chef-config", git: "https://github.com/chef/chef", branch: "main", glob: "chef-config/chef-config.gemspec"
 # gem "chef-utils", git: "https://github.com/chef/chef", branch: "main", glob: "chef-utils/chef-utils.gemspec"
 source "https://artifactory-internal.ps.chef.co/artifactory/api/gems/omnibus-gems-local" do
-  gem "chef", ">=19.1"
   gem "chef-config", ">=19.1"
   gem "chef-utils", ">=19.1"
   gem "ohai", ">=19.1"
