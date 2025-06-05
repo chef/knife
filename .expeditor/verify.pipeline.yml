@@ -21,7 +21,7 @@ steps:
       secrets: true
       executor:
         docker:
-          image: rubydistros/ubuntu-24.04:3.4
+          image: rubydistros/ubuntu-22.04:3.1
           environment:
             - CHEF_LICENSE=accept-no-persist
             - CHEF_LICENSE_SERVER=http://hosted-license-service-lb-8000-606952349.us-west-2.elb.amazonaws.com:8000/
@@ -35,7 +35,7 @@ steps:
         docker:
           host_os: windows
           shell: ["powershell", "-Command"]
-          image: rubydistros/windows-2019:3.4
+          image: rubydistros/windows-2019:3.1
           user: 'NT AUTHORITY\SYSTEM'
           environment:
             - FORCE_FFI_YAJL=ext
