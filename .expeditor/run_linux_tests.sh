@@ -24,6 +24,7 @@ echo  "---- getting chef gem done"
 echo "--- bundle install"
 bundle config --local path vendor/bundle
 bundle install --jobs=7 --retry=3
+gem update --system
 echo "--- bundle install done"
 
 echo "+++ bundle exec task"
