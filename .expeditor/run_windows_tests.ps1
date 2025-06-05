@@ -1,14 +1,13 @@
 $ErrorActionPreference="stop"
-# Write-Host "---- printing aws version"
-# aws --version
-# Write-Host "----  printing aws version"
-Write-Host "---- getting chef gem"
 
-# Ensure unzip (Expand-Archive) and Vault are available
+Write-Host "--- Unsetting any bundler mirrors"
+bundle config unset mirror.https://rubygems.org
 
-# Install Vault if not present
+Write-Host "---- Configuring TLS (for corporate proxies)"
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+
+Write-Host "---- Installing Vault if not present"
 if (-not (Get-Command vault -ErrorAction SilentlyContinue)) {
-    Write-Host "--- installing vault"
     $vaultVersion = "1.8.2"
     $vaultZip = "vault_${vaultVersion}_windows_amd64.zip"
     $vaultUrl = "https://releases.hashicorp.com/vault/$vaultVersion/$vaultZip"
@@ -19,34 +18,27 @@ if (-not (Get-Command vault -ErrorAction SilentlyContinue)) {
     Remove-Item $vaultTmp
 }
 
-# Expand-Archive is built-in on modern PowerShell/Windows, so unzip is not needed separately.
-# If you need to unzip other files, use Expand-Archive:
-# Expand-Archive -Path <zipfile> -DestinationPath <folder> -Force
+Write-Host "--- Configuring Artifactory environment"
+$env:ARTIFACTORY_ENDPOINT = "artifactory-internal.ps.chef.co/artifactory"
+$env:ARTIFACTORY_USERNAME = "REDACTED@chef.io"
+$env:ARTIFACTORY_PASSWORD = "$(vault read -field password account/static/artifactory/buildkite)"
 
-$env:ARTIFACTORY_ENDPOINT="artifactory-internal.ps.chef.co/artifactory"
-$env:ARTIFACTORY_USERNAME="REDACTED@chef.io"
-#$lita_password=aws ssm get-parameter --name "artifactory-lita-password" --with-decryption --query Parameter.Value --output text --region us-west-2
-$env:ARTIFACTORY_PASSWORD="$(vault read -field password account/static/artifactory/buildkite)"
-Write-Host "---- getting chef gem done"
-
-# Clean previous installs (important for Git-based gems)
+Write-Host "--- Cleaning bundle directory"
 if (Test-Path "vendor\bundle") {
   Remove-Item -Recurse -Force "vendor\bundle"
 }
 
+bundle cache --clean
+
+Write-Host "--- Installing required system gems"
 gem install win32ole
 gem install ffi-libarchive
 
-# Set up bundler path
+Write-Host "--- Setting bundler path and installing"
 bundle config --local path vendor/bundle
+bundle install --jobs=7 --retry=3
 
-# ⚠️ Include the chefstyle group explicitly
-bundle install --jobs=7 --retry=3 --with chefstyle
-Write-Host "--- bundle  install done"
-
-Write-Host "+++ bundle exec task"
-
-# Run the task
+Write-Host "--- Running task"
 $env:RUBYOPT="-W0"
 bundle exec $args
 if ($LASTEXITCODE -ne 0) {
