@@ -28,7 +28,6 @@ $env:ARTIFACTORY_USERNAME="REDACTED@chef.io"
 #$lita_password=aws ssm get-parameter --name "artifactory-lita-password" --with-decryption --query Parameter.Value --output text --region us-west-2
 $env:ARTIFACTORY_PASSWORD="$(vault read -field password account/static/artifactory/buildkite)"
 Write-Host "---- getting chef gem done"
-git --version
 # git clone https://github.com/chef/chef.git
 # cd chef ; bundle install; cd chef-utils; gem build chef-utils.gemspec; gem install chef-utils-*.gem ; cd .. ;
 # cd chef-config; gem build chef-config.gemspec; gem install chef-config-*.gem ; cd ..;
@@ -37,16 +36,10 @@ bundle config --local path vendor/bundle
 gem install win32ole
 gem install ffi-libarchive
 bundle install --jobs=7 --retry=3
+bundle --full-index
 Write-Host "--- bundle  install done"
 
 Write-Host "+++ bundle exec task"
 
-
-# Run bundle exec in a clean environment
-$env:RUBYOPT="-W0"
-$env:BUNDLE_GEMFILE = "$PWD\Gemfile"
-bundle exec $args
-
-if ($LASTEXITCODE -ne 0) {
-   throw "$args failed"
-}
+$env:RUBYOPT="-W0"; bundle exec $args
+if ($LASTEXITCODE -ne 0) { throw "$args failed" }
