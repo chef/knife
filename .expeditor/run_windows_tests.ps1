@@ -32,14 +32,27 @@ Write-Host "---- getting chef gem done"
 # cd chef ; bundle install; cd chef-utils; gem build chef-utils.gemspec; gem install chef-utils-*.gem ; cd .. ;
 # cd chef-config; gem build chef-config.gemspec; gem install chef-config-*.gem ; cd ..;
 # gem build chef-universal-mingw-ucrt.gemspec; gem install chef-*.gem ; cd ..;
-bundle config --local path vendor/bundle
+
+# Clean previous installs (important for Git-based gems)
+if (Test-Path "vendor\bundle") {
+  Remove-Item -Recurse -Force "vendor\bundle"
+}
+
 gem install win32ole
 gem install ffi-libarchive
+
+# Set up bundler path
 bundle config --local path vendor/bundle
-bundle install --jobs=7 --retry=3
+
+# ⚠️ Include the chefstyle group explicitly
+bundle install --jobs=7 --retry=3 --with chefstyle
 Write-Host "--- bundle  install done"
 
 Write-Host "+++ bundle exec task"
 
-$env:RUBYOPT="-W0"; bundle exec $args
-if ($LASTEXITCODE -ne 0) { throw "$args failed" }
+# Run the task
+$env:RUBYOPT="-W0"
+bundle exec $args
+if ($LASTEXITCODE -ne 0) {
+  throw "$args failed"
+}
