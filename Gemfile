@@ -2,9 +2,10 @@ source "https://rubygems.org"
 
 gem "knife", path: "."
 
+gem "chef", git: "https://github.com/chef/chef.git", branch: "main"
 # Chef core dependencies, locked to a compatible version range
 source "https://artifactory-internal.ps.chef.co/artifactory/api/gems/omnibus-gems-local" do
-  gem "chef", ">= 19.1"
+  # gem "chef", ">= 19.1"
   gem "chef-config", ">= 19.1"
   gem "chef-utils", ">= 19.1"
   gem "ohai", ">= 19.1"
