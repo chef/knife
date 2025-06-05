@@ -28,10 +28,6 @@ $env:ARTIFACTORY_USERNAME="REDACTED@chef.io"
 #$lita_password=aws ssm get-parameter --name "artifactory-lita-password" --with-decryption --query Parameter.Value --output text --region us-west-2
 $env:ARTIFACTORY_PASSWORD="$(vault read -field password account/static/artifactory/buildkite)"
 Write-Host "---- getting chef gem done"
-# git clone https://github.com/chef/chef.git
-# cd chef ; bundle install; cd chef-utils; gem build chef-utils.gemspec; gem install chef-utils-*.gem ; cd .. ;
-# cd chef-config; gem build chef-config.gemspec; gem install chef-config-*.gem ; cd ..;
-# gem build chef-universal-mingw-ucrt.gemspec; gem install chef-*.gem ; cd ..;
 
 # Clean previous installs (important for Git-based gems)
 if (Test-Path "vendor\bundle") {
