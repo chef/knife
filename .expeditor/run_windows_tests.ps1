@@ -1,46 +1,29 @@
-$ErrorActionPreference="stop"
+$ErrorActionPreference = "Stop"
 
-Write-Host "--- Unsetting any bundler mirrors"
-bundle config unset mirror.https://rubygems.org
+Write-Host "--- gem source before add"
+gem source
 
-Write-Host "---- Configuring TLS (for corporate proxies)"
-[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+$env:USER = "root"
+$env:LANG = "C.UTF-8"
+$env:LANGUAGE = "C.UTF-8"
 
-Write-Host "---- Installing Vault if not present"
-if (-not (Get-Command vault -ErrorAction SilentlyContinue)) {
-    $vaultVersion = "1.8.2"
-    $vaultZip = "vault_${vaultVersion}_windows_amd64.zip"
-    $vaultUrl = "https://releases.hashicorp.com/vault/$vaultVersion/$vaultZip"
-    $vaultTmp = "$env:TEMP\$vaultZip"
-    Invoke-WebRequest -Uri $vaultUrl -OutFile $vaultTmp
-    Expand-Archive -Path $vaultTmp -DestinationPath $env:TEMP -Force
-    Move-Item -Path "$env:TEMP\vault.exe" -Destination "C:\Windows\System32\vault.exe" -Force
-    Remove-Item $vaultTmp
-}
-
-Write-Host "--- Configuring Artifactory environment"
-$env:ARTIFACTORY_ENDPOINT = "artifactory-internal.ps.chef.co/artifactory"
+Write-Host "---- getting chef gem"
+$env:ARTIFACTORY_ENDPOINT = "https://artifactory-internal.ps.chef.co/artifactory"
 $env:ARTIFACTORY_USERNAME = "REDACTED@chef.io"
-$env:ARTIFACTORY_PASSWORD = "$(vault read -field password account/static/artifactory/buildkite)"
 
-Write-Host "--- Cleaning bundle directory"
-if (Test-Path "vendor\bundle") {
-  Remove-Item -Recurse -Force "vendor\bundle"
-}
+Write-Host "--- gem source before add"
+gem source | ForEach-Object { $_ -replace ':$','' }
+Write-Host "--- gem source after add"
+gem source -a "https://artifactory-internal.ps.chef.co/artifactory/api/gems/omnibus-gems-local"
+Write-Host "---- getting chef gem done"
 
-bundle cache --clean
-
-Write-Host "--- Installing required system gems"
-gem install win32ole
-gem install ffi-libarchive
-
-Write-Host "--- Setting bundler path and installing"
+Write-Host "--- bundle install"
 bundle config --local path vendor/bundle
 bundle install --jobs=7 --retry=3
+gem update --system
+Write-Host "--- bundle install done"
 
-Write-Host "--- Running task"
-$env:RUBYOPT="-W0"
-bundle exec $args
-if ($LASTEXITCODE -ne 0) {
-  throw "$args failed"
-}
+Write-Host "+++ bundle exec task"
+$env:RUBYOPT = "-W0"
+bundle exec @args
+if ($LASTEXITCODE -ne 0) { throw "Command failed with exit code $LASTEXITCODE" }
