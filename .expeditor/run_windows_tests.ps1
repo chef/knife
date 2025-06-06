@@ -13,8 +13,7 @@ bundle config --local path vendor/bundle
 gem install win32ole
 gem install ffi-libarchive
 bundle install --jobs=7 --retry=3
-gem update --system --no-document
-bundle update jquery-rails
+bundle install --deployment
 Write-Host "--- bundle  install done"
 Write-Host "---- getting chef gem done"
 
