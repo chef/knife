@@ -16,6 +16,7 @@ git clone https://github.com/chef/chef
 git checkout main
 bundle install --jobs=7 --retry=3
 bundle install --deployment
+bundle config unset deployment
 Write-Host "--- bundle  install done"
 Write-Host "---- getting chef gem done"
 
