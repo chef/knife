@@ -12,6 +12,7 @@ $env:ARTIFACTORY_USERNAME="REDACTED@chef.io"
 bundle config --local path vendor/bundle
 gem install win32ole
 gem install ffi-libarchive
+git checkout https://github.com/chef/chef.git
 bundle install --jobs=7 --retry=3
 bundle install --deployment
 Write-Host "--- bundle  install done"
