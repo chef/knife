@@ -14,6 +14,7 @@ group(:development, :test) do
   gem "abbrev"
   gem "benchmark"
   gem "reline"
+  gem "syslog"
 end
 
 group(:omnibus_package, :pry) do
