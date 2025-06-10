@@ -555,8 +555,6 @@ class Chef
       end
 
       def run
-        # Temporary add the license here.
-        ChefLicensing.fetch_and_persist
         check_eula_license if ChefUtils::Dist::Org::ENFORCE_LICENSE
         fetch_license
 
