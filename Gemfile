@@ -15,6 +15,7 @@ group(:development, :test) do
   gem "benchmark"
   gem "reline"
   gem "syslog"
+  gem "cheffish", ">= 14"
 end
 
 group(:omnibus_package, :pry) do
