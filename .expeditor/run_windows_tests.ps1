@@ -15,7 +15,7 @@ gem install ffi-libarchive
 bundle install --jobs=7 --retry=3
 bundle install --deployment
 bundle config unset deployment
-bundle config set --local path 'vendor/cache'
+bundle --full-index
 Write-Host "--- bundle  install done"
 Write-Host "---- getting chef gem done"
 
