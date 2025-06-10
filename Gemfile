@@ -26,12 +26,13 @@ group(:chefstyle) do
   gem "chefstyle"
 end
 
-gem "chef", git: "https://github.com/chef/chef.git", branch: "main"
+#gem "chef", git: "https://github.com/chef/chef.git", branch: "main"
 # gem "chef-config", git: "https://github.com/chef/chef", branch: "main", glob: "chef-config/chef-config.gemspec"
 # gem "chef-utils", git: "https://github.com/chef/chef", branch: "main", glob: "chef-utils/chef-utils.gemspec"
 source "https://artifactory-internal.ps.chef.co/artifactory/api/gems/omnibus-gems-local" do
   gem "chef-config", ">=19.1"
   gem "chef-utils", ">=19.1"
+  gem "chef", ">=19.1"
   gem "ohai", ">=19.1"
 end
 # gem "chef", path: "../chef"
