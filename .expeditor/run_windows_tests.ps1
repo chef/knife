@@ -10,10 +10,28 @@ $env:ARTIFACTORY_USERNAME="REDACTED@chef.io"
 # cd chef-config; gem build chef-config.gemspec; gem install chef-config-*.gem ; cd ..;
 # gem build chef-universal-mingw-ucrt.gemspec; gem install chef-*.gem ; cd ..;
 Write-Host "--- bundle install"
+
+# Set bundler config
 bundle config --local path vendor/bundle
-bundle config set --local without docs development profile
-bundle install --jobs=7 --retry=3
+bundle config set --local without 'docs development profile'
+
+# Install gems
+bundle install --jobs=7 --retry=3 --verbose
+if ($LASTEXITCODE -ne 0) { throw "bundle install failed" }
 
 Write-Host "+++ bundle exec task"
-bundle exec $args
-if ($LASTEXITCODE -ne 0) { throw "$args failed" }
+
+# Debug: Show Ruby and Bundler versions
+ruby -v
+bundle -v
+
+# Debug: Show environment variables
+Write-Host "Environment Variables:"
+Get-ChildItem Env:
+
+# Debug: Show installed gems
+bundle list
+
+# Run the task with better argument handling
+& bundle exec @args
+if ($LASTEXITCODE -ne 0) { throw "bundle exec $args failed" }
