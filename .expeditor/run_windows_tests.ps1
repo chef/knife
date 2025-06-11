@@ -10,7 +10,6 @@ $env:ARTIFACTORY_USERNAME="REDACTED@chef.io"
 # cd chef-config; gem build chef-config.gemspec; gem install chef-config-*.gem ; cd ..;
 # gem build chef-universal-mingw-ucrt.gemspec; gem install chef-*.gem ; cd ..;
 Write-Host "--- bundle install"
-pacman-key --init
 bundle config --local path vendor/bundle
 bundle config set --local without docs development profile
 bundle install --jobs=7 --retry=3
