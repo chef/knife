@@ -11,44 +11,43 @@ $env:ARTIFACTORY_USERNAME="REDACTED@chef.io"
 # gem build chef-universal-mingw-ucrt.gemspec; gem install chef-*.gem ; cd ..;
 Write-Host "--- bundle install"
 
-# Set bundler config
 bundle config --local path vendor/bundle
-bundle config set --local without 'docs development profile'
-bundle config set --local disable_checksum_validation true
-
-# Install gems
-bundle install --jobs=7 --retry=3 --verbose
-if ($LASTEXITCODE -ne 0) { throw "bundle install failed" }
-Write-Host "--- Ruby Platform Check"
-ruby -e "puts 'RUBY_PLATFORM: ' + RUBY_PLATFORM"
-
-Write-Host "--- Reinstalling chef-powershell gem"
-bundle pristine chef-powershell
-if ($LASTEXITCODE -ne 0) { throw "bundle pristine chef-powershell failed" }
-
-Write-Host "--- Verifying DLL files in chef-powershell AMD64 folder"
-$chefDllPath = "C:\workdir\vendor\bundle\ruby\3.1.0\gems\chef-powershell-18.1.0\bin\ruby_bin_folder\AMD64"
-
-if (Test-Path $chefDllPath) {
-     Get-ChildItem -Path $chefDllPath | ForEach-Object {
-        Write-Host "Found file: $($_.Name)"
-    }
-} else {
-    Write-Host "Directory not found: $chefDllPath"
-    throw "Missing chef-powershell AMD64 directory"
-}
+bundle config set --local without docs development profile
+bundle install --jobs=7 --retry=3
 
 Write-Host "+++ bundle exec task"
+bundle exec $args
+if ($LASTEXITCODE -ne 0) { throw "$args failed" }
+# # Write-Host "--- Ruby Platform Check"
+# # ruby -e "puts 'RUBY_PLATFORM: ' + RUBY_PLATFORM"
 
-# Debug: Show Ruby and Bundler versions
-ruby -v
-bundle -v
+# # Write-Host "--- Reinstalling chef-powershell gem"
+# # bundle pristine chef-powershell
+# # if ($LASTEXITCODE -ne 0) { throw "bundle pristine chef-powershell failed" }
 
-# Debug: Show environment variables
-Write-Host "Environment Variables:"
-Get-ChildItem Env:
-# Debug: Show installed gems
-bundle list
-# Run the task with better argument handling
-& bundle exec @args
-if ($LASTEXITCODE -ne 0) { throw "bundle exec $args failed" }
+# # Write-Host "--- Verifying DLL files in chef-powershell AMD64 folder"
+# # $chefDllPath = "C:\workdir\vendor\bundle\ruby\3.1.0\gems\chef-powershell-18.1.0\bin\ruby_bin_folder\AMD64"
+
+# # if (Test-Path $chefDllPath) {
+# #      Get-ChildItem -Path $chefDllPath | ForEach-Object {
+# #         Write-Host "Found file: $($_.Name)"
+# #     }
+# # } else {
+# #     Write-Host "Directory not found: $chefDllPath"
+# #     throw "Missing chef-powershell AMD64 directory"
+# # }
+
+# Write-Host "+++ bundle exec task"
+
+# # Debug: Show Ruby and Bundler versions
+# ruby -v
+# bundle -v
+
+# # Debug: Show environment variables
+# Write-Host "Environment Variables:"
+# Get-ChildItem Env:
+# # Debug: Show installed gems
+# bundle list
+# # Run the task with better argument handling
+# & bundle exec @args
+# if ($LASTEXITCODE -ne 0) { throw "bundle exec $args failed" }
