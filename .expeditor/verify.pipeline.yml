@@ -14,17 +14,17 @@ expeditor:
       timeout_in_minutes: 60
 
 steps:
-  # - label: run-specs-ruby-3.1
-  #   command:
-  #     - .expeditor/run_linux_tests.sh rake spec
-  #   expeditor:
-  #     secrets: true
-  #     executor:
-  #       docker:
-  #         image: rubydistros/ubuntu-22.04:3.1
-  #         environment:
-  #           - CHEF_LICENSE=accept-no-persist
-  #           - CHEF_LICENSE_SERVER=http://hosted-license-service-lb-8000-606952349.us-west-2.elb.amazonaws.com:8000/
+  - label: run-specs-ruby-3.1
+    command:
+      - .expeditor/run_linux_tests.sh rake spec
+    expeditor:
+      secrets: true
+      executor:
+        docker:
+          image: rubydistros/ubuntu-22.04:3.1
+          environment:
+            - CHEF_LICENSE=accept-no-persist
+            - CHEF_LICENSE_SERVER=http://hosted-license-service-lb-8000-606952349.us-west-2.elb.amazonaws.com:8000/
 
 
   - label: run-specs-windows-ruby-3.1
