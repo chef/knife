@@ -17,6 +17,8 @@ bundle config set --local without 'docs development profile'
 bundle config set --local disable_checksum_validation true
 
 # Install gems
+bundle pristine chef-powershell
+ruby -e 'puts RUBY_PLATFORM'
 bundle install --jobs=7 --retry=3 --verbose
 if ($LASTEXITCODE -ne 0) { throw "bundle install failed" }
 
