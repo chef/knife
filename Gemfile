@@ -31,8 +31,8 @@ end
 # gem "chef-utils", git: "https://github.com/chef/chef", branch: "main", glob: "chef-utils/chef-utils.gemspec"
 #gem "chef", git: "https://github.com/chef/chef.git", ref: "292591c273b561e70d91785f0187e5a4ab33aa74"
 source "https://artifactory-internal.ps.chef.co/artifactory/api/gems/omnibus-gems-local" do
-  gem "chef-config", "= 19.1.33"
-  gem "chef-utils", "= 19.1.33"
+  gem "chef-config", ">=19.1"
+  gem "chef-utils", ">=19.1"
   gem "chef", ">=19.1"
   gem "ohai", "= 19.1.3"
 end
@@ -41,6 +41,6 @@ end
 # gem "chef-config", path: File.expand_path("../chef/chef-config", __dir__) if File.exist?(File.expand_path("../chef/chef-config", __dir__))
 
 platforms :mswin, :mingw, :x64_mingw do
-  gem "fiddle", "<= 1.1.6"
+  gem "fiddle", "= 1.1.6"
   gem "win32ole"
 end
