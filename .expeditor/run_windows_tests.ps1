@@ -17,10 +17,10 @@ Write-Host "--- gem source after add"
 gem source -a "https://artifactory-internal.ps.chef.co/artifactory/api/gems/omnibus-gems-local"
 Write-Host "---- getting chef gem done"
 
-# ===== CRITICAL CHANGES START HERE =====
-# 1. First manually install the problematic gem
-Write-Host "--- Manually installing chef gem"
-gem install chef -v '19.1.36-universal-unknown' --source "https://artifactory-internal.ps.chef.co/artifactory/api/gems/omnibus-gems-local" --force
+# Download and install the EXACT gem from Artifactory
+$gem_url = "https://artifactory-internal.ps.chef.co/artifactory/api/gems/omnibus-gems-local/gems/chef-19.1.36-universal-unknown.gem"
+Invoke-WebRequest -Uri $gem_url -OutFile "$env:TEMP\chef.gem"
+gem install --local "$env:TEMP\chef.gem" --force --ignore-dependencies
 
 # 2. Configure Bundler to handle the version correctly
 bundle config set force_ruby_platform true
