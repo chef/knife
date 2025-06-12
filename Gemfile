@@ -5,7 +5,7 @@ gem "knife", path: "."
 # Chef core dependencies, locked to a compatible version range
 source "https://artifactory-internal.ps.chef.co/artifactory/api/gems/omnibus-gems-local" do
   if Gem.win_platform?
-    gem "chef", "'19.1.36-universal-unknown'"
+    gem "chef", "= 19.1.36-universal-unknown", force: true  # Forces exact match, avoids .pre.
   else
     gem "chef", ">= 19.1"
   end

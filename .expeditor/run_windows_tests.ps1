@@ -19,7 +19,7 @@ Write-Host "---- getting chef gem done"
 
 Write-Host "--- bundle install"
 bundle config --local path vendor/bundle
-bundle install --jobs=7 --retry=3
+bundle install --verbose --jobs=7 --retry=3
 gem update --system
 Write-Host "--- bundle install done"
 
