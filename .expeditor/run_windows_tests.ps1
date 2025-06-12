@@ -17,9 +17,22 @@ Write-Host "--- gem source after add"
 gem source -a "https://artifactory-internal.ps.chef.co/artifactory/api/gems/omnibus-gems-local"
 Write-Host "---- getting chef gem done"
 
+# ===== CRITICAL CHANGES START HERE =====
+# 1. First manually install the problematic gem
+Write-Host "--- Manually installing chef gem"
+gem install chef -v '19.1.36-universal-unknown' --source "https://artifactory-internal.ps.chef.co/artifactory/api/gems/omnibus-gems-local" --force
+
+# 2. Configure Bundler to handle the version correctly
+bundle config set force_ruby_platform true
+
+# 3. Use dots instead of hyphens in Gemfile reference
+# (You'll need to modify your Gemfile to use:)
+# gem "chef", "19.1.36.universal.unknown" 
+# ===== CRITICAL CHANGES END HERE =====
+
 Write-Host "--- bundle install"
 bundle config --local path vendor/bundle
-bundle install --verbose --jobs=7 --retry=3
+bundle install --verbose --jobs=7 --retry=3 --local  # Added --local flag
 gem update --system
 Write-Host "--- bundle install done"
 
