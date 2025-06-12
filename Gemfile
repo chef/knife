@@ -4,14 +4,18 @@ gem "knife", path: "."
 
 # Chef core dependencies, locked to a compatible version range
 source "https://artifactory-internal.ps.chef.co/artifactory/api/gems/omnibus-gems-local" do
-  gem "chef", ">= 19.1"
+  if Gem.win_platform?
+    gem "chef", "19.1.33"
+  else
+    gem "chef", ">= 19.1"
+  end
   gem "chef-config", ">= 19.1"
   gem "chef-utils", ">= 19.1"
   gem "ohai", ">= 19.1"
 end
 
 # Platform specific gems
-platforms :mswin, :mingw, :x64_mingw do
+if RUBY_PLATFORM.match?(/mswin|mingw|windows/)
   gem "fiddle", "<= 1.1.6"
   gem "win32ole"
 end
