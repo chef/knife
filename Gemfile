@@ -16,7 +16,7 @@ end
 
 # Platform specific gems
 if RUBY_PLATFORM.match?(/mswin|mingw|windows/)
-  gem "fiddle", "<= 1.1.6"
+  # gem "fiddle", "<= 1.1.6"
   gem "win32ole"
 end
 
