@@ -40,6 +40,9 @@ group :development, :test do
   gem "reline"
 end
 
+gem "ffi", "1.17.2", platforms: [:mswin, :mingw]
+gem "ffi-win32-extensions", "~> 1.0", platforms: [:mswin, :mingw]
+
 group :omnibus_package, :pry do
   gem "pry"
   gem "pry-byebug"

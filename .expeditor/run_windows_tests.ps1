@@ -31,6 +31,7 @@ gem install win32-eventlog --source "https://rubygems.org"
 
 Write-Host "--- Installing native ffi gem for Windows"
 gem install ffi --platform=x64-mingw-ucrt --source "https://rubygems.org"
+gem install ffi --platform=x64-mingw32 --source "https://rubygems.org"
 
 # 3. Download and install chef gem with corrected platform tag
 Write-Host "--- Downloading chef gem with incorrect platform name"
