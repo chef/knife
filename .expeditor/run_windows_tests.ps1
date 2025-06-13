@@ -31,7 +31,7 @@ Write-Host "--- Renaming to correct platform name"
 Rename-Item -Path $downloaded_path -NewName (Split-Path $renamed_path -Leaf)
 
 Write-Host "--- Installing chef gem"
-gem install --local $renamed_path --force --ignore-dependencies
+gem install --local $renamed_path --force
 
 # 3. Configure Bundler
 Write-Host "--- Configuring Bundler"
