@@ -20,10 +20,18 @@ ridk enable
 ridk install 3  # Installs MSYS2 and MINGW (only needed once per system)
 
 # 2. Download and install the exact gem version
-Write-Host "--- Installing chef gem directly"
-$gem_url = "https://artifactory-internal.ps.chef.co/artifactory/api/gems/omnibus-gems-local/gems/chef-19.1.36-universal-mingw-ucrt.gem"
-Invoke-WebRequest -Uri $gem_url -OutFile "$env:TEMP\chef.gem"
-gem install --local "$env:TEMP\chef.gem" --force --ignore-dependencies
+Write-Host "--- Downloading chef gem with incorrect platform name"
+$gem_url = "https://artifactory-internal.ps.chef.co/artifactory/api/gems/omnibus-gems-local/gems/chef-19.1.36-universal-unknown.gem"
+$downloaded_path = "$env:TEMP\chef-19.1.36-universal-unknown.gem"
+$renamed_path = "$env:TEMP\chef-19.1.36-universal-mingw-ucrt.gem"
+
+Invoke-WebRequest -Uri $gem_url -OutFile $downloaded_path
+
+Write-Host "--- Renaming to correct platform name"
+Rename-Item -Path $downloaded_path -NewName (Split-Path $renamed_path -Leaf)
+
+Write-Host "--- Installing chef gem"
+gem install --local $renamed_path --force --ignore-dependencies
 
 # 3. Configure Bundler
 Write-Host "--- Configuring Bundler"
