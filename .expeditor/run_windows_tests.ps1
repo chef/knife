@@ -29,6 +29,9 @@ gem install ohai --source $gem_source
 Write-Host "--- Installing win32-eventlog from rubygems"
 gem install win32-eventlog --source "https://rubygems.org"
 
+Write-Host "--- Installing native ffi gem for Windows"
+gem install ffi --platform=x64-mingw-ucrt --source "https://rubygems.org"
+
 # 3. Download and install chef gem with corrected platform tag
 Write-Host "--- Downloading chef gem with incorrect platform name"
 $gem_url = "$gem_source/gems/chef-19.1.36-universal-unknown.gem"
