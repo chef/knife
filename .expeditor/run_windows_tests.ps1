@@ -1,42 +1,41 @@
 $ErrorActionPreference = "Stop"
 
-Write-Host "--- gem source before add"
-gem source
-
+# Set environment variables
 $env:USER = "root"
 $env:LANG = "C.UTF-8"
 $env:LANGUAGE = "C.UTF-8"
+$env:RUBYOPT = "-W0"
 
-Write-Host "---- getting chef gem"
+Write-Host "--- Configuring Artifactory access"
 $env:ARTIFACTORY_ENDPOINT = "https://artifactory-internal.ps.chef.co/artifactory"
 $env:ARTIFACTORY_USERNAME = "REDACTED@chef.io"
 
-Write-Host "--- gem source before add"
-gem source | ForEach-Object { $_ -replace ':$','' }
-Write-Host "--- gem source after add"
-gem source -a "https://artifactory-internal.ps.chef.co/artifactory/api/gems/omnibus-gems-local"
-Write-Host "---- getting chef gem done"
+# Add Artifactory source
+Write-Host "--- Adding Artifactory gem source"
+gem sources --add "https://artifactory-internal.ps.chef.co/artifactory/api/gems/omnibus-gems-local"
 
-# Download and install the EXACT gem from Artifactory
-$gem_url = "https://artifactory-internal.ps.chef.co/artifactory/api/gems/omnibus-gems-local/gems/chef-19.1.36-universal-unknown.gem"
+# 1. Install MSYS2 and MINGW development tools (required for native extensions)
+Write-Host "--- Setting up build tools"
+ridk enable
+ridk install 3  # Installs MSYS2 and MINGW (only needed once per system)
+
+# 2. Download and install the exact gem version
+Write-Host "--- Installing chef gem directly"
+$gem_url = "https://artifactory-internal.ps.chef.co/artifactory/api/gems/omnibus-gems-local/gems/chef-19.1.36-universal-mingw-ucrt.gem"
 Invoke-WebRequest -Uri $gem_url -OutFile "$env:TEMP\chef.gem"
 gem install --local "$env:TEMP\chef.gem" --force --ignore-dependencies
 
-# 2. Configure Bundler to handle the version correctly
+# 3. Configure Bundler
+Write-Host "--- Configuring Bundler"
 bundle config set force_ruby_platform true
+bundle config set path vendor/bundle
 
-# 3. Use dots instead of hyphens in Gemfile reference
-# (You'll need to modify your Gemfile to use:)
-# gem "chef", "19.1.36.universal.unknown" 
-# ===== CRITICAL CHANGES END HERE =====
+# 4. Run bundle install with local gems
+Write-Host "--- Running bundle install"
+bundle install --verbose --jobs=7 --retry=3 --local
+if ($LASTEXITCODE -ne 0) { throw "Bundle install failed with exit code $LASTEXITCODE" }
 
-Write-Host "--- bundle install"
-bundle config --local path vendor/bundle
-bundle install --verbose --jobs=7 --retry=3 --local  # Added --local flag
-gem update --system
-Write-Host "--- bundle install done"
-
-Write-Host "+++ bundle exec task"
-$env:RUBYOPT = "-W0"
+# 5. Run the actual task
+Write-Host "+++ Executing bundle exec task"
 bundle exec @args
 if ($LASTEXITCODE -ne 0) { throw "Command failed with exit code $LASTEXITCODE" }
