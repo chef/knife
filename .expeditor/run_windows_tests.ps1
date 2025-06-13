@@ -24,7 +24,10 @@ ridk install 3  # Installs MSYS2 and MINGW (only needed once per system)
 Write-Host "--- Installing chef-utils, chef-config, and ohai"
 gem install chef-utils   --version "19.1.36" --source $gem_source
 gem install chef-config  --version "19.1.36" --source $gem_source
-gem install ohai         --version "19.1.36" --source $gem_source
+gem install ohai --source $gem_source
+
+Write-Host "--- Installing win32-eventlog from rubygems"
+gem install win32-eventlog --source "https://rubygems.org"
 
 # 3. Download and install chef gem with corrected platform tag
 Write-Host "--- Downloading chef gem with incorrect platform name"

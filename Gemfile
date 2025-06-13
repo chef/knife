@@ -8,7 +8,7 @@ source "https://artifactory-internal.ps.chef.co/artifactory/api/gems/omnibus-gem
     gem "chef", "19.1.36"
     gem "chef-config", "19.1.36"
     gem "chef-utils", "19.1.36"
-    gem "ohai", "19.1.36"
+    gem "ohai", ">= 19.1"
   else
     gem "chef", ">= 19.1"
     gem "chef-config", ">= 19.1"
