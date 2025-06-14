@@ -16,9 +16,9 @@ Write-Host "--- Adding Artifactory gem source"
 gem sources --add $gem_source
 
 # 1. Install MSYS2 and MINGW development tools (required for native extensions)
-Write-Host "--- Setting up build tools"
-ridk enable
-ridk install 3  # Installs MSYS2 and MINGW (only needed once per system)
+# Write-Host "--- Setting up build tools"
+# ridk enable
+# ridk install 3  # Installs MSYS2 and MINGW (only needed once per system)
 
 # 2. Install chef dependencies (build from source)
 Write-Host "--- Installing chef-utils, chef-config, and ohai"
@@ -46,6 +46,10 @@ Rename-Item -Path $downloaded_path -NewName (Split-Path $renamed_path -Leaf)
 
 Write-Host "--- Installing chef gem"
 gem install --local $renamed_path --force --ignore-dependencies
+
+# Ensure ffi gem is installed with the correct platform and version
+Write-Host "--- Reinstalling ffi gem with correct platform"
+gem install ffi --source "https://rubygems.org"
 
 # 4. Configure Bundler
 Write-Host "--- Configuring Bundler"
