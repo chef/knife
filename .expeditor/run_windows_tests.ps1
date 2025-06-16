@@ -37,6 +37,16 @@ gem install ffi --platform=x64-mingw32 --source "https://rubygems.org"
 Write-Host "--- Downloading chef gem with incorrect platform name"
 $gem_url = "$gem_source/gems/chef-19.1.36-universal-unknown.gem"
 $downloaded_path = "$env:TEMP\chef-19.1.36-universal-unknown.gem"
+
+Invoke-WebRequest -Uri $gem_url -OutFile $downloaded_path -UseBasicParsing
+
+# Verify the file was downloaded
+if (Test-Path $downloaded_path) {
+    Write-Host "✅ Chef gem downloaded successfully to $downloaded_path"
+} else {
+    Write-Host "❌ Chef gem download failed."
+    exit 1
+}
 # $renamed_path    = "$env:TEMP\chef-19.1.36-universal-mingw-ucrt.gem"
 
 # Invoke-WebRequest -Uri $gem_url -OutFile $downloaded_path
@@ -44,8 +54,19 @@ $downloaded_path = "$env:TEMP\chef-19.1.36-universal-unknown.gem"
 # Write-Host "--- Renaming to correct platform name"
 # Rename-Item -Path $downloaded_path -NewName (Split-Path $renamed_path -Leaf)
 
+# 4. Install the gem
 Write-Host "--- Installing chef gem"
 gem install --local $downloaded_path --force --ignore-dependencies
+
+# Verify installation
+$installed = gem list chef --local | Select-String "chef\s+\(19\.1\.36"
+
+if ($installed) {
+    Write-Host "✅ Chef gem installed successfully"
+} else {
+    Write-Host "❌ Chef gem installation failed"
+    exit 1
+}
 
 # Ensure ffi gem is installed with the correct platform and version
 Write-Host "--- Reinstalling ffi gem with correct platform"
