@@ -60,7 +60,7 @@ if (Test-Path $downloaded_path) {
 
 # 4. Install the gem
 Write-Host "--- Installing chef gem"
-gem install --local $downloaded_path --force --ignore-dependencies
+gem install $downloaded_path --force --ignore-dependencies
 
 # Verify installation
 Write-Host "--- Verifying chef gem installation"
