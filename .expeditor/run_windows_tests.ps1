@@ -43,10 +43,14 @@ Invoke-WebRequest -Uri $gem_url -OutFile $downloaded_path -UseBasicParsing
 # Verify the file was downloaded
 if (Test-Path $downloaded_path) {
     Write-Host "✅ Chef gem downloaded successfully to $downloaded_path"
+    
+    Write-Host "`n--- Listing .gem files in TEMP directory ---"
+    Get-ChildItem "$env:TEMP\*.gem" | Format-Table Name, Length, LastWriteTime
 } else {
     Write-Host "❌ Chef gem download failed."
     exit 1
 }
+
 # $renamed_path    = "$env:TEMP\chef-19.1.36-universal-mingw-ucrt.gem"
 
 # Invoke-WebRequest -Uri $gem_url -OutFile $downloaded_path
@@ -59,12 +63,16 @@ Write-Host "--- Installing chef gem"
 gem install --local $downloaded_path --force --ignore-dependencies
 
 # Verify installation
-$installed = gem list chef --local
+Write-Host "--- Verifying chef gem installation"
+$installed_output = gem list chef --local
 
-if ($installed) {
+if ($installed_output -match "chef\s+\(19\.1\.36") {
+    Write-Host $installed_output
     Write-Host "✅ Chef gem installed successfully"
 } else {
     Write-Host "❌ Chef gem installation failed"
+    Write-Host "Gem list output:"
+    Write-Host $installed_output
     exit 1
 }
 
@@ -74,12 +82,12 @@ gem install ffi --source "https://rubygems.org"
 
 # 4. Configure Bundler
 Write-Host "--- Configuring Bundler"
-bundle config set force_ruby_platform true
+# bundle config set force_ruby_platform true
 bundle config set path vendor/bundle
 
 # 5. Run bundle install with local gems
 Write-Host "--- Running bundle install"
-bundle install --verbose --jobs=7 --retry=3 --local
+bundle install --jobs=7 --retry=3 --local
 if ($LASTEXITCODE -ne 0) { throw "Bundle install failed with exit code $LASTEXITCODE" }
 
 # 6. Run the actual task
