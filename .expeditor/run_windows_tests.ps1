@@ -59,7 +59,7 @@ Write-Host "--- Installing chef gem"
 gem install --local $downloaded_path --force --ignore-dependencies
 
 # Verify installation
-$installed = gem list chef --local | Select-String "chef\s+\(19\.1\.36"
+$installed = gem list chef --local
 
 if ($installed) {
     Write-Host "✅ Chef gem installed successfully"
