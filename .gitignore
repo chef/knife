@@ -8,8 +8,7 @@ spec/data/chef_guid
 # ignore any gems we build locally
 *.gem
 pkg/*
-.idea
-.chef
+
 # testing
 /config/
 coverage/
@@ -73,7 +72,9 @@ binstubs/
 
 # Visual Studio Code files
 .vscode
+.idea
 
+bin/
 # ignore nodes generated during local testing
 # nodes/
 
