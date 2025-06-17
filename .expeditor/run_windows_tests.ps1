@@ -69,6 +69,10 @@ $installed_output = gem list chef --local
 if ($installed_output -match "chef\s+\(19\.1\.36") {
     Write-Host $installed_output
     Write-Host "✅ Chef gem installed successfully"
+
+    # Add version print here
+    Write-Host "--- Chef Client Version"
+    chef-client -v
 } else {
     Write-Host "❌ Chef gem installation failed"
     Write-Host "Gem list output:"
