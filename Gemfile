@@ -31,8 +31,8 @@ gem "chef", git: "https://github.com/chef/chef.git", branch: "main"
 # gem "chef-utils", git: "https://github.com/chef/chef", branch: "main", glob: "chef-utils/chef-utils.gemspec"
 #gem "chef", git: "https://github.com/chef/chef.git", ref: "292591c273b561e70d91785f0187e5a4ab33aa74"
 source "https://artifactory-internal.ps.chef.co/artifactory/api/gems/omnibus-gems-local" do
-  gem "chef-config", "(>= 14.12, < 20)"
-  gem "chef-utils", "(>= 14.12, < 20)"
+  gem "chef-config", "=19.1.38"
+  gem "chef-utils", "=19.1.38"
   #gem "chef", ">=19.1"
   gem "ohai", "= 19.1.3"
 end
