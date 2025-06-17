@@ -19,8 +19,6 @@ bundle config set --local disable_checksum_validation true
 # Install gems
 bundle install --jobs=7 --retry=3 --verbose
 if ($LASTEXITCODE -ne 0) { throw "bundle install failed" }
-Write-Host "--- Ruby Platform Check"
-ruby -e "puts 'RUBY_PLATFORM: ' + RUBY_PLATFORM"
 
 Write-Host "+++ bundle exec task"
 
@@ -31,8 +29,10 @@ bundle -v
 # Debug: Show environment variables
 Write-Host "Environment Variables:"
 Get-ChildItem Env:
+
 # Debug: Show installed gems
 bundle list
+
 # Run the task with better argument handling
 & bundle exec @args
 if ($LASTEXITCODE -ne 0) { throw "bundle exec $args failed" }
