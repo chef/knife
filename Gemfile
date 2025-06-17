@@ -29,8 +29,8 @@ end
 #gem "chef", git: "https://github.com/chef/chef.git", branch: "main"
 # gem "chef-config", git: "https://github.com/chef/chef", branch: "main", glob: "chef-config/chef-config.gemspec"
 # gem "chef-utils", git: "https://github.com/chef/chef", branch: "main", glob: "chef-utils/chef-utils.gemspec"
-gem "chef", git: "https://github.com/chef/chef.git", ref: "292591c273b561e70d91785f0187e5a4ab33aa74"
-#source "https://artifactory-internal.ps.chef.co/artifactory/api/gems/omnibus-gems-local" do
+#gem "chef", git: "https://github.com/chef/chef.git", ref: "292591c273b561e70d91785f0187e5a4ab33aa74"
+source "https://artifactory-internal.ps.chef.co/artifactory/api/gems/omnibus-gems-local" do
   gem "chef-config", "= 19.1.33"
   gem "chef-utils", "= 19.1.33"
   gem "chef", ">=19.1"
