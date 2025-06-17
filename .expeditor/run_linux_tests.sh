@@ -19,6 +19,7 @@ gem source -a "${ARTIFACTORY_ENDPOINT}/api/gems/omnibus-gems-local" || true
 echo "--- Installing dependencies"
 bundle config set --local path vendor/bundle
 bundle install --jobs=7 --retry=3
+
 gem update --system
 
 echo "+++ Running bundle exec task"
