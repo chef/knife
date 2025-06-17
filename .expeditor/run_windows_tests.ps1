@@ -72,7 +72,12 @@ if ($installed_output -match "chef\s+\(19\.1\.36") {
 
     # Add version print here
     Write-Host "--- Chef Client Version"
-    chef-client -v
+    $chefClientPath = (Get-Command chef-client -ErrorAction SilentlyContinue).Path
+    if ($null -ne $chefClientPath) {
+        & $chefClientPath -v
+    } else {
+        Write-Host "❌ Chef Client executable not found. Ensure it is installed and available in the PATH."
+    }
 } else {
     Write-Host "❌ Chef gem installation failed"
     Write-Host "Gem list output:"
@@ -87,7 +92,7 @@ gem install ffi --source "https://rubygems.org"
 # 4. Configure Bundler
 Write-Host "--- Configuring Bundler"
 # bundle config set force_ruby_platform true
-bundle config set path vendor/bundle
+bundle config --local path vendor/bundle
 
 # 5. Run bundle install with local gems
 Write-Host "--- Running bundle install"
