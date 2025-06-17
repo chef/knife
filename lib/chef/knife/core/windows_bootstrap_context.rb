@@ -172,16 +172,16 @@ class Chef
           c_opscode_dir = ChefConfig::PathHelper.cleanpath(ChefConfig::Config.c_opscode_dir, windows: true)
           client_rb = clean_etc_chef_file("client.rb")
           first_boot = clean_etc_chef_file("first-boot.json")
-          license_argument = if config[:license_id] && !config[:disable_license_activation]
-                               " --chef-license-key #{config[:license_id]}"
-                             else
-                               ""
-                             end
+          # license_argument = if config[:license_id] && !config[:disable_license_activation]
+          #                      " --chef-license-key #{config[:license_id]}"
+          #                    else
+          #                      ""
+          #                    end
 
           bootstrap_environment_option = bootstrap_environment.nil? ? "" : " -E #{bootstrap_environment}"
 
           start_chef = "SET \"PATH=%SYSTEM32%;%SystemRoot%;%SYSTEM32%\\Wbem;%SYSTEM32%\\WindowsPowerShell\\v1.0\\;C:\\ruby\\bin;#{c_opscode_dir}\\bin;#{c_opscode_dir}\\embedded\\bin\;%PATH%\"\n"
-          start_chef << "#{ChefUtils::Dist::Infra::CLIENT} -c #{client_rb} -j #{first_boot}#{bootstrap_environment_option}#{license_argument}\n"
+          start_chef << "#{ChefUtils::Dist::Infra::CLIENT} -c #{client_rb} -j #{first_boot}#{bootstrap_environment_option}\n"
         end
 
         def win_wget
@@ -335,7 +335,7 @@ class Chef
         # Build a URL that will redirect to the correct Chef Infra msi download.
         def msi_url(machine_os = nil, machine_arch = nil, download_context = nil)
           if config[:msi_url].nil? || config[:msi_url].empty?
-            url = if config[:license_url] && !config[:omnitruck_url].empty?
+            url = if config[:license_type] == "commercial" && config[:license_url] && !config[:omnitruck_url].empty?
                     format(config[:omnitruck_url], config[:channel]+"/chef/download")+"&p=windows"
                   else
                     "https://omnitruck.chef.io/chef/download?p=windows"
