@@ -1,8 +1,8 @@
 # Package metadata
-export HAB_BLDR_CHANNEL="LTS-2024"
-export HAB_REFRESH_CHANNEL="LTS-2024"
+export HAB_BLDR_CHANNEL="base-2025"
+export HAB_REFRESH_CHANNEL="base-2025"
 pkg_name=knife
-ruby_pkg="core/ruby3_1"
+ruby_pkg="core/ruby3_4"
 pkg_origin=core
 pkg_description="knife is a command-line tool that provides an interface between a local chef-repo and the Chef Infra Server."
 pkg_upstream_url=https://www.chef.io/
@@ -92,7 +92,7 @@ set -e
 # Set binary path that allows knife and chef to find correct binaries
 export PATH="/sbin:/usr/sbin:/usr/local/sbin:/usr/local/bin:/usr/bin:/bin:\$PATH"
 # Set Ruby gem paths to include the chef gem
-export GEM_HOME="$pkg_prefix/vendor/ruby/3.1.0"
+export GEM_HOME="$pkg_prefix/vendor/ruby/3.4.0"
 export GEM_PATH="\$GEM_HOME"
 exec $(pkg_path_for ${ruby_pkg})/bin/ruby $real_bin \$@
 EOF
