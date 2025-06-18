@@ -56,13 +56,13 @@ if [ -f ./results/last_build.env ]; then
     export pkg_artifact
 fi
 
-echo "+++ Installing ${pkg_ident:?is undefined}"
-echo "++++"
+echo "Installing ${pkg_ident:?is undefined}"
+
 echo $project_root
-echo "+++"
+
 hab pkg install -b "${project_root:?is undefined}/results/${pkg_artifact:?is undefined}"
 
-echo "+++ Testing $PLAN"
+echo "Testing $PLAN"
 
 PATH="$(hab pkg path ci/knife)/bin:$PATH"
 export PATH
