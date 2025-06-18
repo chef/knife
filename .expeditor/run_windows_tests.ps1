@@ -46,7 +46,7 @@ if (Test-Path $gem_path) {
 }
 
 Write-Host "--- Installing Chef Gem from Downloaded File ---"
-gem install $gem_path --force --ignore-dependencies
+gem install $gem_path
 
 # Validate installation
 Write-Host "--- Validating Chef Installation ---"
