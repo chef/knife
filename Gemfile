@@ -2,26 +2,46 @@ source "https://rubygems.org"
 
 gem "knife", path: "."
 
-group(:development, :test) do
-  gem "cheffish", ">= 14" # testing only , but why didn't this need to explicit in chef?
-  gem "webmock"
-  gem "crack", "< 0.4.6" # due to https://github.com/jnunemaker/crack/pull/75
-  gem "rake", ">= 12.3.3"
-  gem "rspec"
+# Chef core dependencies, locked to a compatible version range
+source "https://artifactory-internal.ps.chef.co/artifactory/api/gems/omnibus-gems-local" do
+  gem "chef", ">= 19.1"
+  gem "chef-config", ">= 19.1"
+  gem "chef-utils", ">= 19.1"
+  gem "ohai", ">= 19.1"
 end
 
-group(:omnibus_package, :pry) do
+# Platform specific gems
+if RUBY_PLATFORM.match?(/mswin|mingw|windows/)
+  gem "fiddle", "<= 1.1.6"
+  gem "win32ole"
+  gem "win32-process", "~> 0.9"
+end
+
+# Runtime gems knife might need
+gem "syslog"
+gem "ostruct"
+gem "csv"
+
+group :development, :test do
+  gem "cheffish", ">= 14"
+  gem "webmock"
+  gem "crack", "< 0.4.6"
+  gem "rake", ">= 12.3.3"
+  gem "rspec"
+  gem "abbrev"
+  gem "benchmark"
+  gem "reline"
+end
+
+gem "ffi", "1.17.2", platforms: [:mswin, :mingw]
+gem "ffi-win32-extensions", "~> 1.0", platforms: [:mswin, :mingw]
+
+group :omnibus_package, :pry do
   gem "pry"
   gem "pry-byebug"
   gem "pry-stack_explorer"
 end
 
-group(:chefstyle) do
-  gem "chefstyle", git: "https://github.com/chef/chefstyle.git", branch: "main"
+group :chefstyle do
+  gem "chefstyle"
 end
-
-gem "ohai", git: "https://github.com/chef/ohai.git", branch: "main"
-gem "chef", git: "https://github.com/chef/chef.git", branch: "main"
-# gem "chef", path: "../chef"
-# gem "chef-utils",
-# gem "chef-config", path: File.expand_path("../chef/chef-config", __dir__) if File.exist?(File.expand_path("../chef/chef-config", __dir__))
