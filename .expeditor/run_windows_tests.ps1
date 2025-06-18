@@ -71,6 +71,23 @@ if ($installed_output -match "chef\s+\(19\.1\.36") {
     Write-Host "--- RubyGems environment ---"
     gem env
 
+    $Ruby31Bin = "C:\ruby31\bin"
+    $Ruby34Bin = "C:\ruby34\bin"
+
+    Write-Host "`n--- 📦 Files in Ruby 3.1 bin ($Ruby31Bin) ---"
+    if (Test-Path $Ruby31Bin) {
+      Get-ChildItem "$Ruby31Bin" -File | Sort-Object Name | Format-Table Name, Length, LastWriteTime
+    } else {
+    Write-Host "❌ Ruby 3.1 bin path not found: $Ruby31Bin"
+    }
+
+    Write-Host "`n--- 📦 Files in Ruby 3.4 bin ($Ruby34Bin) ---"
+    if (Test-Path $Ruby34Bin) {
+      Get-ChildItem "$Ruby34Bin" -File | Sort-Object Name | Format-Table Name, Length, LastWriteTime
+    } else {
+    Write-Host "❌ Ruby 3.4 bin path not found: $Ruby34Bin"
+    }
+
 } else {
     Write-Host "❌ Chef gem installation failed"
     Write-Host "Installed gems:"
@@ -87,7 +104,7 @@ Write-Host "--- Configuring Bundler ---"
 bundle config --local path vendor/bundle
 
 Write-Host "--- Running bundle install (local) ---"
-bundle install --jobs=7 --retry=3 --local
+bundle install --jobs=7 --retry=3
 if ($LASTEXITCODE -ne 0) {
     throw "❌ bundle install failed with exit code $LASTEXITCODE"
 }
