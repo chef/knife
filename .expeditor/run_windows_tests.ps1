@@ -72,11 +72,14 @@ if ($installed_output -match "chef\s+\(19\.1\.36") {
     gem env
 
     $Ruby31Bin = "C:\ruby31\bin"
-    $Ruby34Bin = "C:\ruby34\bin"
+    $Ruby34Bin = "C:\ruby33\bin"
 
     Write-Host "`n--- 📦 Files in Ruby 3.1 bin ($Ruby31Bin) ---"
+
     if (Test-Path $Ruby31Bin) {
-      Get-ChildItem "$Ruby31Bin" -File | Sort-Object Name | Format-Table Name, Length, LastWriteTime
+    Get-ChildItem $Ruby31Bin -File |
+        Sort-Object Name |
+        Format-Table Name, Length, LastWriteTime
     } else {
     Write-Host "❌ Ruby 3.1 bin path not found: $Ruby31Bin"
     }
