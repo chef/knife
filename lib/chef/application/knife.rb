@@ -145,7 +145,7 @@ class Chef::Application::Knife < Chef::Application
     long: "--version",
     description: "Show #{ChefUtils::Dist::Infra::PRODUCT} version.",
     boolean: true,
-    proc: lambda { |v| puts "#{ChefUtils::Dist::Infra::PRODUCT}: #{::Chef::VERSION}" },
+    proc: lambda { |v| puts "#{ChefUtils::Dist::Infra::PRODUCT}: #{Chef::Knife::VERSION}" },
     exit: 0
 
   option :fips,

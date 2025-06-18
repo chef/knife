@@ -4,13 +4,23 @@
 
 set -ue
 
+echo "--- Current gem sources"
+gem source
+
 export USER="root"
 export LANG=C.UTF-8 LANGUAGE=C.UTF-8
 
-echo "--- bundle install"
+export ARTIFACTORY_ENDPOINT="https://artifactory-internal.ps.chef.co/artifactory"
+export ARTIFACTORY_USERNAME="REDACTED@chef.io"
 
-bundle config --local path vendor/bundle
+echo "--- Adding Artifactory gem source"
+gem source -a "${ARTIFACTORY_ENDPOINT}/api/gems/omnibus-gems-local" || true
+
+echo "--- Installing dependencies"
+bundle config set --local path vendor/bundle
 bundle install --jobs=7 --retry=3
 
-echo "+++ bundle exec task"
+gem update --system
+
+echo "+++ Running bundle exec task"
 bundle exec $@

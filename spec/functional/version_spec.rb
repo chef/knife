@@ -18,9 +18,8 @@ require "chef/mixin/shell_out"
 
 describe "Knife Version", :executables do
   include Chef::Mixin::ShellOut
-  let(:knife_dir) { File.join(__dir__, "..", "..", "..", "knife") }
-  xit "should be sane" do
+  let(:knife_dir) { File.join(__dir__, "..", "..") }
+  it "should be same" do
     expect(shell_out!("bundle exec knife -v", cwd: knife_dir).stdout.chomp).to match(/.*: #{Chef::Knife::VERSION}/)
   end
 end
-
