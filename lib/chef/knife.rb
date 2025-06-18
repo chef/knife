@@ -22,8 +22,8 @@ require_relative "knife/version"
 require "mixlib/cli" unless defined?(Mixlib::CLI)
 require "chef-utils/dsl/default_paths" unless defined?(ChefUtils::DSL::DefaultPaths)
 require "chef-utils/dist" unless defined?(ChefUtils::Dist)
-require "chef/workstation_config_loader" unless defined?(Chef::WorkstationConfigLoader)
 require "chef/mixin/convert_to_class_name" unless defined?(Chef::ConvertToClassName)
+require "chef/workstation_config_loader" unless defined?(Chef::WorkstationConfigLoader)
 require "chef/mixin/default_paths" unless defined?(Chef::Mixin::DefaultPaths)
 require_relative "knife/core/subcommand_loader"
 require_relative "knife/core/ui"
