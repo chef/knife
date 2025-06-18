@@ -1,105 +1,100 @@
 $ErrorActionPreference = "Stop"
 
-# Set environment variables
+# Environment setup
 $env:USER = "root"
 $env:LANG = "C.UTF-8"
 $env:LANGUAGE = "C.UTF-8"
 $env:RUBYOPT = "-W0"
 
-Write-Host "--- Configuring Artifactory access"
+Write-Host "`n--- Configuring Artifactory Access ---"
 $env:ARTIFACTORY_ENDPOINT = "https://artifactory-internal.ps.chef.co/artifactory"
 $env:ARTIFACTORY_USERNAME = "REDACTED@chef.io"
 $gem_source = "$env:ARTIFACTORY_ENDPOINT/api/gems/omnibus-gems-local"
 
-# Add Artifactory source
-Write-Host "--- Adding Artifactory gem source"
+# Add Artifactory gem source
+Write-Host "--- Adding Artifactory Gem Source ---"
 gem sources --add $gem_source
 
-# 1. Install MSYS2 and MINGW development tools (required for native extensions)
-# Write-Host "--- Setting up build tools"
-# ridk enable
-# ridk install 3  # Installs MSYS2 and MINGW (only needed once per system)
-
-# 2. Install chef dependencies (build from source)
-Write-Host "--- Installing chef-utils, chef-config, and ohai"
-gem install chef-utils   --version "19.1.36" --source $gem_source
-gem install chef-config  --version "19.1.36" --source $gem_source
+# Install core Chef components
+Write-Host "--- Installing Core Gems: chef-utils, chef-config, ohai ---"
+gem install chef-utils  --version "19.1.36" --source $gem_source
+gem install chef-config --version "19.1.36" --source $gem_source
 gem install ohai --source $gem_source
 
-Write-Host "--- Installing win32-eventlog from rubygems"
+# Install Windows-specific dependencies
+Write-Host "--- Installing win32-eventlog ---"
 gem install win32-eventlog --source "https://rubygems.org"
 
-Write-Host "--- Installing native ffi gem for Windows"
-# gem install ffi --platform=x64-mingw-ucrt --source "https://rubygems.org"
+Write-Host "--- Installing ffi Gem (native) ---"
 gem install ffi --platform=x64-mingw32 --source "https://rubygems.org"
 
-# 3. Download and install chef gem with corrected platform tag
-Write-Host "--- Downloading chef gem with incorrect platform name"
-$gem_url = "$gem_source/gems/chef-19.1.36-universal-unknown.gem"
-$downloaded_path = "$env:TEMP\chef-19.1.36-universal-unknown.gem"
+# Download and install chef gem manually
+$gem_name = "chef-19.1.36-universal-unknown.gem"
+$gem_url = "$gem_source/gems/$gem_name"
+$gem_path = "$env:TEMP\$gem_name"
 
-Invoke-WebRequest -Uri $gem_url -OutFile $downloaded_path -UseBasicParsing
+Write-Host "--- Downloading Chef Gem: $gem_url ---"
+Invoke-WebRequest -Uri $gem_url -OutFile $gem_path -UseBasicParsing
 
-# Verify the file was downloaded
-if (Test-Path $downloaded_path) {
-    Write-Host "✅ Chef gem downloaded successfully to $downloaded_path"
-    
-    Write-Host "`n--- Listing .gem files in TEMP directory ---"
+if (Test-Path $gem_path) {
+    Write-Host "✅ Chef gem downloaded: $gem_path"
+    Write-Host "`n--- .gem files in TEMP directory ---"
     Get-ChildItem "$env:TEMP\*.gem" | Format-Table Name, Length, LastWriteTime
 } else {
-    Write-Host "❌ Chef gem download failed."
+    Write-Host "❌ Failed to download Chef gem."
     exit 1
 }
 
-# $renamed_path    = "$env:TEMP\chef-19.1.36-universal-mingw-ucrt.gem"
+Write-Host "--- Installing Chef Gem from Downloaded File ---"
+gem install $gem_path --force --ignore-dependencies
 
-# Invoke-WebRequest -Uri $gem_url -OutFile $downloaded_path
-
-# Write-Host "--- Renaming to correct platform name"
-# Rename-Item -Path $downloaded_path -NewName (Split-Path $renamed_path -Leaf)
-
-# 4. Install the gem
-Write-Host "--- Installing chef gem"
-gem install $downloaded_path --force --ignore-dependencies
-
-# Verify installation
-Write-Host "--- Verifying chef gem installation"
+# Validate installation
+Write-Host "--- Validating Chef Installation ---"
 $installed_output = gem list chef --local
 
 if ($installed_output -match "chef\s+\(19\.1\.36") {
     Write-Host $installed_output
     Write-Host "✅ Chef gem installed successfully"
 
-    # Add version print here
-    Write-Host "--- Chef Client Version"
+    Write-Host "--- Chef Client Version ---"
     $chefClientPath = (Get-Command chef-client -ErrorAction SilentlyContinue).Path
-    if ($null -ne $chefClientPath) {
+    if ($chefClientPath) {
         & $chefClientPath -v
     } else {
-        Write-Host "❌ Chef Client executable not found. Ensure it is installed and available in the PATH."
+        Write-Host "⚠️ 'chef-client' executable not found in PATH"
     }
+
+    # 🔍 New additions
+    Write-Host "--- Verifying chef gem info ---"
+    gem info chef
+
+    Write-Host "--- RubyGems environment ---"
+    gem env
+
 } else {
     Write-Host "❌ Chef gem installation failed"
-    Write-Host "Gem list output:"
+    Write-Host "Installed gems:"
     Write-Host $installed_output
     exit 1
 }
 
-# Ensure ffi gem is installed with the correct platform and version
-Write-Host "--- Reinstalling ffi gem with correct platform"
+# Reinstall ffi to ensure native compatibility
+Write-Host "--- Reinstalling ffi to Ensure Platform Match ---"
 gem install ffi --source "https://rubygems.org"
 
-# 4. Configure Bundler
-Write-Host "--- Configuring Bundler"
-# bundle config set force_ruby_platform true
+# Bundler configuration and install
+Write-Host "--- Configuring Bundler ---"
 bundle config --local path vendor/bundle
 
-# 5. Run bundle install with local gems
-Write-Host "--- Running bundle install"
+Write-Host "--- Running bundle install (local) ---"
 bundle install --jobs=7 --retry=3 --local
-if ($LASTEXITCODE -ne 0) { throw "Bundle install failed with exit code $LASTEXITCODE" }
+if ($LASTEXITCODE -ne 0) {
+    throw "❌ bundle install failed with exit code $LASTEXITCODE"
+}
 
-# 6. Run the actual task
-Write-Host "+++ Executing bundle exec task"
+# Run task
+Write-Host "+++ Executing bundle exec task +++"
 bundle exec @args
-if ($LASTEXITCODE -ne 0) { throw "Command failed with exit code $LASTEXITCODE" }
+if ($LASTEXITCODE -ne 0) {
+    throw "❌ Command failed with exit code $LASTEXITCODE"
+}
