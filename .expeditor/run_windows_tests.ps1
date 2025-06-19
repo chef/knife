@@ -71,6 +71,10 @@ if ($installed_output -match "chef\s+\(19\.1\.36") {
     Write-Host "--- RubyGems environment ---"
     gem env
 
+    Write-Host "--- Specification ---"
+    gem specification chef --version 19.1.36 --local executables
+
+
     $Ruby31Bin = "C:\ruby31\bin"
     $Ruby34Bin = "C:\ruby33\bin"
 
