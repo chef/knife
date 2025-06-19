@@ -44,6 +44,16 @@ if ($LASTEXITCODE -ne 0) {
     throw "❌ bundle install failed with exit code $LASTEXITCODE"
 }
 
+# Show installed gems
+Write-Host "--- Installed Chef Gems ---"
+bundle list | Select-String "chef"
+
+Write-Host "--- Verifying chef gem info ---"
+gem info chef
+
+Write-Host "--- Specification ---"
+gem specification chef
+
 # Validate chef and its binstub
 Write-Host "--- Verifying Chef Executables ---"
 $chefPath = (Get-Command chef-client -ErrorAction SilentlyContinue).Path
@@ -52,10 +62,6 @@ if ($chefPath) {
 } else {
     Write-Host "⚠️ 'chef-client' executable not found in PATH"
 }
-
-# Show installed gems
-Write-Host "--- Installed Chef Gems ---"
-bundle list | Select-String "chef"
 
 # Run the given task
 Write-Host "+++ Executing bundle exec task +++"
