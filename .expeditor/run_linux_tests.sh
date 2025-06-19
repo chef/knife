@@ -27,13 +27,11 @@ bundle install --jobs=7 --retry=3
 gem update --system
 echo "--- bundle install done"
 
-# ✅ Add Chef version check here
-echo "--- Checking chef-client version"
-if bundle exec which chef-client >/dev/null 2>&1; then
-  bundle exec chef-client -v
-else
-  echo "⚠️  chef-client not found via bundle exec"
-fi
+echo "--- gem info for chef ---"
+bundle exec gem info chef
+
+echo "--- Checking chef-client version ---"
+bundle exec chef-client -v
 
 echo "+++ bundle exec task"
 RUBYOPT="-W0" bundle exec $@
