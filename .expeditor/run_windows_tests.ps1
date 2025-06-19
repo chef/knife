@@ -46,7 +46,7 @@ if (Test-Path $gem_path) {
 }
 
 Write-Host "--- Installing Chef Gem from Downloaded File ---"
-gem install $gem_path
+gem install $gem_path --bindir C:\ruby33\bin
 
 # Validate installation
 Write-Host "--- Validating Chef Installation ---"
