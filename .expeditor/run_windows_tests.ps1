@@ -15,20 +15,18 @@ $gem_source = "$env:ARTIFACTORY_ENDPOINT/api/gems/omnibus-gems-local"
 Write-Host "--- Adding Artifactory Gem Source ---"
 gem sources --add $gem_source
 
-# Install core Chef components
-Write-Host "--- Installing Core Gems: chef-utils, chef-config, ohai ---"
-gem install chef-utils  --version "19.1.36" --source $gem_source
-gem install chef-config --version "19.1.36" --source $gem_source
-gem install ohai --source $gem_source
+# Install core Chef components with explicit platform
+Write-Host "--- Installing Core Gems with Windows Platform ---"
+gem install chef-utils --version "19.1.36" --platform=x64-mingw-ucrt --source $gem_source --no-document
+gem install chef-config --version "19.1.36" --platform=x64-mingw-ucrt --source $gem_source --no-document
+gem install ohai --platform=x64-mingw-ucrt --source $gem_source --no-document
 
 # Install Windows-specific dependencies
-Write-Host "--- Installing win32-eventlog ---"
-gem install win32-eventlog --source "https://rubygems.org"
+Write-Host "--- Installing Windows Dependencies ---"
+gem install win32-eventlog --platform=x64-mingw32 --source "https://rubygems.org" --no-document
+gem install ffi --platform=x64-mingw32 --source "https://rubygems.org" --no-document
 
-Write-Host "--- Installing ffi Gem (native) ---"
-gem install ffi --platform=x64-mingw32 --source "https://rubygems.org"
-
-# Download and install chef gem manually
+# Download and install chef gem with platform override
 $gem_name = "chef-19.1.36-universal-unknown.gem"
 $gem_url = "$gem_source/gems/$gem_name"
 $gem_path = "$env:TEMP\$gem_name"
@@ -38,62 +36,50 @@ Invoke-WebRequest -Uri $gem_url -OutFile $gem_path -UseBasicParsing
 
 if (Test-Path $gem_path) {
     Write-Host "✅ Chef gem downloaded: $gem_path"
-    Write-Host "`n--- .gem files in TEMP directory ---"
-    Get-ChildItem "$env:TEMP\*.gem" | Format-Table Name, Length, LastWriteTime
+    
+    Write-Host "--- Installing with Windows Platform Enforcement ---"
+    gem install $gem_path --platform=x64-mingw-ucrt
+    
+    # Verify installation structure
+    $chefPath = (gem which chef).Replace("chef.rb", "")
+    if (-not (Test-Path "$chefPath/lib/chef/mixin/convert_to_class_name.rb")) {
+        throw "❌ Critical Chef files missing - gem may be corrupted"
+    }
 } else {
     Write-Host "❌ Failed to download Chef gem."
     exit 1
 }
 
-Write-Host "--- Installing Chef Gem from Downloaded File ---"
-gem install $gem_path
+# Force regenerate binstubs
+Write-Host "--- Regenerating Binstubs ---"
+gem regenerate_binstubs chef --force
 
 # Validate installation
 Write-Host "--- Validating Chef Installation ---"
 $installed_output = gem list chef --local
 
 if ($installed_output -match "chef\s+\(19\.1\.36") {
-    Write-Host $installed_output
-    Write-Host "✅ Chef gem installed successfully"
-
-    Write-Host "--- Chef Client Version ---"
-    $chefClientPath = (Get-Command chef-client -ErrorAction SilentlyContinue).Path
-    if ($chefClientPath) {
-        & $chefClientPath -v
-    } else {
-        Write-Host "⚠️ 'chef-client' executable not found in PATH"
-    }
-
-    # 🔍 New additions
-    Write-Host "--- Verifying chef gem info ---"
-    gem info chef
-
-    Write-Host "--- RubyGems environment ---"
-    gem env
-
+    Write-Host "✅ Chef installed: $installed_output"
+    
+    # Verify load path
+    Write-Host "--- Testing File Accessibility ---"
+    ruby -e "require 'chef/mixin/convert_to_class_name'; puts '✓ convert_to_class_name loaded successfully'"
+    
 } else {
     Write-Host "❌ Chef gem installation failed"
-    Write-Host "Installed gems:"
-    Write-Host $installed_output
     exit 1
 }
 
-# Reinstall ffi to ensure native compatibility
-Write-Host "--- Reinstalling ffi to Ensure Platform Match ---"
-gem install ffi --source "https://rubygems.org"
+# Clean and reinstall bundle
+Write-Host "--- Clean Bundle Install ---"
+Remove-Item -Recurse -Force vendor/bundle -ErrorAction SilentlyContinue
+bundle config set force_ruby_platform true
+bundle install --jobs=7 --retry=3
 
-# Bundler configuration and install
-Write-Host "--- Configuring Bundler ---"
-bundle config --local path vendor/bundle
-
-Write-Host "--- Running bundle install (local) ---"
-bundle install --jobs=7 --retry=3 --local
-if ($LASTEXITCODE -ne 0) {
-    throw "❌ bundle install failed with exit code $LASTEXITCODE"
-}
-
-# Run task
-Write-Host "+++ Executing bundle exec task +++"
+# Run task with explicit load path
+Write-Host "+++ Executing with Load Path Fixes +++"
+$chef_lib_path = (gem which chef).Replace("chef.rb", "")
+$env:RUBYOPT = "-I$chef_lib_path $env:RUBYOPT"
 bundle exec @args
 if ($LASTEXITCODE -ne 0) {
     throw "❌ Command failed with exit code $LASTEXITCODE"
