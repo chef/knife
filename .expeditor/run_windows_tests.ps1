@@ -1,38 +1,74 @@
-$ErrorActionPreference="stop"
+$ErrorActionPreference = "Stop"
 
+# Environment setup
+$env:USER = "root"
+$env:LANG = "C.UTF-8"
+$env:LANGUAGE = "C.UTF-8"
+$env:RUBYOPT = "-W0"
 
-$env:ARTIFACTORY_ENDPOINT="artifactory-internal.ps.chef.co/artifactory"
-$env:ARTIFACTORY_USERNAME="REDACTED@chef.io"
-#$lita_password=aws ssm get-parameter --name "artifactory-lita-password" --with-decryption --query Parameter.Value --output text --region us-west-2
-#$env:ARTIFACTORY_PASSWORD="$(vault read -field password account/static/artifactory/buildkite)"
-# git clone https://github.com/chef/chef.git
-# cd chef ; bundle install; cd chef-utils; gem build chef-utils.gemspec; gem install chef-utils-*.gem ; cd .. ;
-# cd chef-config; gem build chef-config.gemspec; gem install chef-config-*.gem ; cd ..;
-# gem build chef-universal-mingw-ucrt.gemspec; gem install chef-*.gem ; cd ..;
-Write-Host "--- bundle install"
+# Skip Artifactory setup on Windows
+if (-not $IsWindows) {
+  Write-Host "`n--- Configuring Artifactory Access (Non-Windows Only) ---"
+  $env:ARTIFACTORY_ENDPOINT = "https://artifactory-internal.ps.chef.co/artifactory"
+  $gem_source = "$env:ARTIFACTORY_ENDPOINT/api/gems/omnibus-gems-local"
+  gem sources --add $gem_source
+}
 
-# Set bundler config
-bundle config --local path vendor/bundle
-bundle config set --local without 'docs development profile'
-bundle config set --local disable_checksum_validation true
+# Install Windows-specific native dependencies
+Write-Host "--- Installing win32-eventlog (Windows-only) ---"
+gem install win32-eventlog --source "https://rubygems.org"
 
-# Install gems
-bundle install --jobs=7 --retry=3 --verbose
-if ($LASTEXITCODE -ne 0) { throw "bundle install failed" }
+Write-Host "--- Installing ffi Gem (Windows native) ---"
+gem install ffi --platform=x64-mingw32 --source "https://rubygems.org"
 
-Write-Host "+++ bundle exec task"
+# Validate Ruby and Gem Setup
+Write-Host "--- RubyGems environment ---"
+gem env
 
-# Debug: Show Ruby and Bundler versions
+Write-Host "--- Ruby version ---"
 ruby -v
-bundle -v
 
-# Debug: Show environment variables
-Write-Host "Environment Variables:"
-Get-ChildItem Env:
+# # --- Bundler install ---
+# if (-not (Get-Command bundle -ErrorAction SilentlyContinue)) {
+#   Write-Host "--- Installing bundler ---"
+#   gem install bundler --no-document
+# }
 
-# Debug: Show installed gems
-bundle list
+# --- Bundle setup ---
+Write-Host "--- Configuring Bundler path ---"
+bundle config set --local path vendor/bundle
 
-# Run the task with better argument handling
-& bundle exec @args
-if ($LASTEXITCODE -ne 0) { throw "bundle exec $args failed" }
+Write-Host "--- Running bundle install ---"
+bundle install --jobs=7 --retry=3
+if ($LASTEXITCODE -ne 0) {
+    throw "bundle install failed with exit code $LASTEXITCODE"
+}
+
+# Show installed gems
+Write-Host "--- Installed Chef Gems ---"
+bundle list | Select-String "chef"
+
+Write-Host "--- Verifying chef gem info ---"
+gem info chef
+
+Write-Host "--- Specification ---"
+gem specification chef
+
+# Validate chef and its binstub
+Write-Host "--- Verifying Chef Executables ---"
+$chefPath = (Get-Command chef-client -ErrorAction SilentlyContinue).Path
+if ($chefPath) {
+    & $chefPath -v
+} else {
+    Write-Host "'chef-client' executable not found in PATH"
+}
+Write-Host "--- Verifying Chef gem info ---"
+gem info chef
+Write-Host "--- Verifying Chef gem specification ---"
+gem specification chef
+# Run the given task
+Write-Host "+++ Executing bundle exec task +++"
+bundle exec @args
+if ($LASTEXITCODE -ne 0) {
+    throw "Command failed with exit code $LASTEXITCODE"
+}
