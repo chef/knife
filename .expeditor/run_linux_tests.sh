@@ -27,11 +27,5 @@ bundle install --jobs=7 --retry=3
 gem update --system
 echo "--- bundle install done"
 
-echo "--- gem info for chef ---"
-bundle exec gem info chef
-
-echo "--- Checking chef-client version ---"
-bundle exec chef-client -v
-
 echo "+++ bundle exec task"
 RUBYOPT="-W0" bundle exec $@
