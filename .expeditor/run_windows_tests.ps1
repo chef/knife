@@ -28,16 +28,16 @@ gem install ffi --platform=x64-mingw32 --source "https://rubygems.org" --no-docu
 # 2. CHEF GEM DOWNLOAD & INSTALL --------------------------------------------
 $gem_name = "chef-19.1.36-universal-unknown.gem"
 $gem_url = "$gem_source/gems/$gem_name"
-$gem_path = "$env:TEMP\$gem_name"
+$gem_path = Join-Path $env:TEMP $gem_name
 
 Write-Host "`n--- Downloading Chef Gem from Artifactory: $gem_url ---"
 Invoke-WebRequest -Uri $gem_url -OutFile $gem_path -UseBasicParsing
 
 if (Test-Path $gem_path) {
-    Write-Host "✅ Chef gem downloaded: $gem_path"
+    Write-Host "Chef gem downloaded to $gem_path"
     Get-ChildItem "$env:TEMP\*.gem" | Format-Table Name, Length, LastWriteTime
 } else {
-    throw "❌ Failed to download Chef gem."
+    throw "Failed to download Chef gem from $gem_url"
 }
 
 Write-Host "--- Installing Chef Gem from Downloaded File ---"
@@ -46,12 +46,12 @@ gem install $gem_path --force --platform=x64-mingw-ucrt
 # 3. VALIDATION -------------------------------------------------------------
 Write-Host "`n--- Validating Chef Installation ---"
 $gem_home = & gem env gemdir
-$chef_gem_root = Get-ChildItem "$gem_home/gems" -Directory | Where-Object {
+$chef_gem_root = Get-ChildItem "$gem_home\gems" -Directory | Where-Object {
     $_.Name -like "chef-19.1.36*"
 } | Select-Object -First 1
 
 if (-not $chef_gem_root) {
-    throw "❌ Could not locate installed chef gem in $gem_home"
+    throw "Could not locate installed chef gem in $gem_home"
 }
 
 # Validate presence of required lib files
@@ -66,19 +66,20 @@ $missing = $required_files | Where-Object {
 }
 
 if ($missing.Count -gt 0) {
-    throw "❌ Installed chef gem is broken — missing files: $($missing -join ', ')"
+    $missing_list = $missing -join ", "
+    throw "Installed chef gem is missing required files: $missing_list"
 }
 
-# Test loading
+# Test loading Chef modules
 Write-Host "--- Testing Chef require statements ---"
 $test_script = @"
 require 'chef'
 require 'chef/mixin/convert_to_class_name'
 require 'chef/knife'
-puts '✅ SUCCESS: Chef modules loaded'
+puts 'SUCCESS: Chef modules loaded'
 "@
-$test_file = "$env:TEMP\chef_load_test.rb"
-$test_script | Out-File $test_file -Encoding ASCII
+$test_file = Join-Path $env:TEMP "chef_load_test.rb"
+$test_script | Out-File -FilePath $test_file -Encoding ASCII
 ruby $test_file
 
 # 4. PLATFORM RECHECK (ffi) -------------------------------------------------
@@ -92,12 +93,12 @@ bundle config --local path vendor/bundle
 Write-Host "--- Running bundle install (local) ---"
 bundle install --jobs=7 --retry=3 --local
 if ($LASTEXITCODE -ne 0) {
-    throw "❌ bundle install failed with exit code $LASTEXITCODE"
+    throw "bundle install failed with exit code $LASTEXITCODE"
 }
 
 # 6. FINAL EXECUTION --------------------------------------------------------
 Write-Host "`n+++ Executing bundle exec task +++"
 bundle exec @args
 if ($LASTEXITCODE -ne 0) {
-    throw "❌ Command failed with exit code $LASTEXITCODE"
+    throw "Command failed with exit code $LASTEXITCODE"
 }
