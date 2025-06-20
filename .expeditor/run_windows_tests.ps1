@@ -37,6 +37,12 @@ if (Test-Path $destination_path) {
 }
 Move-Item -Path $corrected_path -Destination $destination_path
 
+# Ensure the gem file exists in the vendor/cache directory
+Write-Host "--- Verifying gem file existence in vendor/cache"
+if (!(Test-Path $destination_path)) {
+    throw "Gem file does not exist at $destination_path. Ensure the file is correctly moved to vendor/cache."
+}
+
 # Install gems from Gemfile using Bundler
 Write-Host "--- Installing gems from Gemfile using Bundler"
 bundle config set --local path vendor/bundle
