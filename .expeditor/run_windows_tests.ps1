@@ -48,21 +48,30 @@ Write-Host "--- Installing Chef Gem from Downloaded File ---"
 gem install $gem_path --force --platform=x64-mingw-ucrt
 
 # --- Add broken gem's lib path to RUBYOPT manually ---
-$chef_gem_root = Get-ChildItem "$env:GEM_HOME/gems" -Directory | Where-Object {
+# Determine actual GEM_HOME from Ruby
+$gem_home = & gem env gemdir
+if (-not (Test-Path $gem_home)) {
+    throw "❌ GEM_HOME '$gem_home' not found"
+}
+
+# Find the installed chef gem directory
+$chef_gem_root = Get-ChildItem "$gem_home/gems" -Directory | Where-Object {
     $_.Name -like "chef-19.1.36*"
 } | Select-Object -First 1
 
 if (-not $chef_gem_root) {
-    throw "❌ Could not locate chef gem in GEM_HOME"
+    throw "❌ Could not locate chef gem in $gem_home"
 }
 
+# Patch RUBYOPT with the real path
 $chef_data_lib = Join-Path $chef_gem_root.FullName "data\lib"
 if (-not (Test-Path $chef_data_lib)) {
-    throw "❌ 'data/lib' directory not found inside chef gem"
+    throw "❌ 'data/lib' directory not found in $($chef_gem_root.FullName)"
 }
 
 Write-Host "⚠️ Patching RUBYOPT with $chef_data_lib"
 $env:RUBYOPT = "-I$chef_data_lib $env:RUBYOPT"
+
 
 
 # 3. VALIDATION -------------------------------------------------------------
