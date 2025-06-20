@@ -52,4 +52,4 @@ bundle exec gem list chef
 if ($LASTEXITCODE -ne 0) { throw "Chef gem verification failed with exit code $LASTEXITCODE" }
 
 # Run bundle exec task
-Write-Host "+++ Executing
+Write-Host "+++ Executing"
