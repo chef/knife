@@ -1,84 +1,93 @@
 $ErrorActionPreference = "Stop"
 
+# 0. ENVIRONMENT SETUP -----------------------------------------------------
+$env:USER = "root"
+$env:LANG = "C.UTF-8"
+$env:LANGUAGE = "C.UTF-8"
+$env:RUBYOPT = "-W0"
+
+Write-Host "`n--- Configuring Artifactory Access ---"
+$env:ARTIFACTORY_ENDPOINT = "https://artifactory-internal.ps.chef.co/artifactory"
+$env:ARTIFACTORY_USERNAME = "REDACTED@chef.io"
+$gem_source = "$env:ARTIFACTORY_ENDPOINT/api/gems/omnibus-gems-local"
+
+# Add Artifactory gem source
+Write-Host "--- Adding Artifactory Gem Source ---"
+gem sources --add $gem_source | Out-Null
+
 # 1. GEM INSTALLATION -------------------------------------------------------
-Write-Host "=== PHASE 1: Install base gems from Artifactory ==="
+Write-Host "`n--- Installing Core Gems from Artifactory ---"
+gem install chef-utils  --version "19.1.36" --source $gem_source --no-document
+gem install chef-config --version "19.1.36" --source $gem_source --no-document
 
-$dependencies = @(
-    "chef-utils --version 19.1.36",
-    "chef-config --version 19.1.36",
-    "ohai --version 19.1.36",
-    "win32-eventlog",
-    "ffi --platform=x64-mingw32"
-)
+Write-Host "--- Installing ohai from RubyGems ---"
+gem install ohai --no-document --source "https://rubygems.org"
 
-foreach ($dep in $dependencies) {
-    $args = "$dep --source https://artifactory-internal.ps.chef.co/artifactory/api/gems/omnibus-gems-local --no-document --platform=x64-mingw-ucrt"
-    Write-Host "Installing: $dep"
-    Invoke-Expression "gem install $args"
-}
+Write-Host "--- Installing Windows Native Gems ---"
+gem install win32-eventlog --source "https://rubygems.org" --no-document
+gem install ffi --platform=x64-mingw32 --source "https://rubygems.org" --no-document
 
-# 2. DOWNLOAD & VERIFY CHEF GEM ---------------------------------------------
-Write-Host "`n=== PHASE 2: Download and verify chef gem ==="
-
+# 2. CHEF GEM DOWNLOAD & INSTALL --------------------------------------------
 $gem_name = "chef-19.1.36-universal-unknown.gem"
-$gem_url = "https://artifactory-internal.ps.chef.co/artifactory/api/gems/omnibus-gems-local/gems/$gem_name"
+$gem_url = "$gem_source/gems/$gem_name"
 $gem_path = "$env:TEMP\$gem_name"
-$extract_path = "$env:TEMP\chef_gem_contents"
 
-Invoke-WebRequest -Uri $gem_url -OutFile $gem_path
+Write-Host "`n--- Downloading Chef Gem from Artifactory: $gem_url ---"
+Invoke-WebRequest -Uri $gem_url -OutFile $gem_path -UseBasicParsing
 
-# Extract and verify contents
-Add-Type -AssemblyName System.IO.Compression.FileSystem
-Remove-Item -Recurse -Force $extract_path -ErrorAction SilentlyContinue
-[System.IO.Compression.ZipFile]::ExtractToDirectory($gem_path, $extract_path)
-
-$required_paths = @(
-    "lib/chef.rb",
-    "lib/chef/mixin/convert_to_class_name.rb",
-    "lib/chef/knife.rb"
-)
-
-$missing_files = $required_paths | Where-Object { -not (Test-Path "$extract_path/$_") }
-if ($missing_files) {
-    throw "❌ CORRUPT GEM - Missing files: $($missing_files -join ', ')"
+if (Test-Path $gem_path) {
+    Write-Host "✅ Chef gem downloaded: $gem_path"
+    Write-Host "`n--- .gem files in TEMP directory ---"
+    Get-ChildItem "$env:TEMP\*.gem" | Format-Table Name, Length, LastWriteTime
+} else {
+    Write-Host "❌ Failed to download Chef gem."
+    exit 1
 }
 
-# 3. INSTALL CHEF GEM -------------------------------------------------------
-Write-Host "`n=== PHASE 3: Install chef gem ==="
-gem install $gem_path --ignore-dependencies --force --platform=x64-mingw-ucrt
+Write-Host "--- Installing Chef Gem from Downloaded File ---"
+gem install $gem_path --force --platform=x64-mingw-ucrt
 
-# 4. LOAD PATH FIX ----------------------------------------------------------
-Write-Host "`n=== PHASE 4: Configure Ruby load path ==="
+# 3. VALIDATION -------------------------------------------------------------
+Write-Host "`n--- Validating Chef Installation ---"
+$installed_output = gem list chef --local
 
-# Add all dependent gem paths to RUBYOPT manually
-$load_paths = @(
-    (gem which chef-utils).Replace("lib/chef-utils.rb", ""),
-    (gem which chef-config).Replace("lib/chef-config.rb", ""),
-    (gem which ohai).Replace("lib/ohai.rb", ""),
-    (gem which chef).Replace("lib/chef.rb", "")
-)
+if ($installed_output -match "chef\s+\(19\.1\.36") {
+    Write-Host $installed_output
+    Write-Host "✅ Chef gem installed successfully"
 
-$env:RUBYOPT = "-I" + ($load_paths -join ";") + " $env:RUBYOPT"
-
-# 5. VALIDATION -------------------------------------------------------------
-Write-Host "`n=== PHASE 5: Validate Chef load ==="
-
-$test_script = @"
+    # Test actual file loading
+    $test_script = @"
 require 'chef'
 require 'chef/mixin/convert_to_class_name'
 require 'chef/knife'
-puts '✅ SUCCESS: All Chef files loaded correctly'
+puts '✅ SUCCESS: Chef modules loaded'
 "@
+    $test_file = "$env:TEMP\chef_load_test.rb"
+    $test_script | Out-File $test_file -Encoding ASCII
+    ruby $test_file
+} else {
+    Write-Host "❌ Chef gem installation failed"
+    Write-Host $installed_output
+    exit 1
+}
 
-$test_file = "$env:TEMP\chef_load_test.rb"
-$test_script | Out-File $test_file -Encoding ASCII
-ruby $test_file
+# 4. PLATFORM RECHECK (ffi) -------------------------------------------------
+Write-Host "`n--- Reinstalling ffi to Ensure Platform Match ---"
+gem install ffi --source "https://rubygems.org" --no-document
 
-# 6. EXECUTION --------------------------------------------------------------
-Write-Host "`n=== PHASE 6: Execute your task ==="
+# 5. BUNDLER INSTALL --------------------------------------------------------
+Write-Host "`n--- Configuring Bundler ---"
+bundle config --local path vendor/bundle
 
-# Skip bundler and use plain execution
-ruby your_script.rb @args
+Write-Host "--- Running bundle install (local) ---"
+bundle install --jobs=7 --retry=3 --local
 if ($LASTEXITCODE -ne 0) {
-    throw "❌ Task failed with exit code $LASTEXITCODE"
+    throw "❌ bundle install failed with exit code $LASTEXITCODE"
+}
+
+# 6. FINAL EXECUTION --------------------------------------------------------
+Write-Host "`n+++ Executing bundle exec task +++"
+bundle exec @args
+if ($LASTEXITCODE -ne 0) {
+    throw "❌ Command failed with exit code $LASTEXITCODE"
 }
