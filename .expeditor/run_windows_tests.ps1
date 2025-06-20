@@ -8,11 +8,9 @@ $env:RUBYOPT = "-W0"
 
 Write-Host "`n--- Configuring Artifactory Access ---"
 $env:ARTIFACTORY_ENDPOINT = "https://artifactory-internal.ps.chef.co/artifactory"
-$env:ARTIFACTORY_USERNAME = "REDACTED@chef.io"
 $gem_source = "$env:ARTIFACTORY_ENDPOINT/api/gems/omnibus-gems-local"
 
 # Add Artifactory gem source
-Write-Host "--- Adding Artifactory Gem Source ---"
 gem sources --add $gem_source | Out-Null
 
 # 1. GEM INSTALLATION -------------------------------------------------------
@@ -37,66 +35,51 @@ Invoke-WebRequest -Uri $gem_url -OutFile $gem_path -UseBasicParsing
 
 if (Test-Path $gem_path) {
     Write-Host "✅ Chef gem downloaded: $gem_path"
-    Write-Host "`n--- .gem files in TEMP directory ---"
     Get-ChildItem "$env:TEMP\*.gem" | Format-Table Name, Length, LastWriteTime
 } else {
-    Write-Host "❌ Failed to download Chef gem."
-    exit 1
+    throw "❌ Failed to download Chef gem."
 }
 
 Write-Host "--- Installing Chef Gem from Downloaded File ---"
 gem install $gem_path --force --platform=x64-mingw-ucrt
 
-# --- Add broken gem's lib path to RUBYOPT manually ---
-# Determine actual GEM_HOME from Ruby
+# 3. VALIDATION -------------------------------------------------------------
+Write-Host "`n--- Validating Chef Installation ---"
 $gem_home = & gem env gemdir
-if (-not (Test-Path $gem_home)) {
-    throw "❌ GEM_HOME '$gem_home' not found"
-}
-
-# Find the installed chef gem directory
 $chef_gem_root = Get-ChildItem "$gem_home/gems" -Directory | Where-Object {
     $_.Name -like "chef-19.1.36*"
 } | Select-Object -First 1
 
 if (-not $chef_gem_root) {
-    throw "❌ Could not locate chef gem in $gem_home"
+    throw "❌ Could not locate installed chef gem in $gem_home"
 }
 
-# Patch RUBYOPT with the real path
-$chef_data_lib = Join-Path $chef_gem_root.FullName "data\lib"
-if (-not (Test-Path $chef_data_lib)) {
-    throw "❌ 'data/lib' directory not found in $($chef_gem_root.FullName)"
+# Validate presence of required lib files
+$required_files = @(
+    "lib/chef.rb",
+    "lib/chef/mixin/convert_to_class_name.rb",
+    "lib/chef/knife.rb"
+)
+
+$missing = $required_files | Where-Object {
+    -not (Test-Path (Join-Path $chef_gem_root.FullName $_))
 }
 
-Write-Host "⚠️ Patching RUBYOPT with $chef_data_lib"
-$env:RUBYOPT = "-I$chef_data_lib $env:RUBYOPT"
+if ($missing.Count -gt 0) {
+    throw "❌ Installed chef gem is broken — missing files: $($missing -join ', ')"
+}
 
-
-
-# 3. VALIDATION -------------------------------------------------------------
-Write-Host "`n--- Validating Chef Installation ---"
-$installed_output = gem list chef --local
-
-if ($installed_output -match "chef\s+\(19\.1\.36") {
-    Write-Host $installed_output
-    Write-Host "✅ Chef gem installed successfully"
-
-    # Test actual file loading
-    $test_script = @"
+# Test loading
+Write-Host "--- Testing Chef require statements ---"
+$test_script = @"
 require 'chef'
 require 'chef/mixin/convert_to_class_name'
 require 'chef/knife'
 puts '✅ SUCCESS: Chef modules loaded'
 "@
-    $test_file = "$env:TEMP\chef_load_test.rb"
-    $test_script | Out-File $test_file -Encoding ASCII
-    ruby $test_file
-} else {
-    Write-Host "❌ Chef gem installation failed"
-    Write-Host $installed_output
-    exit 1
-}
+$test_file = "$env:TEMP\chef_load_test.rb"
+$test_script | Out-File $test_file -Encoding ASCII
+ruby $test_file
 
 # 4. PLATFORM RECHECK (ffi) -------------------------------------------------
 Write-Host "`n--- Reinstalling ffi to Ensure Platform Match ---"
