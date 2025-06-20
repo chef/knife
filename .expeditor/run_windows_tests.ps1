@@ -15,34 +15,26 @@ $gem_source = "$env:ARTIFACTORY_ENDPOINT/api/gems/omnibus-gems-local"
 Write-Host "--- Adding Artifactory gem source"
 gem sources --add $gem_source
 
-# 1. Download chef gem with corrected platform tag
-Write-Host "--- Downloading chef gem with incorrect platform name"
-$gem_url = "$gem_source/gems/chef-19.1.36-universal-unknown.gem"
+# Always download Chef gem from Artifactory
+Write-Host "--- Downloading Chef gem from Artifactory"
+$gem_url = "$env:ARTIFACTORY_ENDPOINT/api/gems/omnibus-gems-local/gems/chef-19.1.36-universal-unknown.gem"
 $downloaded_path = "$env:TEMP\chef-19.1.36-universal-unknown.gem"
-
 Invoke-WebRequest -Uri $gem_url -OutFile $downloaded_path -UseBasicParsing
 
-# Verify the file was downloaded
-if (Test-Path $downloaded_path) {
-    Write-Host "✅ Chef gem downloaded successfully to $downloaded_path"
-    Write-Host "`n--- Listing .gem files in TEMP directory ---"
-    Get-ChildItem "$env:TEMP\*.gem" | Format-Table Name, Length, LastWriteTime
-} else {
-    Write-Host "❌ Chef gem download failed."
-    exit 1
-}
+# Rename the gem file to match the expected platform name
+Write-Host "--- Renaming gem file to match expected platform name"
+$corrected_path = "$env:TEMP\chef-19.1.36-universal-mingw-ucrt.gem"
+Rename-Item -Path $downloaded_path -NewName $corrected_path
 
-# 2. Configure Bundler
-Write-Host "--- Configuring Bundler"
-bundle config --local path vendor/bundle
+# Move the gem to vendor/cache for Bundler to recognize
+Write-Host "--- Moving gem to vendor/cache"
+$cache_path = "vendor/cache"
+if (!(Test-Path $cache_path)) { New-Item -ItemType Directory -Path $cache_path }
+Move-Item -Path $corrected_path -Destination $cache_path
 
-# 3. Run bundle install with local gems
-Write-Host "--- Running bundle install"
-bundle install --jobs=7 --retry=3 --local
-if ($LASTEXITCODE -ne 0) { throw "Bundle install failed with exit code $LASTEXITCODE" }
-
-# Install gems from Gemfile
-Write-Host "--- Installing gems from Gemfile"
+# Install gems from Gemfile using Bundler
+Write-Host "--- Installing gems from Gemfile using Bundler"
+bundle config set --local path vendor/bundle
 bundle install --gemfile Gemfile --jobs=7 --retry=3
 if ($LASTEXITCODE -ne 0) { throw "Bundle install failed with exit code $LASTEXITCODE" }
 
