@@ -2,22 +2,17 @@ source "https://rubygems.org"
 
 gem "knife", path: "."
 
-# Chef dependencies (pull from Artifactory only)
+# Use chef from RubyGems only on non-Windows platforms
+gem "chef", ">= 19.1" unless Gem.win_platform?
+
+# Always pull these from Artifactory
 source "https://artifactory-internal.ps.chef.co/artifactory/api/gems/omnibus-gems-local" do
-  if Gem.win_platform?
-    gem "chef", "19.1.36", platforms: :x64_mingw
-    gem "chef-config", "19.1.36"
-    gem "chef-utils", "19.1.36"
-    gem "ohai", ">= 19.1"
-  else
-    gem "chef", ">= 19.1"
-    gem "chef-config", ">= 19.1"
-    gem "chef-utils", ">= 19.1"
-    gem "ohai", ">= 19.1"
-  end
+  gem "chef-config", "19.1.36"
+  gem "chef-utils", "19.1.36"
+  gem "ohai", ">= 19.1"
 end
 
-# Platform-specific Windows gems
+# Platform specific gems
 if RUBY_PLATFORM.match?(/mswin|mingw|windows/)
   gem "fiddle", "<= 1.1.6"
   gem "win32ole"
@@ -40,7 +35,6 @@ group :development, :test do
   gem "reline"
 end
 
-# Native FFI extensions for Windows
 gem "ffi", "1.17.2", platforms: [:mswin, :mingw]
 gem "ffi-win32-extensions", "~> 1.0", platforms: [:mswin, :mingw]
 
