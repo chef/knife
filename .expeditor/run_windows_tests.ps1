@@ -24,25 +24,18 @@ Invoke-WebRequest -Uri $gem_url -OutFile $downloaded_path -UseBasicParsing
 # Rename the gem file to match the expected platform name
 Write-Host "--- Renaming gem file to match expected platform name"
 $corrected_path = "$env:TEMP\chef-19.1.36-universal-mingw-ucrt.gem"
-Rename-Item -Path $downloaded_path -NewName $corrected_path -Force
+Rename-Item -Path $downloaded_path -NewName $corrected_path
 
 # Move the gem to vendor/cache for Bundler to recognize
 Write-Host "--- Moving gem to vendor/cache"
 $cache_path = "vendor/cache"
-if (!(Test-Path $cache_path)) {
-  New-Item -ItemType Directory -Path $cache_path | Out-Null
-}
-$final_path = Join-Path $cache_path (Split-Path $corrected_path -Leaf)
-if (Test-Path $final_path) {
-  Write-Host "--- Overwriting existing gem in vendor/cache"
-  Remove-Item -Path $final_path -Force
-}
-Move-Item -Path $corrected_path -Destination $final_path
+if (!(Test-Path $cache_path)) { New-Item -ItemType Directory -Path $cache_path }
+Move-Item -Path $corrected_path -Destination $cache_path
 
 # Install gems from Gemfile using Bundler
 Write-Host "--- Installing gems from Gemfile using Bundler"
 bundle config set --local path vendor/bundle
-bundle install --local --jobs=7 --retry=3
+bundle install --gemfile Gemfile --jobs=7 --retry=3
 if ($LASTEXITCODE -ne 0) { throw "Bundle install failed with exit code $LASTEXITCODE" }
 
 # Verify Chef gem installation
