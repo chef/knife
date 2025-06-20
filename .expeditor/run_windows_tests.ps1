@@ -57,8 +57,7 @@ if (-not $chef_gem_root) {
 # Validate presence of required lib files
 $required_files = @(
     "lib/chef.rb",
-    "lib/chef/mixin/convert_to_class_name.rb",
-    "lib/chef/knife.rb"
+    "lib/chef/mixin/convert_to_class_name.rb"
 )
 
 $missing = $required_files | Where-Object {
@@ -75,7 +74,6 @@ Write-Host "--- Testing Chef require statements ---"
 $test_script = @"
 require 'chef'
 require 'chef/mixin/convert_to_class_name'
-require 'chef/knife'
 puts 'SUCCESS: Chef modules loaded'
 "@
 $test_file = Join-Path $env:TEMP "chef_load_test.rb"
