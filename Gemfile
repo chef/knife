@@ -4,7 +4,7 @@ gem "knife", path: "."
 
 source "https://artifactory-internal.ps.chef.co/artifactory/api/gems/omnibus-gems-local" do
   if Gem.win_platform?
-    gem "chef", "19.1.36"
+    gem "chef", "19.1.36", platforms: :x64_mingw
     gem "chef-config", "19.1.36"
     gem "chef-utils", "19.1.36"
     gem "ohai", ">= 19.1"

@@ -32,11 +32,14 @@ $cache_path = "vendor/cache"
 if (!(Test-Path $cache_path)) { New-Item -ItemType Directory -Path $cache_path }
 Move-Item -Path $corrected_path -Destination "$cache_path\$correct_name" -Force
 
+Write-Host "--- Installing gems with Bundler"
+gem specification vendor/cache/chef-19.1.36-universal-mingw-ucrt.gem platform
+
 # Install all gems
 Write-Host "--- Installing gems with Bundler"
 bundle config set --local path vendor/bundle
-bundle config set --local force_ruby_platform true
-bundle install --jobs=7 --retry=3 --local
+bundle config set --local force_ruby_platform false
+bundle install --local --jobs=7 --retry=3
 if ($LASTEXITCODE -ne 0) { throw "Bundle install failed with exit code $LASTEXITCODE" }
 
 # Confirm installation
