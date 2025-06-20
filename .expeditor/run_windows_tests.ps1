@@ -47,10 +47,14 @@ Write-Host "--- Installing gems from Gemfile"
 bundle install --local --jobs=7 --retry=3
 if ($LASTEXITCODE -ne 0) { throw "Bundle install failed with exit code $LASTEXITCODE" }
 
-# Verify Chef gem was installed
-Write-Host "--- Verifying Chef gem installation"
-bundle exec ruby -e "puts Gem.loaded_specs['chef'].full_name"
-if ($LASTEXITCODE -ne 0) { throw "Chef gem verification failed with exit code $LASTEXITCODE" }
+# Verify that chef gem is actually installed
+Write-Host "--- Verifying chef gem installation"
+$installedChef = gem list ^| Select-String '^chef '
+if (!$installedChef) {
+  throw "❌ Chef gem not found after installation"
+} else {
+  Write-Host "✅ Found: $installedChef"
+}
 
 # Run the actual test task
 Write-Host "+++ Executing bundle exec task"
