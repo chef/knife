@@ -2,6 +2,7 @@ source "https://rubygems.org"
 
 gem "knife", path: "."
 
+# Chef dependencies (pull from Artifactory only)
 source "https://artifactory-internal.ps.chef.co/artifactory/api/gems/omnibus-gems-local" do
   if Gem.win_platform?
     gem "chef", "19.1.36", platforms: :x64_mingw
@@ -16,14 +17,14 @@ source "https://artifactory-internal.ps.chef.co/artifactory/api/gems/omnibus-gem
   end
 end
 
-# Windows-only gems
+# Platform-specific Windows gems
 if RUBY_PLATFORM.match?(/mswin|mingw|windows/)
   gem "fiddle", "<= 1.1.6"
   gem "win32ole"
   gem "win32-process", "~> 0.9"
 end
 
-# General runtime gems
+# Runtime gems knife might need
 gem "syslog"
 gem "ostruct"
 gem "csv"
@@ -39,6 +40,7 @@ group :development, :test do
   gem "reline"
 end
 
+# Native FFI extensions for Windows
 gem "ffi", "1.17.2", platforms: [:mswin, :mingw]
 gem "ffi-win32-extensions", "~> 1.0", platforms: [:mswin, :mingw]
 
