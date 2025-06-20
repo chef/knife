@@ -30,7 +30,12 @@ Rename-Item -Path $downloaded_path -NewName $corrected_path
 Write-Host "--- Moving gem to vendor/cache"
 $cache_path = "vendor/cache"
 if (!(Test-Path $cache_path)) { New-Item -ItemType Directory -Path $cache_path }
-Move-Item -Path $corrected_path -Destination $cache_path
+$destination_path = "$cache_path\chef-19.1.36-universal-mingw-ucrt.gem"
+if (Test-Path $destination_path) {
+    Write-Host "--- File already exists in vendor/cache, overwriting"
+    Remove-Item -Path $destination_path -Force
+}
+Move-Item -Path $corrected_path -Destination $destination_path
 
 # Install gems from Gemfile using Bundler
 Write-Host "--- Installing gems from Gemfile using Bundler"
