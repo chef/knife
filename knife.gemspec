@@ -20,7 +20,8 @@ Gem::Specification.new do |s|
   s.add_dependency "license-acceptance", ">= 1.0.5", "< 3"
   s.add_dependency "mixlib-cli", ">= 2.1.1", "< 3.0"
   s.add_dependency "mixlib-archive", ">= 0.4", "< 2.0"
-  s.add_dependency "ffi", ">= 1.15" # 1.14 versions are broken on i386 windows
+  s.add_dependency "ffi", "1.17.2"# , platforms: [:mswin, :mingw, :x64_mingw, :universal_mingw]
+  s.add_dependency "ffi-win32-extensions"# 1.14 versions are broken on i386 windows
   s.add_dependency "ffi-yajl", "~> 2.2"
   s.add_dependency "net-ssh", ">= 5.1", "< 8"
   s.add_dependency "net-ssh-multi", "~> 1.2", ">= 1.2.1"
