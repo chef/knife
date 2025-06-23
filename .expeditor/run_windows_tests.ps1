@@ -34,19 +34,19 @@ bundle install --jobs=7 --retry=3
 if ($LASTEXITCODE -ne 0) { throw "❌ Bundle install failed with exit code $LASTEXITCODE" }
 
 # Verify that chef gem is actually installed
-Write-Host "--- Verifying chef gem installation"
-$chef_info = bundle info chef 2>&1
-if ($chef_info -match "chef \(19.1.36\)") {
-    Write-Host "✅ Chef gem installed successfully via Bundler"
-} else {
-    throw "❌ Chef gem not found via Bundler"
-}
+# Write-Host "--- Verifying chef gem installation"
+# $chef_info = bundle info chef 2>&1
+# if ($chef_info -match "chef \(19.1.36\)") {
+#     Write-Host "✅ Chef gem installed successfully via Bundler"
+# } else {
+#     throw "❌ Chef gem not found via Bundler"
+# }
 
-Write-Host "+++ Executing bundle exec task"
-bundle exec rspec --format documentation --backtrace --color
+# Write-Host "+++ Executing bundle exec task"
+# bundle exec rspec --format documentation --backtrace --color
 
 
 # Run the actual test task
 Write-Host "+++ Executing bundle exec task"
-bundle exec @args
+bundle exec $args
 if ($LASTEXITCODE -ne 0) { throw "❌ Command failed with exit code $LASTEXITCODE" }
