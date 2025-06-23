@@ -3,7 +3,7 @@ source "https://rubygems.org"
 gem "knife", path: "."
 
 # Chef core dependencies, locked to a compatible version range
-source "  ://artifactory-internal.ps.chef.co/artifactory/api/gems/omnibus-gems-local" do
+source "https://artifactory-internal.ps.chef.co/artifactory/api/gems/omnibus-gems-local" do
   gem "chef", "19.1.36", platforms: [:x64_mingw_ucrt]
   gem "chef-config", "19.1.36"
   gem "chef-utils", "19.1.36"
