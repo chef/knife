@@ -1,11 +1,5 @@
 $ErrorActionPreference = "Stop"
 
-# Set environment variables
-$env:USER = "root"
-$env:LANG = "C.UTF-8"
-$env:LANGUAGE = "C.UTF-8"
-$env:RUBYOPT = "-W0"
-
 Write-Host "--- Configuring Artifactory access"
 $env:ARTIFACTORY_ENDPOINT = "https://artifactory-internal.ps.chef.co/artifactory"
 $env:ARTIFACTORY_USERNAME = "REDACTED@chef.io"
@@ -47,6 +41,10 @@ if ($chef_info -match "chef \(19.1.36\)") {
 } else {
     throw "❌ Chef gem not found via Bundler"
 }
+
+Write-Host "+++ Executing bundle exec task"
+bundle exec rspec --format documentation --backtrace --color
+
 
 # Run the actual test task
 Write-Host "+++ Executing bundle exec task"
