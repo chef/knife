@@ -2,11 +2,9 @@ source "https://rubygems.org"
 
 gem "knife", path: "."
 
-# Use chef from RubyGems only on non-Windows platforms
-gem "chef", ">= 19.1" unless Gem.win_platform?
-
-# Always pull these from Artifactory
-source "https://artifactory-internal.ps.chef.co/artifactory/api/gems/omnibus-gems-local" do
+# Chef core dependencies, locked to a compatible version range
+source "  ://artifactory-internal.ps.chef.co/artifactory/api/gems/omnibus-gems-local" do
+  gem "chef", "19.1.36", platforms: [:x64_mingw_ucrt]
   gem "chef-config", "19.1.36"
   gem "chef-utils", "19.1.36"
   gem "ohai", ">= 19.1"

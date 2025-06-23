@@ -29,34 +29,29 @@ Rename-Item -Path $downloaded_path -NewName (Split-Path $corrected_path -Leaf)
 Write-Host "--- Moving gem to vendor/cache"
 $cache_path = "vendor/cache"
 if (!(Test-Path $cache_path)) { New-Item -ItemType Directory -Path $cache_path | Out-Null }
-$final_cached_path = "$cache_path\chef-19.1.36-universal-mingw-ucrt.gem"
-Move-Item -Path $corrected_path -Destination $final_cached_path -Force
+Move-Item -Path $corrected_path -Destination "$cache_path\chef-19.1.36-universal-mingw-ucrt.gem" -Force
 
-# Preinstall the Chef gem manually
-Write-Host "--- Installing Chef gem manually"
-gem install $final_cached_path
-
-# Lock bundler to Windows platform and configure bundler settings
+# Configure bundler for Windows platform and vendor path
 Write-Host "--- Configuring bundler for Windows platform"
 bundle config set --local path vendor/bundle
 bundle config set --local force_ruby_platform false
 bundle lock --add-platform x64-mingw-ucrt
 
-# Install dependencies from Gemfile using local cache
+# Install dependencies from Gemfile
 Write-Host "--- Installing gems from Gemfile"
-bundle install --local --jobs=7 --retry=3
-if ($LASTEXITCODE -ne 0) { throw "Bundle install failed with exit code $LASTEXITCODE" }
+bundle install --jobs=7 --retry=3
+if ($LASTEXITCODE -ne 0) { throw "❌ Bundle install failed with exit code $LASTEXITCODE" }
 
 # Verify that chef gem is actually installed
 Write-Host "--- Verifying chef gem installation"
-$installedChef = gem list ^| Select-String '^chef '
-if (!$installedChef) {
-  throw "❌ Chef gem not found after installation"
+$chef_info = bundle info chef 2>&1
+if ($chef_info -match "chef \(19.1.36\)") {
+    Write-Host "✅ Chef gem installed successfully via Bundler"
 } else {
-  Write-Host "✅ Found: $installedChef"
+    throw "❌ Chef gem not found via Bundler"
 }
 
 # Run the actual test task
 Write-Host "+++ Executing bundle exec task"
 bundle exec @args
-if ($LASTEXITCODE -ne 0) { throw "Command failed with exit code $LASTEXITCODE" }
+if ($LASTEXITCODE -ne 0) { throw "❌ Command failed with exit code $LASTEXITCODE" }
