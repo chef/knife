@@ -36,10 +36,6 @@ Move-Item -Path $corrected_path -Destination $final_cached_path -Force
 Write-Host "--- Installing Chef gem manually"
 gem install $final_cached_path
 
-# Ensure chef is listed in Gemfile.lock so bundler knows about it
-Write-Host "--- Adding chef to Gemfile.lock to satisfy bundler"
-bundle add chef --version "19.1.36" --skip-install
-
 # Lock bundler to Windows platform and configure bundler settings
 Write-Host "--- Configuring bundler for Windows platform"
 bundle config set --local path vendor/bundle
