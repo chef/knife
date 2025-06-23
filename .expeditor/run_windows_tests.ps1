@@ -48,6 +48,15 @@ if ($chef_info -match "chef \(19.1.36\)") {
     throw "❌ Chef gem not found via Bundler"
 }
 
+# Verify that chef gem is actually installed (via `gem info`)
+Write-Host "--- Verifying chef gem installation using 'gem info'"
+$chef_info = gem info chef 2>&1
+if ($chef_info -match "chef\s+\(19\.1\.36") {
+    Write-Host "✅ Chef gem found: $($chef_info -split "`n")[0]"
+} else {
+    throw "❌ Chef gem not found or wrong version via 'gem info'"
+}
+
 # Run the actual test task
 Write-Host "+++ Executing bundle exec task"
 bundle exec @args
