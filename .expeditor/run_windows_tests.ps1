@@ -11,10 +11,6 @@ $env:ARTIFACTORY_ENDPOINT = "https://artifactory-internal.ps.chef.co/artifactory
 $env:ARTIFACTORY_USERNAME = "REDACTED@chef.io"
 $gem_source = "$env:ARTIFACTORY_ENDPOINT/api/gems/omnibus-gems-local"
 
-# Add Artifactory gem source
-Write-Host "--- Adding Artifactory gem source"
-gem sources --add $gem_source | Out-Null
-
 # Download the Chef gem manually (incorrectly named on Artifactory)
 Write-Host "--- Downloading Chef gem from Artifactory"
 $downloaded_path = "$env:TEMP\chef-19.1.36-universal-unknown.gem"
@@ -35,6 +31,7 @@ Move-Item -Path $corrected_path -Destination "$cache_path\chef-19.1.36-universal
 Write-Host "--- Configuring bundler for Windows platform"
 bundle config set --local path vendor/bundle
 bundle config set --local force_ruby_platform false
+bundle config set --local no_prune true
 bundle lock --add-platform x64-mingw-ucrt
 
 # Install dependencies from Gemfile
