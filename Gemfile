@@ -4,7 +4,7 @@ gem "knife", path: "."
 
 # ✅ Declare chef first — without a remote source block
 # This forces Bundler to resolve it from vendor/cache when available
-gem "chef", "19.1.36", platforms: [:x64_mingw]
+gem "chef", "19.1.36", path: "vendor/cache/chef-19.1.36-universal-mingw-ucrt"
 
 # ✅ Other Chef gems still pulled from Artifactory
 source "https://artifactory-internal.ps.chef.co/artifactory/api/gems/omnibus-gems-local" do
@@ -36,8 +36,7 @@ group :development, :test do
   gem "reline"
 end
 
-gem "ffi", "1.17.2", platforms: [:mswin, :mingw]
-gem "ffi-win32-extensions", "~> 1.0", platforms: [:mswin, :mingw]
+#, "~> 1.0", platforms: [:mswin, :mingw, :x64_mingw, :universal_mingw]
 
 group :omnibus_package, :pry do
   gem "pry"
