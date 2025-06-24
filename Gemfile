@@ -4,9 +4,15 @@ gem "knife", path: "."
 
 # Chef core dependencies, locked to a compatible version range
 source "https://artifactory-internal.ps.chef.co/artifactory/api/gems/omnibus-gems-local" do
-  gem "chef", ">= 19.1"
-  gem "chef-config", ">= 19.1"
-  gem "chef-utils", ">= 19.1"
+  if Gem.win_platform?
+    gem "chef", "19.1.37"
+    gem "chef-config", "19.1.37"
+    gem "chef-utils", "19.1.37"
+  else
+    gem "chef", ">= 19.1"
+    gem "chef-config", ">= 19.1"
+    gem "chef-utils", ">= 19.1"
+  end
   gem "ohai", ">= 19.1"
 end
 
