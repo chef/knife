@@ -18,6 +18,7 @@ gem source -a "https://artifactory-internal.ps.chef.co/artifactory/api/gems/omni
 Write-Host "---- getting chef gem done"
 
 Write-Host "--- bundle install"
+bundle config set --local force_ruby_platform true
 bundle config --local path vendor/bundle
 bundle install --jobs=7 --retry=3
 gem update --system
