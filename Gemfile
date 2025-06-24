@@ -18,7 +18,7 @@ end
 
 # Platform specific gems
 platforms :mswin, :mingw, :x64_mingw do
-  gem "fiddle", "<= 1.1.6"
+  gem "fiddle", "= 1.1.6"
   gem "win32ole"
   gem "win32-process", "~> 0.9"
 end
