@@ -21,7 +21,7 @@ Write-Host "--- bundle install"
 bundle config set --local force_ruby_platform true
 bundle config --local path vendor/bundle
 bundle install --jobs=7 --retry=3
-gem update --system
+# gem update --system
 Write-Host "--- bundle install done"
 
 Write-Host "+++ bundle exec task"
