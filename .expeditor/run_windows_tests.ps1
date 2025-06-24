@@ -1,30 +1,33 @@
 $ErrorActionPreference = "Stop"
 
-Write-Host "--- gem source before add"
-gem source
-
-$env:USER = "root"
-$env:LANG = "C.UTF-8"
-$env:LANGUAGE = "C.UTF-8"
-
-Write-Host "---- getting chef gem"
+Write-Host "--- Configuring Artifactory access"
 $env:ARTIFACTORY_ENDPOINT = "https://artifactory-internal.ps.chef.co/artifactory"
 $env:ARTIFACTORY_USERNAME = "REDACTED@chef.io"
+$gem_source = "$env:ARTIFACTORY_ENDPOINT/api/gems/omnibus-gems-local"
 
-Write-Host "--- gem source before add"
-gem source | ForEach-Object { $_ -replace ':$','' }
-Write-Host "--- gem source after add"
-gem source -a "https://artifactory-internal.ps.chef.co/artifactory/api/gems/omnibus-gems-local"
-Write-Host "---- getting chef gem done"
+Write-Host "--- Downloading Chef gem from Artifactory"
+$downloaded_path = "$env:TEMP\chef-19.1.36-universal-unknown.gem"
+Invoke-WebRequest -Uri "$gem_source/gems/chef-19.1.36-universal-unknown.gem" -OutFile $downloaded_path -UseBasicParsing
 
-Write-Host "--- bundle install"
-bundle config set --local force_ruby_platform true
-bundle config --local path vendor/bundle
+Write-Host "--- Renaming gem file to match correct platform"
+$corrected_path = "$env:TEMP\chef-19.1.36-universal-mingw-ucrt.gem"
+Rename-Item -Path $downloaded_path -NewName (Split-Path $corrected_path -Leaf)
+
+Write-Host "--- Moving gem to vendor/cache"
+$cache_path = "vendor/cache"
+if (!(Test-Path $cache_path)) { New-Item -ItemType Directory -Path $cache_path | Out-Null }
+Move-Item -Path $corrected_path -Destination "$cache_path/chef-19.1.36-universal-mingw-ucrt.gem" -Force
+
+Write-Host "--- Configuring bundler for Windows platform"
+bundle config set --local path vendor/bundle
+bundle config set --local force_ruby_platform false
+bundle config set --local no_prune true
+bundle lock --add-platform x64-mingw-ucrt
+
+Write-Host "--- Installing gems from Gemfile"
 bundle install --jobs=7 --retry=3
-# gem update --system
-Write-Host "--- bundle install done"
+if ($LASTEXITCODE -ne 0) { throw "❌ Bundle install failed with exit code $LASTEXITCODE" }
 
-Write-Host "+++ bundle exec task"
-$env:RUBYOPT = "-W0"
-bundle exec @args
-if ($LASTEXITCODE -ne 0) { throw "Command failed with exit code $LASTEXITCODE" }
+Write-Host "+++ Executing bundle exec task"
+bundle exec $args
+if ($LASTEXITCODE -ne 0) { throw "❌ Command failed with exit code $LASTEXITCODE" }

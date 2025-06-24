@@ -2,28 +2,25 @@ source "https://rubygems.org"
 
 gem "knife", path: "."
 
-# Chef core dependencies, locked to a compatible version range
+# Declare chef first — without a remote source block
+# This forces Bundler to resolve it from vendor/cache when available
+gem "chef", "19.1.36"
+
+# Other Chef gems still pulled from Artifactory
 source "https://artifactory-internal.ps.chef.co/artifactory/api/gems/omnibus-gems-local" do
-  if Gem.win_platform?
-    gem "chef", "19.1.37"
-    gem "chef-config", "19.1.37"
-    gem "chef-utils", "19.1.37"
-  else
-    gem "chef", ">= 19.1"
-    gem "chef-config", ">= 19.1"
-    gem "chef-utils", ">= 19.1"
-  end
+  gem "chef-config", "19.1.36"
+  gem "chef-utils", "19.1.36"
   gem "ohai", ">= 19.1"
 end
 
-# Platform specific gems
-platforms :mswin, :mingw, :x64_mingw do
-  # gem "fiddle", "= 1.1.6"
+# Platform-specific gems
+if RUBY_PLATFORM.match?(/mswin|mingw|windows/)
+  # gem "fiddle", "<= 1.1.6"
   gem "win32ole"
   gem "win32-process", "~> 0.9"
 end
 
-# Runtime gems knife might need
+# Runtime dependencies
 gem "syslog"
 gem "ostruct"
 gem "csv"
@@ -39,8 +36,7 @@ group :development, :test do
   gem "reline"
 end
 
-gem "ffi", "1.17.2", platforms: [:mswin, :mingw]
-gem "ffi-win32-extensions", "~> 1.0", platforms: [:mswin, :mingw]
+#, "~> 1.0", platforms: [:mswin, :mingw, :x64_mingw, :universal_mingw]
 
 group :omnibus_package, :pry do
   gem "pry"
