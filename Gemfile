@@ -17,8 +17,8 @@ source "https://artifactory-internal.ps.chef.co/artifactory/api/gems/omnibus-gem
 end
 
 # Platform specific gems
-if RUBY_PLATFORM.match?(/mswin|mingw|windows/)
-  # gem "fiddle", "<= 1.1.6"
+platforms :mswin, :mingw, :x64_mingw do
+  gem "fiddle", "<= 1.1.6"
   gem "win32ole"
   gem "win32-process", "~> 0.9"
 end
