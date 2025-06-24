@@ -4,7 +4,7 @@ gem "knife", path: "."
 
 # ✅ Declare chef first — without a remote source block
 # This forces Bundler to resolve it from vendor/cache when available
-gem "chef", "19.1.36", path: "vendor/cache/chef-19.1.36-universal-mingw-ucrt"
+gem "chef", "19.1.36"
 
 # ✅ Other Chef gems still pulled from Artifactory
 source "https://artifactory-internal.ps.chef.co/artifactory/api/gems/omnibus-gems-local" do
