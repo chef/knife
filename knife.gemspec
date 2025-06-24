@@ -22,7 +22,7 @@ Gem::Specification.new do |s|
   s.add_dependency "mixlib-archive", ">= 0.4", "< 2.0"
   s.add_dependency "ffi", ">= 1.15", "< 1.17.0"
   # s.add_dependency "ffi-win32-extensions"# 1.14 versions are broken on i386 windows
-  s.add_dependency "ffi-yajl", "~> 2.2"
+  s.add_dependency "ffi-yajl", "= 2.6.0"
   s.add_dependency "net-ssh", ">= 5.1", "< 8"
   s.add_dependency "net-ssh-multi", "~> 1.2", ">= 1.2.1"
   s.add_dependency "bcrypt_pbkdf", "~> 1.1" # ed25519 ssh key support
