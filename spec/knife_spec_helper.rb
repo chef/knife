@@ -112,7 +112,7 @@ end
 RSpec.configure do |config|
   config.include(RSpec::Matchers)
   config.include(MockShellout::RSpec)
-  config.filter_run_when_matching :focus
+  config.filter_run focus: true
   config.filter_run_excluding external: true
   config.raise_on_warning = true
 
