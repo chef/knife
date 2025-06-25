@@ -40,14 +40,14 @@ if ($version -match "3.1"){
     }
 }
 
-Write-Host "--- Now looking for ldd.exe"
-$lddpaths = gci -Path "C:/workdir" -Filter "ldd.exe" -Recurse -ErrorAction SilentlyContinue
+Write-Host "--- Now looking for msvcrt.dll"
+$lddpaths = gci -Path "C:/workdir" -Filter "msvcrt.dll" -Recurse -ErrorAction SilentlyContinue
 if ($lddpaths) {
     foreach ($ldd in $lddpaths) {
-        Write-Host "Found ldd.exe at: $($ldd.FullName)"
+        Write-Host "Found msvcrt at: $($ldd.FullName)"
     }
 } else {
-    Write-Host "No ldd.exe found in the directory tree."
+    Write-Host "No msvcrt.dll found in the directory tree."
 }
 
 Write-Host "+++ Executing bundle exec task"
