@@ -41,7 +41,7 @@ if ($version -match "3.1"){
 }
 
 Write-Host "--- Now looking for msvcrt.dll"
-$lddpaths = gci -Path "C:/workdir" -Filter "msvcrt.dll" -Recurse -ErrorAction SilentlyContinue
+$lddpaths = gci -Path "C:\" -Filter "msvcrt.dll" -Recurse -ErrorAction SilentlyContinue
 if ($lddpaths) {
     foreach ($ldd in $lddpaths) {
         Write-Host "Found msvcrt at: $($ldd.FullName)"
