@@ -24,14 +24,13 @@ bundle config set --local force_ruby_platform false
 bundle config set --local no_prune true
 bundle lock --add-platform x64-mingw-ucrt
 
-Weite-Output "--- Why is Chef PowerShell telling me the file is not found?"
-
-
 Write-Host "--- Installing gems from Gemfile"
 bundle install --jobs=7 --retry=3
 if ($LASTEXITCODE -ne 0) { throw "❌ Bundle install failed with exit code $LASTEXITCODE" }
 
-Write-Host "--- Verifying Chef-PoerShell gem installation"
+Write-Host "--- Why is Chef PowerShell telling me the file is not found?"
+Write-Host "--- Checking for Chef-PowerShell gem"
+Write-Host "--- Verifying Chef-PowerShell gem installation"
 $version = Ruby -v 
 Write-Host "Ruby version: $version"
 if ($version -match "3.1"){
