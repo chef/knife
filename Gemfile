@@ -39,6 +39,8 @@ end
 
 #, "~> 1.0", platforms: [:mswin, :mingw, :x64_mingw, :universal_mingw]
 
+gem "ffi", "1.17.2", platforms: :ruby
+
 group :omnibus_package, :pry do
   gem "pry"
   gem "pry-byebug"
