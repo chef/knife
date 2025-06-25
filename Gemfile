@@ -24,6 +24,7 @@ end
 gem "syslog"
 gem "ostruct"
 gem "csv"
+gem "mixlib-authentication", "=3.0.10"
 
 group :development, :test do
   gem "cheffish", ">= 14"
