@@ -57,8 +57,8 @@ if ($version -match "3.1") {
 
     Write-Host "--- Final DLL list in folder (Ruby 3.1):"
     Get-ChildItem -Path $dll_folder_31 -Filter "*.dll" | ForEach-Object { Write-Host "📦 $($_.FullName)" }
-}
-elseif ($version -match "3.4") {
+
+} elseif ($version -match "3.4") {
     Write-Host "✅ Ruby 3.4 detected: chef-powershell works without additional changes."
     $dll_folder_34 = "C:/workdir/vendor/bundle/ruby/3.4.0/gems/chef-powershell-18.1.0/bin/ruby_bin_folder/AMD64/"
     $expected_dll_34 = Join-Path $dll_folder_34 "Chef.PowerShell.Wrapper.dll"
@@ -71,8 +71,8 @@ elseif ($version -match "3.4") {
 
     Write-Host "--- Final DLL list in folder (Ruby 3.4):"
     Get-ChildItem -Path $dll_folder_34 -Filter "*.dll" | ForEach-Object { Write-Host "📦 $($_.FullName)" }
-}
-else {
+
+} else {
     Write-Host "⚠️ Unknown Ruby version detected: $version"
 }
 
