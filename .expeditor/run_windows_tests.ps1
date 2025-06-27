@@ -66,7 +66,13 @@ Write-Host "--- Verifying Chef-PowerShell gem installation"
 $version = Ruby -v 
 Write-Host "Ruby version: $version"
 if ($version -match "3.1"){
-    $dlls = Get-ChildItem -Path "C:/workdir/vendor/bundle/ruby/3.1.0/gems/chef-powershell-18.1.0/bin/ruby_bin_folder/AMD64/" -Filter "msvc*.dll"
+    $dlls = Get-ChildItem -Path "C:/workdir/vendor/bundle/ruby/3.1.0/gems/chef-powershell-18.1.0/bin/ruby_bin_folder/AMD64/"
+    foreach ($dll in $dlls) {
+        Write-Host "I have this DLL: $($dll.FullName)"
+    }
+}
+if ($version -match "3.4"){
+    $dlls = Get-ChildItem -Path "C:/workdir/vendor/bundle/ruby/3.4.0/gems/chef-powershell-18.1.0/bin/ruby_bin_folder/AMD64/"
     foreach ($dll in $dlls) {
         Write-Host "I have this DLL: $($dll.FullName)"
     }
