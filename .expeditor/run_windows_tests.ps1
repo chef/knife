@@ -48,15 +48,25 @@ if ($ruby_ver) {
     $correct_dll = Join-Path $dll_dir "Chef.PowerShell.Wrapper.dll"
     $wrong_dll = Join-Path $dll_dir "Chef.Powershell.Wrapper.dll"
 
+    Write-Host "--- Listing DLLs in folder before fix:"
+    Get-ChildItem -Path $dll_dir -Filter "*.dll" -ErrorAction SilentlyContinue | ForEach-Object {
+        Write-Host "📦 Found: $($_.FullName)"
+    }
+
     if (!(Test-Path $correct_dll) -and (Test-Path $wrong_dll)) {
         Write-Host "⚙ Fixing DLL casing: copying $wrong_dll → $correct_dll"
         Copy-Item -Path $wrong_dll -Destination $correct_dll -Force
     }
 
     if (Test-Path $correct_dll) {
-        Write-Host "✅ Correct DLL found: $correct_dll"
+        Write-Host "✅ Correct DLL now present: $correct_dll"
     } else {
-        Write-Host "❌ Correct DLL still missing"
+        Write-Host "❌ Correct DLL still missing after attempted fix."
+    }
+
+    Write-Host "--- Listing DLLs in folder after fix:"
+    Get-ChildItem -Path $dll_dir -Filter "*.dll" -ErrorAction SilentlyContinue | ForEach-Object {
+        Write-Host "📦 Found: $($_.FullName)"
     }
 }
 
