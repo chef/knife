@@ -24,28 +24,37 @@ bundle config set --local force_ruby_platform false
 bundle config set --local no_prune true
 bundle lock --add-platform x64-mingw-ucrt
 
-Write-Host "--- Verifying Chef.PowerShell.Wrapper.dll existence at error path"
-
-$expected_dll_31 = "C:\workdir\vendor\bundle\ruby\3.1.0\gems\chef-powershell-18.1.0\bin\ruby_bin_folder\AMD64\Chef.PowerShell.Wrapper.dll"
-$expected_dll_34 = "C:\workdir\vendor\bundle\ruby\3.4.0\gems\chef-powershell-18.1.0\bin\ruby_bin_folder\AMD64\Chef.PowerShell.Wrapper.dll"
+Write-Host "--- Verifying Chef.PowerShell.Wrapper.dll existence at error path ---"
+$version = Ruby -v | Out-String
+$version = $version.Trim()
+Write-Host "Ruby version reported by Ruby -v: '$version'"
 
 if ($version -match "3.1") {
-    Write-Host "Checking Ruby 3.1 expected DLL path: $expected_dll_31"
+    Write-Host "❗ Ruby 3.1 detected: Chef PowerShell is known to fail due to missing or incompatible native DLLs."
+    $expected_dll_31 = "C:\workdir\vendor\bundle\ruby\3.1.0\gems\chef-powershell-18.1.0\bin\ruby_bin_folder\AMD64\Chef.PowerShell.Wrapper.dll"
+    Write-Host "Checking for DLL at: $expected_dll_31"
     if (Test-Path -Path $expected_dll_31) {
-        Write-Host "✅ Chef.PowerShell.Wrapper.dll FOUND for Ruby 3.1"
+        Write-Host "✅ DLL FOUND at expected path for Ruby 3.1"
     } else {
-        Write-Host "❌ Chef.PowerShell.Wrapper.dll MISSING for Ruby 3.1"
+        Write-Host "❌ DLL MISSING at expected path for Ruby 3.1"
     }
+    Write-Host "👉 Forcing chef-powershell reinstall for Ruby 3.1"
+    gem uninstall chef-powershell -x -a
+    gem install chef-powershell -v 18.1.0 --platform x64-mingw-ucrt --source "$gem_source"
+    Write-Host "✅ chef-powershell reinstall completed for Ruby 3.1"
+} elseif ($version -match "3.4") {
+    Write-Host "✅ Ruby 3.4 detected: chef-powershell works without additional changes."
+    $expected_dll_34 = "C:\workdir\vendor\bundle\ruby\3.4.0\gems\chef-powershell-18.1.0\bin\ruby_bin_folder\AMD64\Chef.PowerShell.Wrapper.dll"
+    Write-Host "Checking for DLL at: $expected_dll_34"
+    if (Test-Path -Path $expected_dll_34) {
+        Write-Host "✅ DLL FOUND at expected path for Ruby 3.4"
+    } else {
+        Write-Host "❌ DLL MISSING at expected path for Ruby 3.4"
+    }
+} else {
+    Write-Host "⚠️ Unknown Ruby version detected: $version"
 }
 
-if ($version -match "3.4") {
-    Write-Host "Checking Ruby 3.4 expected DLL path: $expected_dll_34"
-    if (Test-Path -Path $expected_dll_34) {
-        Write-Host "✅ Chef.PowerShell.Wrapper.dll FOUND for Ruby 3.4"
-    } else {
-        Write-Host "❌ Chef.PowerShell.Wrapper.dll MISSING for Ruby 3.4"
-    }
-}
 
 Write-Host "--- Installing gems from Gemfile"
 bundle install --jobs=7 --retry=3
