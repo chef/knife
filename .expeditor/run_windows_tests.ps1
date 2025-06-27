@@ -30,50 +30,34 @@ if ($LASTEXITCODE -ne 0) { throw "❌ Bundle install failed with exit code $LAST
 
 $version = Ruby -v | Out-String
 $version = $version.Trim()
-Write-Host "Ruby version reported by Ruby -v: '$version'"
+Write-Host "Ruby version: $version"
 
+# Determine Ruby version path
 if ($version -match "3.1") {
-    Write-Host "❗ Ruby 3.1 detected: Fixing Chef PowerShell DLL casing after bundle install"
-    $dll_folder_31 = "C:/workdir/vendor/bundle/ruby/3.1.0/gems/chef-powershell-18.1.0/bin/ruby_bin_folder/AMD64/"
-    $expected_dll_31 = Join-Path $dll_folder_31 "Chef.PowerShell.Wrapper.dll"
-
-    if (!(Test-Path -Path $expected_dll_31)) {
-        $existing_dlls = Get-ChildItem -Path $dll_folder_31 -Filter "*.dll" -ErrorAction SilentlyContinue
-        foreach ($dll in $existing_dlls) {
-            if ($dll.Name -ieq "Chef.Powershell.Wrapper.dll" -and $dll.Name -cne "Chef.PowerShell.Wrapper.dll") {
-                $source = $dll.FullName
-                $dest = $expected_dll_31
-                Write-Host "🔧 Creating corrected DLL copy: $dest"
-                Copy-Item -Path $source -Destination $dest -Force
-            }
-        }
-    }
-
-    if (Test-Path -Path $expected_dll_31) {
-        Write-Host "✅ DLL now found with correct casing at: $expected_dll_31"
-    } else {
-        Write-Host "❌ DLL still missing even after casing correction"
-    }
-
-    Write-Host "--- Final DLL list in folder (Ruby 3.1):"
-    Get-ChildItem -Path $dll_folder_31 -Filter "*.dll" | ForEach-Object { Write-Host "📦 $($_.FullName)" }
-
+    $ruby_ver = "3.1.0"
 } elseif ($version -match "3.4") {
-    Write-Host "✅ Ruby 3.4 detected: chef-powershell works without additional changes."
-    $dll_folder_34 = "C:/workdir/vendor/bundle/ruby/3.4.0/gems/chef-powershell-18.1.0/bin/ruby_bin_folder/AMD64/"
-    $expected_dll_34 = Join-Path $dll_folder_34 "Chef.PowerShell.Wrapper.dll"
+    $ruby_ver = "3.4.0"
+} else {
+    Write-Host "⚠ Unknown Ruby version. Skipping DLL check."
+    $ruby_ver = $null
+}
 
-    if (Test-Path -Path $expected_dll_34) {
-        Write-Host "✅ DLL found at expected path for Ruby 3.4"
-    } else {
-        Write-Host "❌ DLL missing at expected path for Ruby 3.4"
+# Fix DLL name casing if needed
+if ($ruby_ver) {
+    $dll_dir = "C:/workdir/vendor/bundle/ruby/$ruby_ver/gems/chef-powershell-18.1.0/bin/ruby_bin_folder/AMD64"
+    $correct_dll = Join-Path $dll_dir "Chef.PowerShell.Wrapper.dll"
+    $wrong_dll = Join-Path $dll_dir "Chef.Powershell.Wrapper.dll"
+
+    if (!(Test-Path $correct_dll) -and (Test-Path $wrong_dll)) {
+        Write-Host "⚙ Fixing DLL casing: copying $wrong_dll → $correct_dll"
+        Copy-Item -Path $wrong_dll -Destination $correct_dll -Force
     }
 
-    Write-Host "--- Final DLL list in folder (Ruby 3.4):"
-    Get-ChildItem -Path $dll_folder_34 -Filter "*.dll" | ForEach-Object { Write-Host "📦 $($_.FullName)" }
-
-} else {
-    Write-Host "⚠️ Unknown Ruby version detected: $version"
+    if (Test-Path $correct_dll) {
+        Write-Host "✅ Correct DLL found: $correct_dll"
+    } else {
+        Write-Host "❌ Correct DLL still missing"
+    }
 }
 
 Write-Host "--- Now looking for msvcrt.dll"
