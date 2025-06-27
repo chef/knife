@@ -55,8 +55,16 @@ if ($ruby_ver) {
     }
 
     if (!(Test-Path $correct_dll) -and (Test-Path $wrong_dll)) {
-        Write-Host "🔄 Fixing DLL casing: renaming $wrong_dll → $correct_dll"
-        Rename-Item -Path $wrong_dll -NewName (Split-Path -Leaf $correct_dll) -Force
+        Write-Host "🔄 Fixing DLL casing: recreating file with corrected casing"
+
+        # Read content of the wrong DLL file
+        $bytes = Get-Content -Path $wrong_dll -Encoding Byte -ReadCount 0
+
+        # Delete the wrong-case file first
+        Remove-Item -Path $wrong_dll -Force
+
+        # Create a new file with correct casing
+        [System.IO.File]::WriteAllBytes($correct_dll, $bytes)
     }
 
     if (Test-Path $correct_dll) {
@@ -65,7 +73,7 @@ if ($ruby_ver) {
         Write-Host "❌ DLL still missing after attempted fix."
     }
 
-    Start-Sleep -Seconds 2 # Give filesystem time to flush changes
+    Start-Sleep -Seconds 2
     Write-Host "--- Listing DLLs in folder after fix:"
     Get-ChildItem -Path $dll_dir -Filter "*.dll" -ErrorAction SilentlyContinue | ForEach-Object {
         Write-Host "Found DLL: $($_.FullName)"
