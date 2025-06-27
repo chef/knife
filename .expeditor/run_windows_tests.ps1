@@ -65,7 +65,7 @@ if ($ruby_ver) {
     } else {
         Write-Host "DLL still missing after attempted fix."
     }
-
+    Start-Sleep -Seconds 2 # give filesystem time to flush changes
     Write-Host "--- Listing DLLs in folder after fix:"
     Get-ChildItem -Path $dll_dir -Filter "*.dll" -ErrorAction SilentlyContinue | ForEach-Object {
         Write-Host "Found DLL: $($_.FullName)"
