@@ -16,7 +16,7 @@ Rename-Item -Path $downloaded_path -NewName (Split-Path $corrected_path -Leaf)
 Write-Host "--- Moving gem to vendor/cache"
 $cache_path = "vendor/cache"
 if (!(Test-Path $cache_path)) { New-Item -ItemType Directory -Path $cache_path | Out-Null }
-Move-Item -Path $corrected_path -Destination "$cache_path/chef-19.1.36-universal-mingw-ucrt.gem" -Force
+Move-Item -Path $corrected_path -Destination "$cache_path\chef-19.1.36-universal-mingw-ucrt.gem" -Force
 
 Write-Host "--- Configuring bundler for Windows platform"
 bundle config set --local path vendor/bundle
@@ -26,7 +26,7 @@ bundle lock --add-platform x64-mingw-ucrt
 
 Write-Host "--- Installing gems from Gemfile"
 bundle install --jobs=7 --retry=3
-if ($LASTEXITCODE -ne 0) { throw "❌ Bundle install failed with exit code $LASTEXITCODE" }
+if ($LASTEXITCODE -ne 0) { throw "Bundle install failed with exit code $LASTEXITCODE" }
 
 $version = Ruby -v | Out-String
 $version = $version.Trim()
@@ -38,43 +38,45 @@ if ($version -match "3.1") {
 } elseif ($version -match "3.4") {
     $ruby_ver = "3.4.0"
 } else {
-    Write-Host "⚠ Unknown Ruby version. Skipping DLL check."
+    Write-Host "WARNING: Unknown Ruby version. Skipping DLL check."
     $ruby_ver = $null
 }
 
 # Fix DLL name casing if needed
 if ($ruby_ver) {
-    $dll_dir = "C:/workdir/vendor/bundle/ruby/$ruby_ver/gems/chef-powershell-18.1.0/bin/ruby_bin_folder/AMD64"
+    $dll_dir = Join-Path "C:\workdir\vendor\bundle\ruby" $ruby_ver
+    $dll_dir = Join-Path $dll_dir "gems\chef-powershell-18.1.0\bin\ruby_bin_folder\AMD64"
+
     $correct_dll = Join-Path $dll_dir "Chef.PowerShell.Wrapper.dll"
     $wrong_dll = Join-Path $dll_dir "Chef.Powershell.Wrapper.dll"
 
     Write-Host "--- Listing DLLs in folder before fix:"
     Get-ChildItem -Path $dll_dir -Filter "*.dll" -ErrorAction SilentlyContinue | ForEach-Object {
-        Write-Host "📦 Found: $($_.FullName)"
+        Write-Host "Found DLL: $($_.FullName)"
     }
 
     if (!(Test-Path $correct_dll) -and (Test-Path $wrong_dll)) {
-        Write-Host "⚙ Fixing DLL casing: copying $wrong_dll → $correct_dll"
+        Write-Host "Fixing DLL casing: copying $wrong_dll to $correct_dll"
         Copy-Item -Path $wrong_dll -Destination $correct_dll -Force
     }
 
     if (Test-Path $correct_dll) {
-        Write-Host "✅ Correct DLL now present: $correct_dll"
+        Write-Host "DLL now present: $correct_dll"
     } else {
-        Write-Host "❌ Correct DLL still missing after attempted fix."
+        Write-Host "DLL still missing after attempted fix."
     }
 
     Write-Host "--- Listing DLLs in folder after fix:"
     Get-ChildItem -Path $dll_dir -Filter "*.dll" -ErrorAction SilentlyContinue | ForEach-Object {
-        Write-Host "📦 Found: $($_.FullName)"
+        Write-Host "Found DLL: $($_.FullName)"
     }
 }
 
-Write-Host "--- Now looking for msvcrt.dll"
+Write-Host "--- Searching for msvcrt.dll on disk"
 $lddpaths = Get-ChildItem -Path "C:\" -Filter "msvcrt.dll" -Recurse -ErrorAction SilentlyContinue
 if ($lddpaths) {
     foreach ($ldd in $lddpaths) {
-        Write-Host "Found msvcrt at: $($ldd.FullName)"
+        Write-Host "Found msvcrt.dll at: $($ldd.FullName)"
     }
 } else {
     Write-Host "No msvcrt.dll found in the directory tree."
@@ -82,4 +84,4 @@ if ($lddpaths) {
 
 Write-Host "+++ Executing bundle exec task"
 bundle exec $args
-if ($LASTEXITCODE -ne 0) { throw "❌ Command failed with exit code $LASTEXITCODE" }
+if ($LASTEXITCODE -ne 0) { throw "Command failed with exit code $LASTEXITCODE" }
