@@ -24,6 +24,22 @@ bundle config set --local force_ruby_platform false
 bundle config set --local no_prune true
 bundle lock --add-platform x64-mingw-ucrt
 
+Write-Host "--- Checking Ruby version for chef-powershell behavior"
+$version = & ruby -v
+Write-Host "Ruby version: $version"
+
+if ($version -match "3.1") {
+    Write-Host "❗ Ruby 3.1 detected: Chef PowerShell is known to fail due to missing or incompatible native DLLs."
+    Write-Host "👉 Forcing chef-powershell reinstall for Ruby 3.1"
+    gem uninstall chef-powershell -x -a
+    gem install chef-powershell -v 18.1.0 --platform x64-mingw-ucrt --source "$gem_source"
+    Write-Host "✅ chef-powershell reinstall completed for Ruby 3.1"
+} elseif ($version -match "3.4") {
+    Write-Host "✅ Ruby 3.4 detected: chef-powershell works without additional changes."
+} else {
+    Write-Host "⚠️ Unknown Ruby version detected: $version"
+}
+
 Write-Host "--- Installing gems from Gemfile"
 bundle install --jobs=7 --retry=3
 if ($LASTEXITCODE -ne 0) { throw "❌ Bundle install failed with exit code $LASTEXITCODE" }
