@@ -211,6 +211,12 @@ RSpec.configure do |config|
   end
 end
 
+# Ensure DLLs for chef-powershell are found on Windows
+if Gem.win_platform?
+  dll_dir = File.expand_path('../../vendor/bundle/ruby/3.1.0/gems/chef-powershell-18.1.0/bin/ruby_bin_folder/AMD64', __dir__)
+  ENV['PATH'] = "#{dll_dir};#{ENV['PATH']}"
+end
+
 require "webrick/utils"
 #    Webrick uses a centralized/synchronized timeout manager. It works by
 #    starting a thread to check for timeouts on an interval. The timeout
