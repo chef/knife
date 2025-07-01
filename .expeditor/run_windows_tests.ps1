@@ -1,7 +1,7 @@
 $ErrorActionPreference = "Stop"
 
 # 🛑 REMOVE adding Ruby to global PATH - we'll call ruby explicitly instead
-# $env:Path = 'C:\Ruby\bin;' + $env:Path
+$env:Path = 'C:\Ruby\bin;' + $env:Path
 
 # 🟢 Preserve only other necessary PATH additions
 $env:Path = 'C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\bin;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\ProgramData\chocolatey\bin;C:\Program Files (x86)\Windows Kits\8.1\Windows Performance Toolkit\;C:\Program Files\Git\cmd;C:\Users\ContainerAdministrator\AppData\Local\Microsoft\WindowsApps;' + $env:Path
