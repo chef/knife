@@ -1,5 +1,9 @@
 $ErrorActionPreference = "Stop"
 
+
+# Disable default Ruby gems (fixes Bundler double-loading)
+$env:RUBYOPT = "--disable=gems"
+
 # Find the latest Ruby install directory
 $RubyDir = Get-ChildItem -Directory "C:\Ruby*" | Sort-Object LastWriteTime -Descending | Select-Object -First 1
 if ($RubyDir) {
