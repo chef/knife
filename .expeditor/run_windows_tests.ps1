@@ -1,16 +1,17 @@
 $ErrorActionPreference = "Stop"
 
-# 🔒 Check for admin rights before doing anything
-if (-not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole(`
-    [Security.Principal.WindowsBuiltInRole] "Administrator")) {
-
-    Write-Warning "🚨 This script is not running as Administrator. Restarting as admin..."
-    Start-Process powershell -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs
-    Exit
+# Find the latest Ruby install directory
+$RubyDir = Get-ChildItem -Directory "C:\Ruby*" | Sort-Object LastWriteTime -Descending | Select-Object -First 1
+if ($RubyDir) {
+    $RubyBin = "$($RubyDir.FullName)\bin"
+    Write-Output "Ruby installed at $RubyBin"
+} else {
+    throw "Could not find Ruby installation directory."
 }
+$env:PATH = "$env:PATH;$RubyBin"
 
-Write-Host "--- Installing ruby via chocolatey"
-choco install ruby.install --version=3.1.6.1 -y
+Write-Output "--- Installed Ruby version"
+ruby --version
 
 Write-Host "--- Configuring Artifactory access"
 $env:ARTIFACTORY_ENDPOINT = "https://artifactory-internal.ps.chef.co/artifactory"
