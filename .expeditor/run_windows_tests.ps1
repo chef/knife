@@ -9,6 +9,7 @@ if ($RubyDir) {
     throw "Could not find Ruby installation directory."
 }
 $env:PATH = "$env:PATH;$RubyBin"
+$env:BUNDLE_DISABLE_SYSTEM_BUNDLER = "true"
 
 Write-Output "--- Installed Ruby version"
 ruby --version
@@ -35,7 +36,7 @@ Write-Host "--- Configuring bundler for Windows platform"
 bundle config set --local path vendor/bundle
 bundle config set --local force_ruby_platform false
 bundle config set --local no_prune true
-bundle lock --add-platform x64-mingw-ucrt
+# bundle lock --add-platform x64-mingw-ucrt
 
 Write-Host "--- Installing gems from Gemfile"
 bundle install --jobs=7 --retry=3
