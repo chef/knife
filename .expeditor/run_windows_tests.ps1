@@ -1,17 +1,16 @@
 $ErrorActionPreference = "Stop"
 
-# 🛑 REMOVE adding Ruby to global PATH - we'll call ruby explicitly instead
-# $env:Path = 'C:\Ruby\bin;' + $env:Path
+# 🔒 Check for admin rights before doing anything
+if (-not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole(`
+    [Security.Principal.WindowsBuiltInRole] "Administrator")) {
 
-# 🟢 Preserve only other necessary PATH additions
-# $env:Path = 'C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\bin;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\ProgramData\chocolatey\bin;C:\Program Files (x86)\Windows Kits\8.1\Windows Performance Toolkit\;C:\Program Files\Git\cmd;C:\Users\ContainerAdministrator\AppData\Local\Microsoft\WindowsApps;' + $env:Path
+    Write-Warning "🚨 This script is not running as Administrator. Restarting as admin..."
+    Start-Process powershell -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs
+    Exit
+}
 
-# $env:BUNDLE_DISABLE_SYSTEM_BUNDLER = "true"
 Write-Host "--- Installing ruby via chocolatey"
 choco install ruby.install --version=3.1.6.1 -y
-
-Write-Host "--- Print ruby version"
-ruby -v
 
 Write-Host "--- Configuring Artifactory access"
 $env:ARTIFACTORY_ENDPOINT = "https://artifactory-internal.ps.chef.co/artifactory"
@@ -32,16 +31,16 @@ if (!(Test-Path $cache_path)) { New-Item -ItemType Directory -Path $cache_path |
 Move-Item -Path $corrected_path -Destination (Join-Path $cache_path "chef-19.1.36-universal-mingw-ucrt.gem") -Force
 
 Write-Host "--- Configuring bundler for Windows platform"
-& "vendor/bundle/ruby/3.1.0/bin/bundle" config set --local path vendor/bundle
-& "vendor/bundle/ruby/3.1.0/bin/bundle" config set --local force_ruby_platform false
-& "vendor/bundle/ruby/3.1.0/bin/bundle" config set --local no_prune true
-& "vendor/bundle/ruby/3.1.0/bin/bundle" lock --add-platform x64-mingw-ucrt
+bundle config set --local path vendor/bundle
+bundle config set --local force_ruby_platform false
+bundle config set --local no_prune true
+bundle lock --add-platform x64-mingw-ucrt
 
 Write-Host "--- Installing gems from Gemfile"
-& "vendor/bundle/ruby/3.1.0/bin/bundle" install --jobs=7 --retry=3
+bundle install --jobs=7 --retry=3
 if ($LASTEXITCODE -ne 0) { throw "❌ Bundle install failed with exit code $LASTEXITCODE" }
 
-$version = (& "C:\Ruby\bin\ruby.exe" -v | Out-String).Trim()
+$version = (Ruby -v | Out-String).Trim()
 Write-Host "Ruby version: $version"
 
 # Determine Ruby version path
@@ -104,5 +103,5 @@ if ($lddpaths) {
 }
 
 Write-Host "+++ Executing bundle exec task"
-& "vendor/bundle/ruby/3.1.0/bin/bundle" exec $args
+bundle exec $args
 if ($LASTEXITCODE -ne 0) { throw "❌ Command failed with exit code $LASTEXITCODE" }
