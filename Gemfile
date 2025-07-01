@@ -46,5 +46,3 @@ end
 group :chefstyle do
   gem "chefstyle"
 end
-
-require 'fileutils' # Ensure Ruby's standard library is used instead of Bundler's vendored version
