@@ -1,4 +1,5 @@
 $ErrorActionPreference = "Stop"
+$env:Path = 'C:\Ruby\bin;' + $env:Path
 $env:Path = 'C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\bin;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\ProgramData\chocolatey\bin;C:\Program Files (x86)\Windows Kits\8.1\Windows Performance Toolkit\;C:\Program Files\Git\cmd;C:\Users\ContainerAdministrator\AppData\Local\Microsoft\WindowsApps;' + $env:Path
 Write-Host "--- Configuring Artifactory access"
 $env:ARTIFACTORY_ENDPOINT = "https://artifactory-internal.ps.chef.co/artifactory"
@@ -19,6 +20,7 @@ if (!(Test-Path $cache_path)) { New-Item -ItemType Directory -Path $cache_path |
 Move-Item -Path $corrected_path -Destination (Join-Path $cache_path "chef-19.1.36-universal-mingw-ucrt.gem") -Force
 
 Write-Host "--- Configuring bundler for Windows platform"
+bundle clean --force
 bundle config set --local path vendor/bundle
 bundle config set --local force_ruby_platform false
 bundle config set --local no_prune true
