@@ -105,5 +105,5 @@ if ($lddpaths) {
 }
 
 Write-Host "+++ Executing bundle exec task"
-bundle exec $args
+& "vendor/bundle/ruby/$ruby_ver/bin/bundle" exec $args
 if ($LASTEXITCODE -ne 0) { throw "❌ Command failed with exit code $LASTEXITCODE" }
