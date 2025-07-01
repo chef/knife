@@ -1,4 +1,14 @@
 $ErrorActionPreference = "Stop"
+
+# --- Prepend Ruby binary to PATH ---
+$env:Path = 'C:\Ruby\bin;' + $env:Path
+
+# --- Append other tools to PATH ---
+$env:Path = $env:Path + ';C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\bin;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\ProgramData\chocolatey\bin;C:\Program Files (x86)\Windows Kits\8.1\Windows Performance Toolkit\;C:\Program Files\Git\cmd;C:\Users\ContainerAdministrator\AppData\Local\Microsoft\WindowsApps;'
+
+# 🔥 DISABLE SYSTEM BUNDLER TO AVOID CONFLICTS 🔥
+$env:BUNDLE_DISABLE_SYSTEM_BUNDLER = "true"
+
 Write-Host "--- Configuring Artifactory access"
 $env:ARTIFACTORY_ENDPOINT = "https://artifactory-internal.ps.chef.co/artifactory"
 $env:ARTIFACTORY_USERNAME = "REDACTED@chef.io"
@@ -18,7 +28,6 @@ if (!(Test-Path $cache_path)) { New-Item -ItemType Directory -Path $cache_path |
 Move-Item -Path $corrected_path -Destination (Join-Path $cache_path "chef-19.1.36-universal-mingw-ucrt.gem") -Force
 
 Write-Host "--- Configuring bundler for Windows platform"
-bundle clean --force
 bundle config set --local path vendor/bundle
 bundle config set --local force_ruby_platform false
 bundle config set --local no_prune true
@@ -57,13 +66,8 @@ if ($ruby_ver) {
     if (!(Test-Path $correct_dll) -and (Test-Path $wrong_dll)) {
         Write-Host "🔄 Fixing DLL casing: recreating file with corrected casing"
 
-        # Read content of the wrong DLL file
         $bytes = Get-Content -Path $wrong_dll -Encoding Byte -ReadCount 0
-
-        # Delete the wrong-case file first
         Remove-Item -Path $wrong_dll -Force
-
-        # Create a new file with correct casing
         [System.IO.File]::WriteAllBytes($correct_dll, $bytes)
     }
 
