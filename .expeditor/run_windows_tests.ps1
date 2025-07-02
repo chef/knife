@@ -1,6 +1,5 @@
 $ErrorActionPreference = "Stop"
 
-
 # Disable default Ruby gems (fixes Bundler double-loading)
 $env:RUBYOPT = "--disable=gems"
 
@@ -40,7 +39,6 @@ Write-Host "--- Configuring bundler for Windows platform"
 bundle config set --local path vendor/bundle
 bundle config set --local force_ruby_platform false
 bundle config set --local no_prune true
-# bundle lock --add-platform x64-mingw-ucrt
 
 Write-Host "--- Installing gems from Gemfile"
 bundle install --jobs=7 --retry=3
@@ -96,18 +94,39 @@ if ($ruby_ver) {
     Get-ChildItem -Path $dll_dir -Filter "*.dll" -ErrorAction SilentlyContinue | ForEach-Object {
         Write-Host "Found DLL: $($_.FullName)"
     }
+
+    # --- Add Chef DLL path to PATH ---
+    if (Test-Path $dll_dir) {
+        Write-Host "🔧 Adding Chef DLL path to PATH: $dll_dir"
+        $env:PATH = "$dll_dir;$env:PATH"
+    } else {
+        Write-Host "⚠ Chef DLL path not found: $dll_dir"
+    }
 }
 
 Write-Host "--- Searching for msvcrt.dll on disk"
 $lddpaths = Get-ChildItem -Path "C:\" -Filter "msvcrt.dll" -Recurse -ErrorAction SilentlyContinue
 if ($lddpaths) {
+    $firstMsvcrt = $lddpaths | Select-Object -First 1
+    $msvcrtDir = $firstMsvcrt.DirectoryName
+    Write-Host "🔧 Adding msvcrt.dll directory to PATH: $msvcrtDir"
+    $env:PATH = "$msvcrtDir;$env:PATH"
+
     foreach ($ldd in $lddpaths) {
         Write-Host "Found msvcrt.dll at: $($ldd.FullName)"
     }
 } else {
-    Write-Host "No msvcrt.dll found in the directory tree."
+    Write-Host "⚠ No msvcrt.dll found in the directory tree."
 }
 
+Write-Host "--- Final PATH value:"
+Write-Host $env:PATH
+
 Write-Host "+++ Executing bundle exec task"
-& "vendor/bundle/ruby/$ruby_ver/bin/bundle" exec $args
+if ($ruby_ver) {
+    & "vendor/bundle/ruby/$ruby_ver/bin/bundle" exec $args
+} else {
+    & bundle exec $args
+}
+
 if ($LASTEXITCODE -ne 0) { throw "❌ Command failed with exit code $LASTEXITCODE" }
