@@ -32,7 +32,9 @@ Rename-Item -Path $downloaded_path -NewName (Split-Path $corrected_path -Leaf)
 
 Write-Host "--- Moving gem to vendor/cache"
 $cache_path = "vendor/cache"
-if (!(Test-Path $cache_path)) { New-Item -ItemType Directory -Path $cache_path | Out-Null }
+if (!(Test-Path $cache_path)) {
+    New-Item -ItemType Directory -Path $cache_path | Out-Null
+}
 Move-Item -Path $corrected_path -Destination (Join-Path $cache_path "chef-19.1.36-universal-mingw-ucrt.gem") -Force
 
 Write-Host "--- Configuring bundler for Windows platform"
@@ -42,7 +44,7 @@ bundle config set --local no_prune true
 
 Write-Host "--- Installing gems from Gemfile"
 bundle install --jobs=7 --retry=3
-if ($LASTEXITCODE -ne 0) { throw "❌ Bundle install failed with exit code $LASTEXITCODE" }
+if ($LASTEXITCODE -ne 0) { throw "Bundle install failed with exit code $LASTEXITCODE" }
 
 $version = (Ruby -v | Out-String).Trim()
 Write-Host "Ruby version: $version"
@@ -53,7 +55,7 @@ if ($version -match "3\.1") {
 } elseif ($version -match "3\.4") {
     $ruby_ver = "3.4.0"
 } else {
-    Write-Host "⚠ WARNING: Unknown Ruby version. Skipping DLL check."
+    Write-Host "WARNING: Unknown Ruby version. Skipping DLL check."
     $ruby_ver = $null
 }
 
@@ -71,7 +73,7 @@ if ($ruby_ver) {
     }
 
     if (!(Test-Path $correct_dll) -and (Test-Path $wrong_dll)) {
-        Write-Host "🔄 Fixing DLL casing: recreating file with corrected casing"
+        Write-Host "Fixing DLL casing: recreating file with corrected casing"
 
         # Read content of the wrong DLL file
         $bytes = Get-Content -Path $wrong_dll -Encoding Byte -ReadCount 0
@@ -84,9 +86,9 @@ if ($ruby_ver) {
     }
 
     if (Test-Path $correct_dll) {
-        Write-Host "✅ DLL now present: $correct_dll"
+        Write-Host "DLL now present: $correct_dll"
     } else {
-        Write-Host "❌ DLL still missing after attempted fix."
+        Write-Host "DLL still missing after attempted fix."
     }
 
     Start-Sleep -Seconds 2
@@ -97,10 +99,10 @@ if ($ruby_ver) {
 
     # --- Add Chef DLL path to PATH ---
     if (Test-Path $dll_dir) {
-        Write-Host "🔧 Adding Chef DLL path to PATH: $dll_dir"
+        Write-Host "Adding Chef DLL path to PATH: $dll_dir"
         $env:PATH = "$dll_dir;$env:PATH"
     } else {
-        Write-Host "⚠ Chef DLL path not found: $dll_dir"
+        Write-Host "WARNING: Chef DLL path not found: $dll_dir"
     }
 }
 
@@ -109,14 +111,14 @@ $lddpaths = Get-ChildItem -Path "C:\" -Filter "msvcrt.dll" -Recurse -ErrorAction
 if ($lddpaths) {
     $firstMsvcrt = $lddpaths | Select-Object -First 1
     $msvcrtDir = $firstMsvcrt.DirectoryName
-    Write-Host "🔧 Adding msvcrt.dll directory to PATH: $msvcrtDir"
+    Write-Host "Adding msvcrt.dll directory to PATH: $msvcrtDir"
     $env:PATH = "$msvcrtDir;$env:PATH"
 
     foreach ($ldd in $lddpaths) {
         Write-Host "Found msvcrt.dll at: $($ldd.FullName)"
     }
 } else {
-    Write-Host "⚠ No msvcrt.dll found in the directory tree."
+    Write-Host "WARNING: No msvcrt.dll found in the directory tree."
 }
 
 Write-Host "--- Final PATH value:"
@@ -129,4 +131,4 @@ if ($ruby_ver) {
     & bundle exec $args
 }
 
-if ($LASTEXITCODE -ne 0) { throw "❌ Command failed with exit code $LASTEXITCODE" }
+if ($LASTEXITCODE -ne 0) { throw "Command failed with exit code $LASTEXITCODE" }
