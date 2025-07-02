@@ -121,6 +121,24 @@ if ($lddpaths) {
     Write-Host "WARNING: No msvcrt.dll found in the directory tree."
 }
 
+# --- Add known system DLL directories to PATH ---
+$winSxsPath = "C:\Windows\WinSxS"
+$sysWow64Path = "C:\Windows\SysWOW64"
+
+if (Test-Path $winSxsPath) {
+    Write-Host "Adding WinSxS directory to PATH: $winSxsPath"
+    $env:PATH = "$winSxsPath;$env:PATH"
+} else {
+    Write-Host "WARNING: WinSxS directory not found: $winSxsPath"
+}
+
+if (Test-Path $sysWow64Path) {
+    Write-Host "Adding SysWOW64 directory to PATH: $sysWow64Path"
+    $env:PATH = "$sysWow64Path;$env:PATH"
+} else {
+    Write-Host "WARNING: SysWOW64 directory not found: $sysWow64Path"
+}
+
 Write-Host "--- Final PATH value:"
 Write-Host $env:PATH
 
