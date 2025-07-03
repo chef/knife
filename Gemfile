@@ -2,25 +2,41 @@ source "https://rubygems.org"
 
 gem "knife", path: "."
 
-# Chef core dependencies, locked to a compatible version range
-source "https://artifactory-internal.ps.chef.co/artifactory/api/gems/omnibus-gems-local" do
-  gem "chef", ">= 19.1"
-  gem "chef-config", ">= 19.1"
-  gem "chef-utils", ">= 19.1"
-  gem "ohai", ">= 19.1"
+# TODO: Once these gems are published to rubygems.org, we don't need to specify them in these conditions.
+if RUBY_PLATFORM.match?(/mswin|mingw|windows/)
+  # --- Windows: chef from vendor/cache, others from Artifactory ---
+
+  # Force Bundler to resolve chef from vendor/cache by declaring it without a source block
+  gem "chef", "19.1.36"
+
+  # Other Chef gems from Artifactory
+  source "https://artifactory-internal.ps.chef.co/artifactory/api/gems/omnibus-gems-local" do
+    gem "chef-config", "19.1.36"
+    gem "chef-utils", "19.1.36"
+    gem "ohai", ">= 19.1"
+  end
+
+else
+  # --- Linux/macOS: all Chef gems from Artifactory ---
+  source "https://artifactory-internal.ps.chef.co/artifactory/api/gems/omnibus-gems-local" do
+    gem "chef", ">= 19.1"
+    gem "chef-config", ">= 19.1"
+    gem "chef-utils", ">= 19.1"
+    gem "ohai", ">= 19.1"
+  end
 end
 
-# Platform specific gems
+# Platform-specific gems
 if RUBY_PLATFORM.match?(/mswin|mingw|windows/)
-  gem "fiddle", "<= 1.1.6"
   gem "win32ole"
   gem "win32-process", "~> 0.9"
 end
 
-# Runtime gems knife might need
+# Runtime dependencies
 gem "syslog"
 gem "ostruct"
 gem "csv"
+gem "mixlib-authentication", "=3.0.10" #Pinning this to a specific version to avoid breaking changes
 
 group :development, :test do
   gem "cheffish", ">= 14"
@@ -32,9 +48,6 @@ group :development, :test do
   gem "benchmark"
   gem "reline"
 end
-
-gem "ffi", "1.17.2", platforms: [:mswin, :mingw]
-gem "ffi-win32-extensions", "~> 1.0", platforms: [:mswin, :mingw]
 
 group :omnibus_package, :pry do
   gem "pry"
