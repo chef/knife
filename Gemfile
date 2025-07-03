@@ -36,7 +36,7 @@ end
 gem "syslog"
 gem "ostruct"
 gem "csv"
-# gem "mixlib-authentication", "=3.0.10"
+gem "mixlib-authentication", "=3.0.10" #Pinning this to a specific version to avoid breaking changes
 
 group :development, :test do
   gem "cheffish", ">= 14"
