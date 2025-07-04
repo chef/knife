@@ -139,6 +139,9 @@ if (Test-Path $sysWow64Path) {
     Write-Host "WARNING: SysWOW64 directory not found: $sysWow64Path"
 }
 
+# Re-add Chef.PowerShell.Wrapper.dll path to PATH
+$env:Path = "C:/workdir/vendor/bundle/ruby/3.1.0/gems/chef-powershell-18.1.0/bin/ruby_bin_folder/AMD64;" + $env:Path
+
 Write-Host "--- Final PATH value:"
 Write-Host $env:PATH
 
