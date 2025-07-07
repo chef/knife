@@ -28,27 +28,27 @@ Write-Host "--- Installing gems from Gemfile"
 bundle install --jobs=7 --retry=3
 if ($LASTEXITCODE -ne 0) { throw "❌ Bundle install failed with exit code $LASTEXITCODE" }
 
-Write-Host "--- Why is Chef PowerShell telling me the file is not found?"
-Write-Host "--- Checking for Chef-PowerShell gem"
-Write-Host "--- Verifying Chef-PowerShell gem installation"
-$version = Ruby -v 
-Write-Host "Ruby version: $version"
-if ($version -match "3.1"){
-    $dlls = Get-ChildItem -Path "C:/workdir/vendor/bundle/ruby/3.1.0/gems/chef-powershell-18.1.0/bin/ruby_bin_folder/AMD64/" -Filter "msvc*.dll"
-    foreach ($dll in $dlls) {
-        Write-Host "I have this DLL: $($dll.FullName)"
-    }
-}
+# Write-Host "--- Why is Chef PowerShell telling me the file is not found?"
+# Write-Host "--- Checking for Chef-PowerShell gem"
+# Write-Host "--- Verifying Chef-PowerShell gem installation"
+# $version = Ruby -v 
+# Write-Host "Ruby version: $version"
+# if ($version -match "3.1"){
+#     $dlls = Get-ChildItem -Path "C:/workdir/vendor/bundle/ruby/3.1.0/gems/chef-powershell-18.1.0/bin/ruby_bin_folder/AMD64/" -Filter "msvc*.dll"
+#     foreach ($dll in $dlls) {
+#         Write-Host "I have this DLL: $($dll.FullName)"
+#     }
+# }
 
-Write-Host "--- Now looking for msvcrt.dll"
-$lddpaths = gci -Path "C:\" -Filter "msvcrt.dll" -Recurse -ErrorAction SilentlyContinue
-if ($lddpaths) {
-    foreach ($ldd in $lddpaths) {
-        Write-Host "Found msvcrt at: $($ldd.FullName)"
-    }
-} else {
-    Write-Host "No msvcrt.dll found in the directory tree."
-}
+# Write-Host "--- Now looking for msvcrt.dll"
+# $lddpaths = gci -Path "C:\" -Filter "msvcrt.dll" -Recurse -ErrorAction SilentlyContinue
+# if ($lddpaths) {
+#     foreach ($ldd in $lddpaths) {
+#         Write-Host "Found msvcrt at: $($ldd.FullName)"
+#     }
+# } else {
+#     Write-Host "No msvcrt.dll found in the directory tree."
+# }
 
 Write-Host "+++ Executing bundle exec task"
 bundle exec $args
