@@ -44,15 +44,15 @@ if ($LASTEXITCODE -ne 0) { throw "❌ Bundle install failed with exit code $LAST
 #     }
 # }
 
-# Write-Host "--- Now looking for msvcrt.dll"
-# $lddpaths = gci -Path "C:\" -Filter "msvcrt.dll" -Recurse -ErrorAction SilentlyContinue
-# if ($lddpaths) {
-#     foreach ($ldd in $lddpaths) {
-#         Write-Host "Found msvcrt at: $($ldd.FullName)"
-#     }
-# } else {
-#     Write-Host "No msvcrt.dll found in the directory tree."
-# }
+Write-Host "--- Now looking for msvcrt.dll"
+$lddpaths = gci -Path "C:\" -Filter "msvcrt.dll" -Recurse -ErrorAction SilentlyContinue
+if ($lddpaths) {
+    foreach ($ldd in $lddpaths) {
+        Write-Host "Found msvcrt at: $($ldd.FullName)"
+    }
+} else {
+    Write-Host "No msvcrt.dll found in the directory tree."
+}
 
 Write-Host "+++ Executing bundle exec task"
 bundle exec $args
