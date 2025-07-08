@@ -1,8 +1,8 @@
 $ErrorActionPreference = "Stop"
 
-Write-Host "--- installing ridk for Ruby development kit"
-ridk install 3
-ridk enable
+# Write-Host "--- installing ridk for Ruby development kit"
+# ridk install 3
+# ridk enable
 
 Write-Host "--- Configuring Artifactory access"
 $env:ARTIFACTORY_ENDPOINT = "https://artifactory-internal.ps.chef.co/artifactory"
