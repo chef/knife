@@ -5,10 +5,6 @@
 slack:
   notify_channel: chef-ws-notify
 
-## This publish is triggered by the `built_in:publish_rubygems` artifact_action.
-#rubygems:
-#  - chef-cli
-
 release_branches:
   - main:
       version_constraint: 19.*
