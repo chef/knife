@@ -4,12 +4,19 @@ $ErrorActionPreference = "Stop"
 # ridk install 3
 # ridk enable
 
-Write-Host "--- Downloading .NET Framework 4.8"
-$dotNetInstaller = "C:\ndp48-offline.exe"
-Invoke-WebRequest -Uri "https://download.microsoft.com/download/2/3/2/2323C3B8-489E-4B6C-BA07-FD33E68F6EDE/ndp48-x86-x64-allos-enu.exe" -OutFile $dotNetInstaller -UseBasicParsing
-Write-Host "--- Installing .NET Framework 4.8"
-Start-Process -FilePath $dotNetInstaller -ArgumentList "/quiet", "/norestart", "/install" -Wait
-Remove-Item $dotNetInstaller -Force
+# Define the download URL and destination path
+$dotNetInstallerUrl = "https://go.microsoft.com/fwlink/?linkid=863265"
+$installerPath = "$env:TEMP\ndp472-kb4054530-x86-x64-allos-enu.exe"
+
+# Download the installer
+Invoke-WebRequest -Uri $dotNetInstallerUrl -OutFile $installerPath
+
+# Install .NET Framework silently
+Start-Process -FilePath $installerPath -ArgumentList "/quiet", "/norestart" -Wait
+
+# Optionally, remove the installer after installation
+Remove-Item -Path $installerPath -Force
+
 
 
 Write-Host "--- Downloading MSYS2 installer"
