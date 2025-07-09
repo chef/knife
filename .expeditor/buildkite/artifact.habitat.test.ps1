@@ -79,13 +79,19 @@ Push-Location $project_root
 
 try {
     Write-Host "Running unit tests..."
-    hab pkg exec "${pkg_ident}" rake unit
-
-    If ($lastexitcode -ne 0) {
-        Write-Host "Rake unit tests failed!" -ForegroundColor Red
-        Exit $lastexitcode
+    $testScriptPath = "$project_root/habitat/tests/test.ps1"
+    if (Test-Path $testScriptPath) {
+        Write-Host "Executing test script: $testScriptPath"
+        & powershell -NoProfile -ExecutionPolicy Bypass -File $testScriptPath $pkg_ident
+        if ($LASTEXITCODE -ne 0) {
+            Write-Host "Tests failed!" -ForegroundColor Red
+            throw "Tests failed with exit code $LASTEXITCODE"
+        } else {
+            Write-Host "Tests passed!" -ForegroundColor Green
+        }
     } else {
-        Write-Host "Rake unit tests passed!" -ForegroundColor Green
+        Write-Host "Test script not found: $testScriptPath" -ForegroundColor Red
+        throw "Test script not found"
     }
 }
 finally {
