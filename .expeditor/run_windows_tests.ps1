@@ -4,19 +4,17 @@ $ErrorActionPreference = "Stop"
 # ridk install 3
 # ridk enable
 
-# Install .NET Framework 4.8 (only if not already present)
 Write-Host "--- Downloading .NET Framework 4.8"
-$dotNetInstaller = "C:\ndp48-web.exe"
-Invoke-WebRequest -Uri "https://download.visualstudio.microsoft.com/download/pr/ed2c6c57-c874-41b2-a147-bf8e15c6d1a7/1aaf9433a113b6a75d104fa408fe1f25/ndp48-web.exe" -OutFile $dotNetInstaller -UseBasicParsing
+$dotNetInstaller = "C:\ndp48-offline.exe"
+Invoke-WebRequest -Uri "https://download.microsoft.com/download/2/3/2/2323C3B8-489E-4B6C-BA07-FD33E68F6EDE/ndp48-x86-x64-allos-enu.exe" -OutFile $dotNetInstaller -UseBasicParsing
 Write-Host "--- Installing .NET Framework 4.8"
 Start-Process -FilePath $dotNetInstaller -ArgumentList "/quiet", "/norestart", "/install" -Wait
 Remove-Item $dotNetInstaller -Force
 
 
-# --- Install MSYS2 manually ---
 Write-Host "--- Downloading MSYS2 installer"
 $msys2Installer = "C:\msys2-x86_64-20250221.exe"
-Invoke-WebRequest -Uri "https://go.microsoft.com/fwlink/?linkid=2088631" -OutFile $dotNetInstaller -UseBasicParsing
+Invoke-WebRequest -Uri "https://github.com/msys2/msys2-installer/releases/download/2025-02-21/msys2-x86_64-20250221.exe" -OutFile $msys2Installer -UseBasicParsing
 
 Write-Host "--- Running MSYS2 installer"
 Start-Process -FilePath $msys2Installer -ArgumentList "--confirm-command", "--accept-messages", "--root", "C:\msys2", "--default-term", "mintty", "--no-start" -Wait
