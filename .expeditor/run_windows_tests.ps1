@@ -16,7 +16,7 @@ Remove-Item $dotNetInstaller -Force
 # --- Install MSYS2 manually ---
 Write-Host "--- Downloading MSYS2 installer"
 $msys2Installer = "C:\msys2-x86_64-20250221.exe"
-Invoke-WebRequest -Uri "https://github.com/msys2/msys2-installer/releases/download/2025-02-21/msys2-x86_64-20250221.exe" -OutFile $msys2Installer -UseBasicParsing
+Invoke-WebRequest -Uri "https://go.microsoft.com/fwlink/?linkid=2088631" -OutFile $dotNetInstaller -UseBasicParsing
 
 Write-Host "--- Running MSYS2 installer"
 Start-Process -FilePath $msys2Installer -ArgumentList "--confirm-command", "--accept-messages", "--root", "C:\msys2", "--default-term", "mintty", "--no-start" -Wait
