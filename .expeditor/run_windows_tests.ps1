@@ -1,45 +1,5 @@
 $ErrorActionPreference = "Stop"
 
-# Write-Host "--- installing ridk for Ruby development kit"
-# ridk install 3
-# ridk enable
-
-# Define the download URL and destination path
-$dotNetInstallerUrl = "https://go.microsoft.com/fwlink/?linkid=863265"
-$installerPath = "$env:TEMP\ndp472-kb4054530-x86-x64-allos-enu.exe"
-
-# Download the installer
-Invoke-WebRequest -Uri $dotNetInstallerUrl -OutFile $installerPath
-
-# Install .NET Framework silently
-Start-Process -FilePath $installerPath -ArgumentList "/quiet", "/norestart" -Wait
-
-# Optionally, remove the installer after installation
-Remove-Item -Path $installerPath -Force
-
-
-
-Write-Host "--- Downloading MSYS2 installer"
-$msys2Installer = "C:\msys2-x86_64-20250221.exe"
-Invoke-WebRequest -Uri "https://github.com/msys2/msys2-installer/releases/download/2025-02-21/msys2-x86_64-20250221.exe" -OutFile $msys2Installer -UseBasicParsing
-
-Write-Host "--- Running MSYS2 installer"
-Start-Process -FilePath $msys2Installer -ArgumentList "--confirm-command", "--accept-messages", "--root", "C:\msys2", "--default-term", "mintty", "--no-start" -Wait
-
-Write-Host "--- Cleaning up MSYS2 installer"
-Remove-Item $msys2Installer -Force
-
-# --- Add MSYS2 to PATH ---
-$env:PATH += ";C:\msys2\usr\bin;C:\msys2\ucrt64\bin"
-[Environment]::SetEnvironmentVariable("PATH", $env:PATH, [EnvironmentVariableTarget]::Machine)
-
-# --- Run ridk to install and enable MSYS2 devkit ---
-Write-Host "--- Running ridk install 3"
-ridk install 3
-
-Write-Host "--- Enabling MSYS2 environment"
-ridk enable
-
 Write-Host "--- Configuring Artifactory access"
 $env:ARTIFACTORY_ENDPOINT = "https://artifactory-internal.ps.chef.co/artifactory"
 $env:ARTIFACTORY_USERNAME = "REDACTED@chef.io"
