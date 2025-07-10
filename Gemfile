@@ -26,12 +26,6 @@ else
   end
 end
 
-# Platform-specific gems
-if RUBY_PLATFORM.match?(/mswin|mingw|windows/)
-  gem "win32ole"
-  gem "win32-process", "~> 0.9"
-end
-
 # Runtime dependencies
 gem "syslog"
 gem "ostruct"
