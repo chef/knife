@@ -26,6 +26,12 @@ else
   end
 end
 
+# Only include these gems when Ruby version is 3.4.x
+if RUBY_VERSION.start_with?("3.4")
+  gem "win32ole"
+  gem "win32-process", "~> 0.9"
+end
+
 # Runtime dependencies
 gem "syslog"
 gem "ostruct"
