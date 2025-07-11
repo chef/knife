@@ -26,8 +26,8 @@ else
   end
 end
 
-# Platform-specific gems
-if RUBY_PLATFORM.match?(/mswin|mingw|windows/)
+# Only include these gems when Ruby version is 3.4.x
+if RUBY_VERSION.start_with?("3.4") && RUBY_PLATFORM.match?(/mswin|mingw|windows/)
   gem "win32ole"
   gem "win32-process", "~> 0.9"
 end
