@@ -29,8 +29,9 @@ changelog:
   rollup_header: Changes not yet released to rubygems.org
 
 artifact_channels:
-  - unstable
+  - base-2025-current
   - base-2025
+  - stable
 
 pipelines:
   - verify:
@@ -72,9 +73,17 @@ subscriptions:
             - "Expeditor: Skip Habitat"
             - "Expeditor: Skip All"
 
-  # this works for symantec version promote
-  - workload: project_promoted:{{agent_id}}:*
+  # Creates base-2025-current package from unstable package once hab build is complete
+  - workload: buildkite_hab_build_group_published:{{agent_id}}:*
     actions:
-      - built_in:rollover_changelog
-      - built_in:promote_habitat_packages
-      - built_in:publish_rubygems
+     - built_in:promote_habitat_packages
+
+  # # Promoting base-2025-current to base-2025 and stable channel
+  # - workload: project_promoted:{{agent_id}}:base-2025-current:*
+  #   actions:
+  #    - built_in:promote_habitat_packages:
+  #       channel: base-2025
+  #    - built_in:promote_habitat_packages:
+  #       channel: stable
+  #    - built_in:rollover_changelog
+  #    - built_in:publish_rubygems
