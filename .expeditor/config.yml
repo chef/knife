@@ -79,7 +79,7 @@ subscriptions:
      - built_in:promote_habitat_packages
 
   # # Promoting base-2025-current to base-2025 and stable channel
-  - workload: project_promoted:{{agent_id}}:base-2025-current:*
+  - workload: project_promoted:{{agent_id}}:*
     actions:
      - built_in:promote_habitat_packages:
         channel: base-2025
