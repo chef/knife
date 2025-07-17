@@ -65,25 +65,25 @@ subscriptions:
           ignore_labels:
             - "Expeditor: Skip Changelog"
             - "Expeditor: Skip All"
-      - built_in:build_gem:
-          only_if: built_in:bump_version
       - trigger_pipeline:habitat/build:
           only_if: built_in:bump_version
           ignore_labels:
             - "Expeditor: Skip Habitat"
             - "Expeditor: Skip All"
+      - built_in:build_gem:
+          only_if: built_in:bump_version
 
   # Creates base-2025-current package from unstable package once hab build is complete
-  # - workload: buildkite_hab_build_group_published:{{agent_id}}:*
-  #   actions:
-  #    - built_in:promote_habitat_packages
+  - workload: buildkite_hab_build_group_published:{{agent_id}}:*
+    actions:
+     - built_in:promote_habitat_packages
 
   # Promoting base-2025-current to base-2025 and stable channel and publish to rubygems.org
   - workload: project_promoted:{{agent_id}}:*
     actions:
      - built_in:promote_habitat_packages:
         channel: base-2025
-     - built_in:promote_habitat_packages:
-        channel: stable
+    #  - built_in:promote_habitat_packages:
+    #     channel: stable
      - built_in:rollover_changelog
      - built_in:publish_rubygems
