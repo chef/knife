@@ -78,12 +78,12 @@ subscriptions:
     actions:
      - built_in:promote_habitat_packages
 
-  # Promoting base-2025-current to base-2025 and stable channel and publish to rubygems.org
-  - workload: project_promoted:{{agent_id}}:*
-    actions:
-     - built_in:promote_habitat_packages:
-        channel: base-2025
-    #  - built_in:promote_habitat_packages:
-    #     channel: stable
-     - built_in:rollover_changelog
-     - built_in:publish_rubygems
+  # # Promoting base-2025-current to base-2025 and stable channel and publish to rubygems.org
+  # - workload: project_promoted:{{agent_id}}:*
+  #   actions:
+  #    - built_in:promote_habitat_packages:
+  #       channel: base-2025
+  #   #  - built_in:promote_habitat_packages:
+  #   #     channel: stable
+  #    - built_in:rollover_changelog
+  #    - built_in:publish_rubygems
