@@ -78,14 +78,21 @@ subscriptions:
     actions:
      - built_in:promote_habitat_packages
 
-  # Promoting base-2025-current to base-2025
-  - workload: project_promoted:{{agent_id}}:base-2025-current:*
+    # Promoting base-2025-current to base-2025
+  - workload: project_promoted:{{agent_id}}:*
     actions:
-     - built_in:promote_habitat_packages
-
-   # Promoting base-2025 to stable
-  - workload: project_promoted:{{agent_id}}:base-2025:*
-    actions:
-     - built_in:promote_habitat_packages
      - built_in:rollover_changelog
      - built_in:publish_rubygems
+
+
+  # # Promoting base-2025-current to base-2025
+  # - workload: project_promoted:{{agent_id}}:base-2025-current:*
+  #   actions:
+  #    - built_in:promote_habitat_packages
+
+  #  # Promoting base-2025 to stable
+  # - workload: project_promoted:{{agent_id}}:base-2025:*
+  #   actions:
+  #    - built_in:promote_habitat_packages
+  #    - built_in:rollover_changelog
+  #    - built_in:publish_rubygems
