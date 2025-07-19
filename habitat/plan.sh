@@ -1,9 +1,9 @@
 # Package metadata
 export HAB_BLDR_CHANNEL="base-2025"
 export HAB_REFRESH_CHANNEL="base-2025"
-pkg_name=knife
 ruby_pkg="core/ruby3_4"
-pkg_origin=core
+pkg_name="knife"
+pkg_origin="chef"
 pkg_description="knife is a command-line tool that provides an interface between a local chef-repo and the Chef Infra Server."
 pkg_upstream_url=https://www.chef.io/
 pkg_maintainer="The Habitat Maintainers <humans@habitat.sh>"
