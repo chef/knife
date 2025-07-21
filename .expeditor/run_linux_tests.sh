@@ -21,8 +21,6 @@ if [[ "$ruby_version" == 3.1* ]]; then
   echo "--- Installing RubyGems 3.6.9 for Ruby 3.1"
   gem install rubygems-update -v 3.6.9
   update_rubygems
-  echo "--- Installing Bundler 2.6.9 for Ruby 3.1"
-  gem install bundler -v 2.6.9
 fi
 
 echo "--- Adding Artifactory gem source"
