@@ -4,6 +4,8 @@ gem "knife", path: "."
 
 # TODO: Once these gems are published to rubygems.org, we don't need to specify them in these conditions.
 if RUBY_PLATFORM.match?(/mswin|mingw|windows/)
+  gem "appbundler"
+
   # --- Windows: chef from vendor/cache, others from Artifactory ---
 
   # Force Bundler to resolve chef from vendor/cache by declaring it without a source block
@@ -39,7 +41,6 @@ gem "csv"
 gem "mixlib-authentication", "=3.0.10" #Pinning this to a specific version to avoid breaking changes
 
 group :development, :test do
-  gem "appbundler"
   gem "cheffish", ">= 14"
   gem "webmock"
   gem "crack", "< 0.4.6"
