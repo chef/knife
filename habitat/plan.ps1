@@ -32,6 +32,7 @@ function Invoke-SetupEnvironment {
     Set-RuntimeEnv LC_CTYPE "en_US.UTF-8"
 }
 
+# Todo: Remove this function once the Chef gem is published with the correct name in Artifactory or rubygems.org.
 function Handle-ArtifactoryChefGem {
     Write-Host "--- Handling temporary Chef gem workaround from Artifactory"
 
@@ -60,6 +61,7 @@ function Invoke-Build {
         $env:GEM_HOME = "$HAB_CACHE_SRC_PATH/$pkg_dirname/vendor"
 
         # Add only the chef gem manually
+        # Todo: Remove this function once the Chef gem is published with the correct name in Artifactory or rubygems.org.
         Handle-ArtifactoryChefGem
 
         Write-BuildLine " ** Configuring bundler for this build environment"
