@@ -5,8 +5,8 @@
 # TODO: Set-StrictMode -Version Latest
 $PSDefaultParameterValues['*:ErrorAction']='Stop'
 $ErrorActionPreference = 'Stop'
-$env:HAB_BLDR_CHANNEL = 'LTS-2024'
-$env:HAB_REFRESH_CHANNEL = "LTS-2024"
+$env:HAB_BLDR_CHANNEL = 'base-2025'
+$env:HAB_REFRESH_CHANNEL = "base-2025"
 $env:CHEF_LICENSE = 'accept-no-persist'
 $env:HAB_LICENSE = 'accept-no-persist'
 $Plan = 'knife'
@@ -80,15 +80,8 @@ Write-Host "+++ Testing $Plan"
 Push-Location $project_root
 
 try {
-    Write-Host "Running unit tests..."
-    hab pkg exec "${pkg_ident}" rake unit
-
-    If ($lastexitcode -ne 0) {
-        Write-Host "Rake unit tests failed!" -ForegroundColor Red
-        Exit $lastexitcode
-    } else {
-        Write-Host "Rake unit tests passed!" -ForegroundColor Green
-    }
+    $scriptPath = Join-Path $project_root "habitat/tests/test.ps1"
+    & $scriptPath $pkg_ident
 }
 finally {
     # Ensure we always return to the original directory
