@@ -54,11 +54,14 @@ do_unpack() {
 do_build() {
   export GEM_HOME="$pkg_prefix/vendor"
   export GEM_PATH="$GEM_HOME"
-  build_line "Building the Knife gem from the gemspec"
-
+  build_line "Building the Knife gem from the gemspec with GEM_HOME=$GEM_HOME and GEM_PATH=$GEM_PATH"
   pushd "$HAB_CACHE_SRC_PATH/$pkg_dirname"
     bundle config set --local path "$GEM_HOME"
-    bundle install --jobs=4 --retry=5
+    bundle config --local without integration deploy maintenance
+    bundle config --local jobs 4
+    bundle config --local retry 5
+    bundle config --local silence_root_warning 1
+    bundle install
 
     gem build knife.gemspec
 
@@ -67,9 +70,21 @@ do_build() {
 
 # Install the built gem into the package directory
 do_install() {
+   export GEM_HOME="$pkg_prefix/vendor"
+
+  build_line " do_install Setting GEM_PATH=$GEM_HOME"
+  export GEM_PATH="$GEM_HOME"
    build_line "Installing the Knife gem"
     pushd "$HAB_CACHE_SRC_PATH/$pkg_dirname"
-    gem install knife-*.gem --no-document --install-dir "$GEM_HOME"
+    gem install knife-*.gem --no-document
+
+    # install additional knife plugins
+
+    # build_line "Installing the knife-ec2 plugin"
+    gem install specific_install
+    gem specific_install -l https://github.com/sanjain-progress/knife-ec2.git -b sanjain/CHEF-15720/ruby_knife_upgrade
+
+
 
   popd
   wrap_ruby_knife
@@ -90,10 +105,14 @@ wrap_bin_with_ruby() {
 #!$(pkg_path_for core/bash)/bin/bash
 set -e
 # Set binary path that allows knife and chef to find correct binaries
-export PATH="/sbin:/usr/sbin:/usr/local/sbin:/usr/local/bin:/usr/bin:/bin:\$PATH"
-# Set Ruby gem paths to include the chef gem
+export PATH="/sbin:/usr/sbin:/usr/local/sbin:/usr/local/bin:/usr/bin:/bin:$pkg_prefix/vendor/bin:\$PATH"
+
+# Set Ruby paths defined from 'do_setup_environment()'
 export GEM_HOME="$pkg_prefix/vendor/ruby/3.4.0"
-export GEM_PATH="\$GEM_HOME"
+export GEM_PATH="$pkg_prefix/vendor"
+
+
+
 exec $(pkg_path_for ${ruby_pkg})/bin/ruby $real_bin \$@
 EOF
   chmod -v 755 "$bin"
