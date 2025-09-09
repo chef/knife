@@ -77,6 +77,118 @@ describe Chef::Knife::Bootstrap do
     end
   end
 
+  context "#fetch_license" do
+    let(:licensing_config_mock) { double("ChefLicensing::Config") }
+    let(:licensing_handler_mock) { double("Chef::Utils::LicensingHandler") }
+    let(:license_mock) { double("License") }
+
+    before do
+      stub_const("ChefLicensing::Config", licensing_config_mock)
+      stub_const("Chef::Utils::LicensingHandler", licensing_handler_mock)
+    end
+
+    context "when bootstrap_url is provided" do
+      it "returns early without calling licensing" do
+        knife.config[:bootstrap_url] = "https://example.com/bootstrap.sh"
+        expect(licensing_config_mock).not_to receive(:require_license_for)
+
+        knife.send(:fetch_license)
+      end
+    end
+
+    context "when bootstrap_template is provided" do
+      it "returns early without calling licensing" do
+        knife.config[:bootstrap_template] = "custom-template"
+
+        expect(licensing_config_mock).not_to receive(:require_license_for)
+
+        knife.send(:fetch_license)
+      end
+    end
+
+    context "when both bootstrap_url and bootstrap_template are provided" do
+      it "returns early without calling licensing" do
+        knife.config[:bootstrap_url] = "https://example.com/bootstrap.sh"
+        knife.config[:bootstrap_template] = "custom-template"
+
+        expect(licensing_config_mock).not_to receive(:require_license_for)
+
+        knife.send(:fetch_license)
+      end
+    end
+
+    context "when neither bootstrap_url nor bootstrap_template are provided" do
+      before do
+        knife.config[:bootstrap_url] = nil
+        knife.config[:bootstrap_template] = nil
+      end
+
+      it "validates license and sets license configuration" do
+        expect(license_mock).to receive(:install_sh_url).and_return("https://example.com/install.sh")
+        expect(license_mock).to receive(:license_key).and_return("test-license-key")
+        expect(license_mock).to receive(:omnitruck_url).and_return("https://example.com/omnitruck")
+        expect(license_mock).to receive(:license_type).and_return("commercial")
+
+        expect(licensing_handler_mock).to receive(:validate!).with(knife.config).and_return(license_mock)
+
+        expect(licensing_config_mock).to receive(:require_license_for).and_yield
+
+        knife.send(:fetch_license)
+
+        expect(knife.config[:license_url]).to eq("https://example.com/install.sh")
+        expect(knife.config[:license_id]).to eq("test-license-key")
+        expect(knife.config[:omnitruck_url]).to eq("https://example.com/omnitruck")
+        expect(knife.config[:license_type]).to eq("commercial")
+      end
+
+      it "handles licensing validation errors gracefully" do
+        expect(licensing_handler_mock).to receive(:validate!).with(knife.config).and_raise(StandardError.new("License validation failed"))
+
+        expect(licensing_config_mock).to receive(:require_license_for).and_yield
+
+        expect { knife.send(:fetch_license) }.to raise_error(StandardError, "License validation failed")
+      end
+
+      it "properly sets all license configuration values from the license object" do
+        expect(license_mock).to receive(:install_sh_url).and_return("https://omnitruck.chef.io/install.sh")
+        expect(license_mock).to receive(:license_key).and_return("ABCD-1234-EFGH-5678")
+        expect(license_mock).to receive(:omnitruck_url).and_return("https://omnitruck.chef.io")
+        expect(license_mock).to receive(:license_type).and_return("trial")
+
+        expect(licensing_handler_mock).to receive(:validate!).with(knife.config).and_return(license_mock)
+        expect(licensing_config_mock).to receive(:require_license_for).and_yield
+
+        # Verify that config values are nil before the call
+        expect(knife.config[:license_url]).to be_nil
+        expect(knife.config[:license_id]).to be_nil
+        expect(knife.config[:omnitruck_url]).to be_nil
+        expect(knife.config[:license_type]).to be_nil
+
+        knife.send(:fetch_license)
+
+        # Verify all license values are properly set
+        expect(knife.config[:license_url]).to eq("https://omnitruck.chef.io/install.sh")
+        expect(knife.config[:license_id]).to eq("ABCD-1234-EFGH-5678")
+        expect(knife.config[:omnitruck_url]).to eq("https://omnitruck.chef.io")
+        expect(knife.config[:license_type]).to eq("trial")
+      end
+
+      context "when ChefLicensing::Config.require_license_for does not yield" do
+        it "does not call licensing handler" do
+          expect(licensing_config_mock).to receive(:require_license_for).and_return(nil)
+          expect(licensing_handler_mock).not_to receive(:validate!)
+
+          knife.send(:fetch_license)
+
+          expect(knife.config[:license_url]).to be_nil
+          expect(knife.config[:license_id]).to be_nil
+          expect(knife.config[:omnitruck_url]).to be_nil
+          expect(knife.config[:license_type]).to be_nil
+        end
+      end
+    end
+  end
+
   context "#bootstrap_template" do
     it "should default to chef-full" do
       expect(knife.bootstrap_template).to be_a_kind_of(String)
@@ -1687,6 +1799,7 @@ describe Chef::Knife::Bootstrap do
   describe "#run" do
     it "performs the steps we expect to run a bootstrap" do
       expect(knife).to receive(:check_eula_license)
+      expect(knife).to receive(:fetch_license)
       expect(knife).to receive(:validate_name_args!).ordered
       expect(knife).to receive(:validate_protocol!).ordered
       expect(knife).to receive(:validate_first_boot_attributes!).ordered
