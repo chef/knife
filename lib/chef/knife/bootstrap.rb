@@ -354,6 +354,10 @@ class Chef
              description: "By default knife copies the local license key to the node and activates it. This options can be used to disable that.",
              boolean: true
 
+      option :chef_license_key,
+              long: "--chef-license-key KEY",
+              description: "The Chef License key to be used for license activation. You can run `knife license` command to retrieve it."
+
       # Deprecated options. These must be declared after
       # regular options because they refer to the replacement
       # option definitions implicitly.
@@ -1197,11 +1201,17 @@ class Chef
 
       # Fetch the workstation license stored in the system
       def fetch_license
-        license = Chef::Utils::LicensingHandler.validate!
-        config[:license_url] = license.install_sh_url
-        config[:license_id] = license.license_key
-        config[:omnitruck_url] = license.omnitruck_url
-        config[:license_type] = license.license_type
+        # The license is not needed if we are using a custom bootstrap URL or template
+        return if config[:bootstrap_url] || config[:bootstrap_template]
+
+        # This block will mandate license acceptance
+        ChefLicensing::Config.require_license_for do
+          license = Chef::Utils::LicensingHandler.validate!(config)
+          config[:license_url] = license.install_sh_url
+          config[:license_id] = license.license_key
+          config[:omnitruck_url] = license.omnitruck_url
+          config[:license_type] = license.license_type
+        end
       end
     end
   end
