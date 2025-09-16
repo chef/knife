@@ -23,6 +23,7 @@ pkg_build_deps=(
   core/make
 )
 
+
 pkg_version() {
   cat "../VERSION"
 }
@@ -80,11 +81,12 @@ do_install() {
 
     # install additional knife plugins
 
-    # build_line "Installing the knife-ec2 plugin"
+    build_line "Installing the knife-ec2 plugin"
     gem install specific_install
-    gem specific_install -l https://github.com/sanjain-progress/knife-ec2.git -b sanjain/CHEF-15720/ruby_knife_upgrade
+    gem specific_install -l https://github.com/chef/knife-ec2.git -b main
 
-
+    build_line "Installing the knife-google plugin"
+    gem specific_install -l https://github.com/chef/knife-google.git -b sanjain/CHEF-15864/ruby_support_3.4
 
   popd
   wrap_ruby_knife
