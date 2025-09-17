@@ -63,15 +63,18 @@ do_build() {
     gem build knife.gemspec
 
   popd
+  # This will be removed once the custom branch is merged upstream
+  build_chef_licensing
 }
 
 # Install the built gem into the package directory
 do_install() {
-   build_line "Installing the Knife gem"
-    pushd "$HAB_CACHE_SRC_PATH/$pkg_dirname"
+  build_line "Installing the Knife gem"
+  pushd "$HAB_CACHE_SRC_PATH/$pkg_dirname"
     gem install knife-*.gem --no-document --install-dir "$GEM_HOME"
-
   popd
+
+  make_pkg_official_distrib
   wrap_ruby_knife
   set_runtime_env "GEM_PATH" "${pkg_prefix}/vendor"
 }
@@ -97,4 +100,21 @@ export GEM_PATH="\$GEM_HOME"
 exec $(pkg_path_for ${ruby_pkg})/bin/ruby $real_bin \$@
 EOF
   chmod -v 755 "$bin"
+}
+
+build_chef_licensing() {
+  build_line "Building chef-licensing gem from custom branch"
+  git clone --depth 1 --branch nm/introducing-optional-mode https://github.com/chef/chef-licensing.git /tmp/chef-licensing
+  pushd /tmp/chef-licensing/components/ruby
+    gem build chef-licensing.gemspec
+    gem install chef-licensing-*.gem --no-document --install-dir "$GEM_HOME/ruby/3.4.0"
+  popd
+  rm -rf /tmp/chef-licensing
+}
+
+make_pkg_official_distrib() {
+  build_line "Installing chef-official-distribution gem"
+  gem source --add "https://artifactory-internal.ps.chef.co/artifactory/omnibus-gems-local/"
+  gem install chef-official-distribution --no-document --install-dir "$GEM_HOME/ruby/3.4.0"
+  gem sources -r "https://artifactory-internal.ps.chef.co/artifactory/omnibus-gems-local/"
 }
