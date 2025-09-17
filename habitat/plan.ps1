@@ -180,6 +180,10 @@ function Install-ChefOfficialDistribution {
     }
     finally {
         # Always clean up gem sources
-        gem sources --remove $artifactorySource -ErrorAction SilentlyContinue
+        try {
+            gem sources --remove $artifactorySource
+        } catch {
+            # Ignore errors during cleanup
+        }
     }
 }
