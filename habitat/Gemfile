@@ -1,0 +1,8 @@
+# Gemfile for knife habitat package dependencies
+# This Gemfile manages additional knife plugins and dependencies for the habitat package
+# Note: knife gem is already built and installed locally, so it's not included here
+
+source 'https://rubygems.org'
+
+# Knife plugins with version constraints for reproducible builds
+gem 'knife-ec2', '~> 2.0'
