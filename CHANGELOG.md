@@ -1,14 +1,17 @@
 # Changelog
 
-<!-- latest_release 19.0.74 -->
-## [v19.0.74](https://github.com/chef/knife/tree/v19.0.74) (2025-09-19)
+<!-- latest_release 19.0.75 -->
+## [v19.0.75](https://github.com/chef/knife/tree/v19.0.75) (2025-09-23)
 
-#### Merged Pull Requests
-- Knife version should show knife version instead of Chef Infra Client version [#21](https://github.com/chef/knife/pull/21) ([sanjain-progress](https://github.com/sanjain-progress))
+#### Features & Enhancements
+- COPILOT-SETUP: Add comprehensive GitHub Copilot instructions [#33](https://github.com/chef/knife/pull/33) ([ashiqueps](https://github.com/ashiqueps))
 <!-- latest_release -->
 
 <!-- release_rollup since=18.7.9 -->
 ### Changes not yet released to rubygems.org
+
+#### Features & Enhancements
+- COPILOT-SETUP: Add comprehensive GitHub Copilot instructions [#33](https://github.com/chef/knife/pull/33) ([ashiqueps](https://github.com/ashiqueps)) <!-- 19.0.75 -->
 
 #### Merged Pull Requests
 - Knife version should show knife version instead of Chef Infra Client version [#21](https://github.com/chef/knife/pull/21) ([sanjain-progress](https://github.com/sanjain-progress)) <!-- 19.0.74 -->
