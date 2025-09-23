@@ -52,15 +52,10 @@ do_unpack() {
 
 # Build the Knife gem from its specification file
 do_build() {
-  export GEM_HOME="$pkg_prefix/vendor"
-  export GEM_PATH="$GEM_HOME"
+  setup_gem_environment
   build_line "Building the Knife gem from the gemspec with GEM_HOME=$GEM_HOME and GEM_PATH=$GEM_PATH"
   pushd "$HAB_CACHE_SRC_PATH/$pkg_dirname"
-    bundle config set --local path "$GEM_HOME"
-    bundle config --local without integration deploy maintenance
-    bundle config --local jobs 4
-    bundle config --local retry 5
-    bundle config --local silence_root_warning 1
+    configure_bundle
     bundle install
 
     gem build knife.gemspec
@@ -68,25 +63,44 @@ do_build() {
   popd
 }
 
+# Configure bundle settings for consistent gem installation
+configure_bundle() {
+  bundle config set --local path "$GEM_HOME"
+  bundle config --local without integration deploy maintenance
+  bundle config --local jobs 4
+  bundle config --local retry 5
+  bundle config --local silence_root_warning 1
+}
+
+# Setup gem environment variables
+setup_gem_environment() {
+  export GEM_HOME="$pkg_prefix/vendor"
+  export GEM_PATH="$GEM_HOME"
+}
+
+# Install knife plugins from habitat/Gemfile
+install_knife_plugins() {
+  setup_gem_environment
+
+  build_line "Installing knife plugins from habitat/Gemfile"
+  pushd "$PLAN_CONTEXT"
+    configure_bundle
+    bundle install
+  popd
+}
+
 # Install the built gem into the package directory
 do_install() {
-   export GEM_HOME="$pkg_prefix/vendor"
+  setup_gem_environment
 
-  build_line " do_install Setting GEM_PATH=$GEM_HOME"
-  export GEM_PATH="$GEM_HOME"
-   build_line "Installing the Knife gem"
-    pushd "$HAB_CACHE_SRC_PATH/$pkg_dirname"
+  build_line "Installing the Knife gem"
+  pushd "$HAB_CACHE_SRC_PATH/$pkg_dirname"
     gem install knife-*.gem --no-document
-
-    # install additional knife plugins
-
-    # build_line "Installing the knife-ec2 plugin"
-    gem install specific_install
-    gem specific_install -l https://github.com/sanjain-progress/knife-ec2.git -b sanjain/CHEF-15720/ruby_knife_upgrade
-
-
-
   popd
+
+  # Install additional knife plugins from habitat/Gemfile
+  install_knife_plugins
+
   wrap_ruby_knife
   set_runtime_env "GEM_PATH" "${pkg_prefix}/vendor"
 }
