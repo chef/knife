@@ -142,9 +142,9 @@ class Chef::Application::Knife < Chef::Application
   option :version,
     short: "-v",
     long: "--version",
-    description: "Show #{ChefUtils::Dist::Infra::PRODUCT} version.",
+    description: "Show knife version.",
     boolean: true,
-    proc: lambda { |v| puts "#{ChefUtils::Dist::Infra::PRODUCT}: #{Chef::Knife::VERSION}" },
+    proc: lambda { |v| puts "knife: #{Chef::Knife::VERSION}" },
     exit: 0
 
   option :fips,
@@ -219,7 +219,7 @@ class Chef::Application::Knife < Chef::Application
     end
 
     if want_help?
-      puts "#{ChefUtils::Dist::Infra::PRODUCT}: #{Chef::VERSION}"
+      puts "knife: #{Chef::Knife::VERSION}"
       puts
       puts "Docs: #{ChefUtils::Dist::Org::KNIFE_DOCS}"
       puts "Patents: #{ChefUtils::Dist::Org::PATENTS}"
