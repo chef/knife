@@ -33,7 +33,7 @@ class Chef
         def validate!
           license_keys = ChefLicensing.license_keys
 
-          return new(nil, nil) if license_keys.blank?
+          return new(nil, nil) if license_keys.nil? || license_keys.empty?
 
           licenses_metadata = ChefLicensing::Api::Describe.list({
             license_keys: license_keys,
