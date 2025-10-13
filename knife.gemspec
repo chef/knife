@@ -25,6 +25,7 @@ Gem::Specification.new do |s|
   s.add_dependency "net-ssh", ">= 5.1", "< 8"
   s.add_dependency "net-ssh-multi", "~> 1.2", ">= 1.2.1"
   s.add_dependency "bcrypt_pbkdf", "~> 1.1" # ed25519 ssh key support
+  s.add_dependency "ed25519", ">= 1.2", "< 2.0" # ed25519 ssh key support
   # disabling this until we get get it to compile on RHEL 7
   # s.add_dependency "x25519", ">= 1.0.9" # ed25519 KEX module. 1.0.9+ required to resolve sigill failures
   s.add_dependency "highline", ">= 1.6.9", "< 3" # Used in UI to present a list, no other usage.
@@ -39,7 +40,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency "chefstyle"
 
   s.add_dependency "proxifier2", "~> 1.1"
-  # s.add_dependency "chef-licensing", "~> 1.0"
+  s.add_dependency "chef-licensing", "~> 1.2"
 
   s.bindir       = "bin"
   s.executables  = %w{ knife }
