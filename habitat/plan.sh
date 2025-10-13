@@ -66,7 +66,6 @@ do_build() {
     gem build knife.gemspec
 
   popd
-  # This will be removed once the custom branch is merged upstream
 }
 
 # Install the built gem into the package directory
