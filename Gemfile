@@ -40,6 +40,10 @@ gem "ostruct"
 gem "csv"
 gem "mixlib-authentication", "=3.0.10" #Pinning this to a specific version to avoid breaking changes
 
+# ED25519 key support
+gem "ed25519", ">= 1.2", "< 2.0"
+gem "bcrypt_pbkdf", ">= 1.0", "< 2.0"
+
 group :development, :test do
   gem "cheffish", ">= 14"
   gem "webmock"
