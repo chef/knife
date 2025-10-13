@@ -1,10 +1,10 @@
 # Changelog
 
-<!-- latest_release 19.0.75 -->
-## [v19.0.75](https://github.com/chef/knife/tree/v19.0.75) (2025-09-23)
+<!-- latest_release 19.0.76 -->
+## [v19.0.76](https://github.com/chef/knife/tree/v19.0.76) (2025-10-13)
 
-#### Features & Enhancements
-- COPILOT-SETUP: Add comprehensive GitHub Copilot instructions [#33](https://github.com/chef/knife/pull/33) ([ashiqueps](https://github.com/ashiqueps))
+#### Merged Pull Requests
+- [CHEF-23439] - Mandatory License enforcemnt on knife bootstrap command [#32](https://github.com/chef/knife/pull/32) ([ashiqueps](https://github.com/ashiqueps))
 <!-- latest_release -->
 
 <!-- release_rollup since=18.7.9 -->
@@ -14,6 +14,7 @@
 - COPILOT-SETUP: Add comprehensive GitHub Copilot instructions [#33](https://github.com/chef/knife/pull/33) ([ashiqueps](https://github.com/ashiqueps)) <!-- 19.0.75 -->
 
 #### Merged Pull Requests
+- [CHEF-23439] - Mandatory License enforcemnt on knife bootstrap command [#32](https://github.com/chef/knife/pull/32) ([ashiqueps](https://github.com/ashiqueps)) <!-- 19.0.76 -->
 - Knife version should show knife version instead of Chef Infra Client version [#21](https://github.com/chef/knife/pull/21) ([sanjain-progress](https://github.com/sanjain-progress)) <!-- 19.0.74 -->
 - Bundle knife ec2 plugin  [#31](https://github.com/chef/knife/pull/31) ([sanjain-progress](https://github.com/sanjain-progress)) <!-- 19.0.73 -->
 - Added base-2025-current, base-2025 and stable Channel for Promotion and RubyGems Publishing Workflow [#28](https://github.com/chef/knife/pull/28) ([nikhil2611](https://github.com/nikhil2611)) <!-- 19.0.72 -->
