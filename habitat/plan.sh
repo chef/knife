@@ -84,9 +84,9 @@ do_install() {
     gem install specific_install
     gem specific_install -l https://github.com/sanjain-progress/knife-ec2.git -b sanjain/CHEF-15720/ruby_knife_upgrade
 
-
-
   popd
+
+  make_pkg_official_distrib
   wrap_ruby_knife
   set_runtime_env "GEM_PATH" "${pkg_prefix}/vendor"
 }
@@ -116,4 +116,11 @@ export GEM_PATH="$pkg_prefix/vendor"
 exec $(pkg_path_for ${ruby_pkg})/bin/ruby $real_bin \$@
 EOF
   chmod -v 755 "$bin"
+}
+
+make_pkg_official_distrib() {
+  build_line "Installing chef-official-distribution gem"
+  gem source --add "https://artifactory-internal.ps.chef.co/artifactory/omnibus-gems-local/"
+  gem install chef-official-distribution --no-document --install-dir "$GEM_HOME/ruby/3.4.0"
+  gem sources -r "https://artifactory-internal.ps.chef.co/artifactory/omnibus-gems-local/"
 }

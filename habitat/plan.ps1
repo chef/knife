@@ -78,8 +78,9 @@ function Invoke-Build {
         gem build knife.gemspec
         Write-BuildLine " ** Installing built gem"
         gem install knife*.gem --no-document
+        Install-ChefOfficialDistribution
 
-        If ($lastexitcode -ne 0) { Exit $lastexitcode }
+        If ($LASTEXITCODE -ne 0) { Exit $LASTEXITCODE }
     } finally {
         Pop-Location
     }
@@ -112,4 +113,38 @@ function Invoke-After {
 
     Get-ChildItem $pkg_prefix/vendor/gems -Include @("gem_make.out", "mkmf.log", "Makefile") -File -Recurse |
         Remove-Item -Force
+}
+
+function Install-ChefOfficialDistribution {
+    Write-BuildLine "Installing chef-official-distribution gem from Artifactory"
+
+    $artifactorySource = "https://artifactory-internal.ps.chef.co/artifactory/omnibus-gems-local/"
+
+    try {
+        # Add Artifactory as gem source
+        gem sources --add $artifactorySource
+        if ($LASTEXITCODE -ne 0) {
+            throw "Failed to add Artifactory gem source"
+        }
+
+        # Install the gem
+        gem install chef-official-distribution --no-document
+        if ($LASTEXITCODE -ne 0) {
+            throw "Failed to install chef-official-distribution gem"
+        }
+
+        Write-BuildLine "Successfully installed chef-official-distribution"
+    }
+    catch {
+        Write-Error "Error installing chef-official-distribution: $_"
+        exit 1
+    }
+    finally {
+        # Always clean up gem sources
+        try {
+            gem sources --remove $artifactorySource
+        } catch {
+            # Ignore errors during cleanup
+        }
+    }
 }

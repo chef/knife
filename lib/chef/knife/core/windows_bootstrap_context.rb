@@ -343,8 +343,8 @@ class Chef
             url += "&pv=#{machine_os}" unless machine_os.nil?
             url += "&m=#{machine_arch}" unless machine_arch.nil?
             url += "&DownloadContext=#{download_context}" unless download_context.nil?
-            url += "&channel=#{config[:channel]}" if config[:license_url].blank?
-            url += "&license_id=#{config[:license_id]}" unless config[:license_id].blank?
+            url += "&channel=#{config[:channel]}" if config[:license_url].nil? || config[:license_url].empty?
+            url += "&license_id=#{config[:license_id]}" unless (config[:license_id].nil? || config[:license_id].empty?)
             url += "&v=#{version_to_install}"
           else
             config[:msi_url]
