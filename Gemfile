@@ -60,5 +60,3 @@ end
 group :chefstyle do
   gem "chefstyle"
 end
-
-gem "chef-licensing", github: "chef/chef-licensing", branch: "nm/introducing-optional-mode", glob: "components/ruby/chef-licensing.gemspec" # path: "../chef-licensing/components/ruby"

@@ -78,7 +78,6 @@ function Invoke-Build {
         gem build knife.gemspec
         Write-BuildLine " ** Installing built gem"
         gem install knife*.gem --no-document
-        Install-ChefLicensing
         Install-ChefOfficialDistribution
 
         If ($LASTEXITCODE -ne 0) { Exit $LASTEXITCODE }
@@ -114,44 +113,6 @@ function Invoke-After {
 
     Get-ChildItem $pkg_prefix/vendor/gems -Include @("gem_make.out", "mkmf.log", "Makefile") -File -Recurse |
         Remove-Item -Force
-}
-
-function Install-ChefLicensing {
-    Write-BuildLine "Installing chef-licensing from custom branch"
-
-    $tempPath = Join-Path $env:TEMP "chef-licensing"
-
-    try {
-        # Clone the repository
-        git clone --depth 1 --branch nm/introducing-optional-mode https://github.com/chef/chef-licensing.git $tempPath
-        if ($LASTEXITCODE -ne 0) {
-            throw "Failed to clone chef-licensing repository"
-        }
-
-        # Build and install the gem
-        Push-Location (Join-Path $tempPath "components/ruby")
-        gem build chef-licensing.gemspec
-        if ($LASTEXITCODE -ne 0) {
-            throw "Failed to build chef-licensing gem"
-        }
-
-        gem install chef-licensing-*.gem --no-document
-        if ($LASTEXITCODE -ne 0) {
-            throw "Failed to install chef-licensing gem"
-        }
-
-        Write-BuildLine "Successfully installed chef-licensing"
-    }
-    catch {
-        Write-Error "Error installing chef-licensing: $_"
-        exit 1
-    }
-    finally {
-        Pop-Location -ErrorAction SilentlyContinue
-        if (Test-Path $tempPath) {
-            Remove-Item $tempPath -Recurse -Force -ErrorAction SilentlyContinue
-        }
-    }
 }
 
 function Install-ChefOfficialDistribution {

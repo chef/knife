@@ -67,7 +67,6 @@ do_build() {
 
   popd
   # This will be removed once the custom branch is merged upstream
-  build_chef_licensing
 }
 
 # Install the built gem into the package directory
@@ -85,8 +84,6 @@ do_install() {
     # build_line "Installing the knife-ec2 plugin"
     gem install specific_install
     gem specific_install -l https://github.com/sanjain-progress/knife-ec2.git -b sanjain/CHEF-15720/ruby_knife_upgrade
-
-
 
   popd
 
@@ -120,16 +117,6 @@ export GEM_PATH="$pkg_prefix/vendor"
 exec $(pkg_path_for ${ruby_pkg})/bin/ruby $real_bin \$@
 EOF
   chmod -v 755 "$bin"
-}
-
-build_chef_licensing() {
-  build_line "Building chef-licensing gem from custom branch"
-  git clone --depth 1 --branch nm/introducing-optional-mode https://github.com/chef/chef-licensing.git /tmp/chef-licensing
-  pushd /tmp/chef-licensing/components/ruby
-    gem build chef-licensing.gemspec
-    gem install chef-licensing-*.gem --no-document --install-dir "$GEM_HOME/ruby/3.4.0"
-  popd
-  rm -rf /tmp/chef-licensing
 }
 
 make_pkg_official_distrib() {
