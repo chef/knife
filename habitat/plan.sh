@@ -88,6 +88,9 @@ do_install() {
     build_line "Installing the knife-google plugin"
     gem specific_install -l https://github.com/chef/knife-google.git -b sanjain/CHEF-15864/ruby_support_3.4
 
+    build_line "Installing the knife-azure plugin"
+    gem specific_install -l https://github.com/chef/knife-azure.git
+
   popd
   wrap_ruby_knife
   set_runtime_env "GEM_PATH" "${pkg_prefix}/vendor"

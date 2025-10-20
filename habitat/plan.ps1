@@ -79,6 +79,11 @@ function Invoke-Build {
         Write-BuildLine " ** Installing built gem"
         gem install knife*.gem --no-document
 
+        Write-BuildLine "Installing the knife-azure plugin"
+        gem install specific_install
+        gem specific_install -l https://github.com/chef/knife-azure.git
+        If ($LASTEXITCODE -ne 0) { Exit $LASTEXITCODE }
+
         If ($lastexitcode -ne 0) { Exit $lastexitcode }
     } finally {
         Pop-Location
