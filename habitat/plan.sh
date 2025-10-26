@@ -2,6 +2,13 @@
 export HAB_BLDR_CHANNEL="base-2025"
 export HAB_REFRESH_CHANNEL="base-2025"
 ruby_pkg="core/ruby3_4"
+
+# Ruby version for gem directory structure
+# NOTE: Bundler normalizes Ruby versions to major.minor.0 format for gem compatibility.
+# Even if running Ruby 3.4.2, Bundler creates ruby/3.4.0 directory structure.
+# This is standard behavior - gems built for 3.4.0 are compatible with 3.4.x patch versions.
+ruby_gem_version="3.4.0"
+
 pkg_name="knife"
 pkg_origin="chef"
 pkg_description="knife is a command-line tool that provides an interface between a local chef-repo and the Chef Infra Server."
@@ -76,14 +83,10 @@ do_install() {
   export GEM_PATH="$GEM_HOME"
    build_line "Installing the Knife gem"
     pushd "$HAB_CACHE_SRC_PATH/$pkg_dirname"
-    gem install knife-*.gem --no-document
-
-    # install additional knife plugins
-
-    # build_line "Installing the knife-ec2 plugin"
-    gem install specific_install
-    gem specific_install -l https://github.com/sanjain-progress/knife-ec2.git -b sanjain/CHEF-15720/ruby_knife_upgrade
-
+    # Install the specific knife gem version that was just built to avoid conflicts
+    # Use the VERSION file from the source directory since pkg_version() uses relative path
+    local knife_version=$(cat VERSION)
+    gem install "knife-${knife_version}.gem" --no-document
   popd
 
   make_pkg_official_distrib
@@ -108,10 +111,10 @@ set -e
 export PATH="/sbin:/usr/sbin:/usr/local/sbin:/usr/local/bin:/usr/bin:/bin:$pkg_prefix/vendor/bin:\$PATH"
 
 # Set Ruby paths defined from 'do_setup_environment()'
-export GEM_HOME="$pkg_prefix/vendor/ruby/3.4.0"
+export GEM_HOME="$pkg_prefix/vendor/ruby/${ruby_gem_version}"
 export GEM_PATH="$pkg_prefix/vendor"
 
-
+export GEM_PATH="/hab/knife/ruby/${ruby_gem_version}:$GEM_PATH"
 
 exec $(pkg_path_for ${ruby_pkg})/bin/ruby $real_bin \$@
 EOF
@@ -121,6 +124,7 @@ EOF
 make_pkg_official_distrib() {
   build_line "Installing chef-official-distribution gem"
   gem source --add "https://artifactory-internal.ps.chef.co/artifactory/omnibus-gems-local/"
-  gem install chef-official-distribution --no-document --install-dir "$GEM_HOME/ruby/3.4.0"
+  # Install to the Bundler-created ruby gem directory structure
+  gem install chef-official-distribution --no-document --install-dir "$GEM_HOME/ruby/${ruby_gem_version}"
   gem sources -r "https://artifactory-internal.ps.chef.co/artifactory/omnibus-gems-local/"
 }
