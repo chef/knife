@@ -1,10 +1,10 @@
 # Changelog
 
-<!-- latest_release 19.0.77 -->
-## [v19.0.77](https://github.com/chef/knife/tree/v19.0.77) (2025-10-14)
+<!-- latest_release 19.0.78 -->
+## [v19.0.78](https://github.com/chef/knife/tree/v19.0.78) (2025-10-30)
 
 #### Merged Pull Requests
-- configure dependabot [#38](https://github.com/chef/knife/pull/38) ([Vasu1105](https://github.com/Vasu1105))
+- [CHEF-27518] Knife changes to fetch plugins from chef-workstation hab pkg [#40](https://github.com/chef/knife/pull/40) ([ashiqueps](https://github.com/ashiqueps))
 <!-- latest_release -->
 
 <!-- release_rollup since=18.7.9 -->
@@ -14,6 +14,7 @@
 - COPILOT-SETUP: Add comprehensive GitHub Copilot instructions [#33](https://github.com/chef/knife/pull/33) ([ashiqueps](https://github.com/ashiqueps)) <!-- 19.0.75 -->
 
 #### Merged Pull Requests
+- [CHEF-27518] Knife changes to fetch plugins from chef-workstation hab pkg [#40](https://github.com/chef/knife/pull/40) ([ashiqueps](https://github.com/ashiqueps)) <!-- 19.0.78 -->
 - configure dependabot [#38](https://github.com/chef/knife/pull/38) ([Vasu1105](https://github.com/Vasu1105)) <!-- 19.0.77 -->
 - [CHEF-23439] - Mandatory License enforcemnt on knife bootstrap command [#32](https://github.com/chef/knife/pull/32) ([ashiqueps](https://github.com/ashiqueps)) <!-- 19.0.76 -->
 - Knife version should show knife version instead of Chef Infra Client version [#21](https://github.com/chef/knife/pull/21) ([sanjain-progress](https://github.com/sanjain-progress)) <!-- 19.0.74 -->
