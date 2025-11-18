@@ -114,7 +114,7 @@ export PATH="/sbin:/usr/sbin:/usr/local/sbin:/usr/local/bin:/usr/bin:/bin:$pkg_p
 export GEM_HOME="$pkg_prefix/vendor/ruby/${ruby_gem_version}"
 export GEM_PATH="$pkg_prefix/vendor"
 
-export GEM_PATH="~/.hab/knife/ruby/${ruby_gem_version}:$GEM_PATH"
+export GEM_PATH="\$HOME/.hab/knife/ruby/${ruby_gem_version}:$GEM_PATH"
 
 exec $(pkg_path_for ${ruby_pkg})/bin/ruby $real_bin \$@
 EOF

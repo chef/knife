@@ -177,7 +177,7 @@ class Chef
           first_boot = clean_etc_chef_file("first-boot.json")
           bootstrap_environment_option = build_environment_option
 
-          "#{path_command}#{chef_executable} -c #{client_rb} -j #{first_boot}#{bootstrap_environment_option}#{license_argument}"
+          "#{path_command}#{chef_executable} -c #{client_rb} -j #{first_boot}#{bootstrap_environment_option}#{license_argument}\n"
         end
 
         def build_path_command
@@ -202,6 +202,7 @@ class Chef
         end
 
         def build_license_argument
+          return "" if config[:disable_license_activation]
           return "" unless chef_ice? && config[:license_id]
 
           " --chef-license-key #{config[:license_id]}"
@@ -374,6 +375,50 @@ class Chef
           file_contents.gsub(/^(.*)$/, 'echo.\1').gsub(/([(<|>)^])/, '^\1')
         end
 
+        # Returns the MSI URL for downloading Chef Infra Client
+        # Supports both chef and chef-ice products, and custom URLs
+        def msi_url(machine_os = nil, machine_arch = nil, download_context = nil)
+          # If a custom MSI URL is provided, use it directly
+          return @config[:msi_url] if @config[:msi_url] && !@config[:msi_url].empty?
+
+          # Determine the product to download
+          product = product_to_install
+
+          # Build the omnitruck URL
+          base_url = if @config[:omnitruck_url]
+                       @config[:omnitruck_url]
+                     else
+                       "https://omnitruck.chef.io"
+                     end
+
+          # Build URL with product name
+          url_path = "#{product}/download"
+
+          # Add parameters in the expected order
+          params = []
+          params << "p=windows"
+          params << "pv=#{machine_os}" if machine_os
+          params << "m=#{machine_arch}" if machine_arch
+          params << "DownloadContext=#{download_context}" if download_context
+          params << "channel=#{@config[:channel]}" if @config[:channel]
+          params << "v=#{version_to_install}"
+          params << "license_id=#{@config[:license_id]}" if @config[:license_id]
+
+          # Format the URL based on whether omnitruck_url contains %s placeholder
+          if base_url.include?("%s")
+            # Custom omnitruck URL with placeholder (e.g., from licensing)
+            url = format(base_url, url_path)
+          else
+            # Standard omnitruck URL
+            url = "#{base_url}/#{url_path}"
+          end
+
+          # Add query parameters if any
+          url += "?#{params.join('&')}" unless params.empty?
+
+          url
+        end
+
         private
 
         # Returns a string for copying the trusted certificates on the workstation to the system being bootstrapped
@@ -407,6 +452,24 @@ class Chef
             end
           end
           content
+        end
+
+        # Returns the install command for Windows including license environment variable if needed
+        def install_command(executor_quote)
+          commands = []
+
+          # Add license environment variable if applicable
+          license_key = @config[:license_key] || @config[:license_id]
+
+          # Only add license environment variable for Chef Infra 19+
+          if license_key && chef_ice?
+            commands << "set CHEF_LICENSE_KEY=#{license_key}"
+          end
+
+          # Add the msiexec installation command
+          commands << "msiexec /qn /i chef-client.msi"
+
+          commands.join("\n")
         end
       end
     end

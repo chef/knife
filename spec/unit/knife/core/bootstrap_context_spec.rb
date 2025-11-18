@@ -286,7 +286,7 @@ describe Chef::Knife::Core::BootstrapContext do
   end
 
   describe "when using disable_license_activation" do
-    let(:config) { { license_id: "123" } }
+    let(:config) { { license_id: "123", color: false } }
     # it "by default it should return license" do
     #   expect(bootstrap_context.start_chef).to eq "chef-client -j /etc/chef/first-boot.json --no-color"
     # end

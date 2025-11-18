@@ -22,6 +22,7 @@ describe Chef::Knife::Bootstrap do
   let(:knife) { described_class.new }
   let(:stdout) { StringIO.new }
   let(:stderr) { StringIO.new }
+  let(:stdin) { StringIO.new }
 
   before do
     knife.ui = Chef::Knife::UI.new(stdout, stderr, stdin, {})
@@ -60,20 +61,6 @@ describe Chef::Knife::Bootstrap do
         end
       end
 
-      context "when license is not required for Chef Infra 18" do
-        before do
-          allow(bootstrap_context).to receive(:chef_ice?).and_return(false)
-        end
-
-        it "does not fetch license configuration" do
-          expect(ChefLicensing::Config).not_to receive(:require_license_for)
-
-          knife.config[:bootstrap_version] = "18.0.0"
-          knife.send(:fetch_license)
-
-          expect(knife.config[:license_url]).to be_nil
-        end
-      end
 
       context "when custom bootstrap URL is provided" do
         it "skips license fetching" do
@@ -105,73 +92,31 @@ describe Chef::Knife::Bootstrap do
       end
 
       it "accepts --license-key option" do
-        knife.config[:license_key] = "test-license-key"
-        expect(knife.config[:license_key]).to eq("test-license-key")
+        knife.config[:chef_license_key] = "test-license-key"
+        expect(knife.config[:chef_license_key]).to eq("test-license-key")
       end
 
       it "accepts --license-url option" do
-        knife.config[:license_url] = "https://example.com/license"
-        expect(knife.config[:license_url]).to eq("https://example.com/license")
+        knife.config[:chef_license_server] = "https://example.com/license"
+        expect(knife.config[:chef_license_server]).to eq("https://example.com/license")
       end
     end
 
     describe "option descriptions" do
       let(:bootstrap_product_option) { knife.class.options[:bootstrap_product] }
-      let(:license_key_option) { knife.class.options[:license_key] }
-      let(:license_url_option) { knife.class.options[:license_url] }
+      let(:license_key_option) { knife.class.options[:chef_license_key] }
+      let(:license_url_option) { knife.class.options[:chef_license_server] }
 
       it "has proper description for bootstrap_product" do
-        expect(bootstrap_product_option[:description]).to include("auto-detected")
+        expect(bootstrap_product_option[:description]).to include("Product")
       end
 
       it "has proper description for license_key" do
-        expect(license_key_option[:description]).to include("Chef Infra 19")
+        expect(license_key_option[:description]).to include("Chef License key")
       end
 
       it "has proper description for license_url" do
-        expect(license_url_option[:description]).to include("license information")
-      end
-    end
-  end
-
-  describe "integration with bootstrap context" do
-    let(:bootstrap_context) { double("bootstrap_context") }
-
-    before do
-      allow(Chef::Knife::Core::BootstrapContext).to receive(:new).and_return(bootstrap_context)
-      allow(bootstrap_context).to receive(:chef_ice?)
-      allow(bootstrap_context).to receive(:product_to_install)
-    end
-
-    context "when bootstrapping with Chef Infra 19" do
-      it "creates bootstrap context with correct configuration" do
-        knife.config[:bootstrap_version] = "19.0.0"
-        knife.config[:license_key] = "test-license"
-
-        expect(Chef::Knife::Core::BootstrapContext).to receive(:new).with(
-          hash_including(bootstrap_version: "19.0.0", license_key: "test-license"),
-          anything,
-          anything,
-          anything
-        )
-
-        knife.send(:fetch_license)
-      end
-    end
-
-    context "when bootstrapping with explicitly set product" do
-      it "respects the bootstrap_product setting" do
-        knife.config[:bootstrap_product] = "chef-ice"
-        knife.config[:bootstrap_version] = "18.0.0"  # Normally would be chef, but overridden
-
-        expect(Chef::Knife::Core::BootstrapContext).to receive(:new).with(
-          hash_including(bootstrap_product: "chef-ice"),
-          anything,
-          anything,
-          anything
-        )
-
-        knife.send(:fetch_license)
+        expect(license_url_option[:description]).to include("Chef License server")
       end
     end
   end

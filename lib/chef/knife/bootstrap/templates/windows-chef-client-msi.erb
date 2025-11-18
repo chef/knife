@@ -175,7 +175,7 @@ If !ERRORLEVEL!==0 (
       @if EXIST "%LOCAL_DESTINATION_SCRIPT_PATH%" del /f /q "%LOCAL_DESTINATION_SCRIPT_PATH%"
 
       @rem For custom bootstrap URLs, use environment variable to pass URL to cscript
-      cscript /nologo <%= bootstrap_directory %>\wget.vbs /url:"%BOOTSTRAP_DOWNLOAD_URL%" /path:"%LOCAL_DESTINATION_SCRIPT_PATH%"
+      cscript /nologo <%= bootstrap_directory %>\wget.vbs /url:"!BOOTSTRAP_DOWNLOAD_URL!" /path:"%LOCAL_DESTINATION_SCRIPT_PATH%"
       <% else %>
       @echo Warning: Failed to download "%REMOTE_SOURCE_SCRIPT_URL%" to "%LOCAL_DESTINATION_SCRIPT_PATH%"
       @echo Warning: Retrying download with cscript ...

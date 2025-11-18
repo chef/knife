@@ -192,12 +192,14 @@ class Chef
             s << " -l debug"
           end
           s << " -E #{bootstrap_environment}" unless bootstrap_environment.nil?
-          s << " --no-color" unless config[:color]
+          s << " --no-color" if config.key?(:color) && !config[:color]
 
           # Add license environment variable if required
-          if chef_ice?
-            license_key = config[:license_key] || config[:license_id]
-            s = "CHEF_LICENSE_KEY=\"#{license_key}\" " + s if license_key
+          unless config[:disable_license_activation]
+            if chef_ice?
+              license_key = config[:license_key] || config[:license_id]
+              s = "CHEF_LICENSE_KEY=\"#{license_key}\" " + s if license_key
+            end
           end
 
           s
