@@ -1800,6 +1800,7 @@ describe Chef::Knife::Bootstrap do
   end
   describe "#run" do
     it "performs the steps we expect to run a bootstrap" do
+      expect(knife).to receive(:validate_bootstrap_url!)
       expect(knife).to receive(:check_eula_license)
       expect(knife).to receive(:fetch_license)
       expect(knife).to receive(:validate_name_args!).ordered
