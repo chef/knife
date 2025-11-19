@@ -299,8 +299,7 @@ class Chef
 
       option :bootstrap_product,
         long: "--bootstrap-product PRODUCT",
-        description: "Product to install.",
-        default: "chef"
+        description: "Product to install."
 
       option :msi_url, # Windows target only
         short: "-m URL",
@@ -357,6 +356,10 @@ class Chef
       option :chef_license_key,
               long: "--chef-license-key KEY",
               description: "The Chef License key to be used for license activation. You can run `knife license` command to retrieve it."
+
+      option :chef_license_server,
+              long: "--chef-license-server URL",
+              description: "The Chef License server URL to be used for license activation. You can run `knife license` command to retrieve it."
 
       # Deprecated options. These must be declared after
       # regular options because they refer to the replacement
@@ -559,6 +562,9 @@ class Chef
       end
 
       def run
+        # For RC3 release only
+        validate_bootstrap_url!
+
         check_eula_license if ChefUtils::Dist::Org::ENFORCE_LICENSE
         fetch_license
 
@@ -1205,6 +1211,7 @@ class Chef
         return if config[:bootstrap_url] || config[:bootstrap_template]
 
         # This block will mandate license acceptance
+        # require_license_for checks if distribution is official (skip licensing) or unofficial (enforce licensing)
         ChefLicensing::Config.require_license_for do
           license = Chef::Utils::LicensingHandler.validate!(config)
           config[:license_url] = license.install_sh_url
@@ -1212,6 +1219,18 @@ class Chef
           config[:omnitruck_url] = license.omnitruck_url
           config[:license_type] = license.license_type
         end
+      end
+
+      def validate_bootstrap_url!
+        return if config[:bootstrap_product] != "chef-ice" && !config[:bootstrap_url].nil?
+
+        ui.error <<~EOM
+          You are trying to bootstrap chef-infra-client 19 which is not available on the download portal yet.
+          Please pass the pre-signed url of the install script to the --bootstrap-url option to bootstrap chef-infra-client 19.
+
+          If you wish to bootstrap chef infra client 18 or earlier, please set the --bootstrap-product option to 'chef'.
+        EOM
+        exit 1
       end
     end
   end

@@ -169,19 +169,47 @@ class Chef
         end
 
         def start_chef
-          c_opscode_dir = ChefConfig::PathHelper.cleanpath(ChefConfig::Config.c_opscode_dir, windows: true)
+          path_command = build_path_command
+          chef_executable = build_chef_executable
+          license_argument = build_license_argument
+
           client_rb = clean_etc_chef_file("client.rb")
           first_boot = clean_etc_chef_file("first-boot.json")
-          # license_argument = if config[:license_id] && !config[:disable_license_activation]
-          #                      " --chef-license-key #{config[:license_id]}"
-          #                    else
-          #                      ""
-          #                    end
+          bootstrap_environment_option = build_environment_option
 
-          bootstrap_environment_option = bootstrap_environment.nil? ? "" : " -E #{bootstrap_environment}"
+          "#{path_command}#{chef_executable} -c #{client_rb} -j #{first_boot}#{bootstrap_environment_option}#{license_argument}\n"
+        end
 
-          start_chef = "SET \"PATH=%SYSTEM32%;%SystemRoot%;%SYSTEM32%\\Wbem;%SYSTEM32%\\WindowsPowerShell\\v1.0\\;C:\\ruby\\bin;#{c_opscode_dir}\\bin;#{c_opscode_dir}\\embedded\\bin\;%PATH%\"\n"
-          start_chef << "#{ChefUtils::Dist::Infra::CLIENT} -c #{client_rb} -j #{first_boot}#{bootstrap_environment_option}\n"
+        def build_path_command
+          base_path = "SET \"PATH=%SYSTEM32%;%SystemRoot%;%SYSTEM32%\\Wbem;%SYSTEM32%\\WindowsPowerShell\\v1.0\\;"
+
+          additional_paths = if chef_ice?
+                               "C:\\hab\\bin"
+                             else
+                               c_opscode_dir = ChefConfig::PathHelper.cleanpath(ChefConfig::Config.c_opscode_dir, windows: true)
+                               "C:\\ruby\\bin;#{c_opscode_dir}\\bin;#{c_opscode_dir}\\embedded\\bin"
+                             end
+
+          "#{base_path}#{additional_paths};%PATH%\"\n"
+        end
+
+        def build_chef_executable
+          if chef_ice?
+            "hab pkg exec chef/chef-infra-client #{ChefUtils::Dist::Infra::CLIENT}"
+          else
+            ChefUtils::Dist::Infra::CLIENT
+          end
+        end
+
+        def build_license_argument
+          return "" if config[:disable_license_activation]
+          return "" unless chef_ice? && config[:license_id]
+
+          " --chef-license-key #{config[:license_id]}"
+        end
+
+        def build_environment_option
+          bootstrap_environment.nil? ? "" : " -E #{bootstrap_environment}"
         end
 
         def win_wget
@@ -310,10 +338,8 @@ class Chef
           escape_and_echo(win_wget_ps)
         end
 
-        def install_chef
-          # The normal install command uses regular double quotes in
-          # the install command, so request such a string from install_command
-          install_command('"') + "\n" + fallback_install_task_command
+        def first_boot
+          escape_and_echo(super.to_json)
         end
 
         def clean_etc_chef_file(path)
@@ -328,31 +354,18 @@ class Chef
           ChefConfig::Config.etc_chef_dir(windows: true)
         end
 
-        def local_download_path
-          "%TEMP%\\#{ChefUtils::Dist::Infra::CLIENT}-latest.msi"
-        end
-
-        # Build a URL that will redirect to the correct Chef Infra msi download.
-        def msi_url(machine_os = nil, machine_arch = nil, download_context = nil)
-          if config[:msi_url].nil? || config[:msi_url].empty?
-            url = if config[:license_type] == "commercial" && config[:license_url] && !config[:omnitruck_url].empty?
-                    format(config[:omnitruck_url], config[:channel]+"/chef/download")+"&p=windows"
-                  else
-                    "https://omnitruck.chef.io/chef/download?p=windows"
-                  end
-            url += "&pv=#{machine_os}" unless machine_os.nil?
-            url += "&m=#{machine_arch}" unless machine_arch.nil?
-            url += "&DownloadContext=#{download_context}" unless download_context.nil?
-            url += "&channel=#{config[:channel]}" if config[:license_url].nil? || config[:license_url].empty?
-            url += "&license_id=#{config[:license_id]}" unless (config[:license_id].nil? || config[:license_id].empty?)
-            url += "&v=#{version_to_install}"
+        # Build a URL for the PowerShell install script (install.ps1)
+        def install_ps1_url
+          if config[:bootstrap_url]
+            # Use custom bootstrap URL if provided
+            config[:bootstrap_url]
+          elsif config[:license_url]
+            # Use license-aware install script URL
+            config[:license_url].gsub("install.sh", "install.ps1")
           else
-            config[:msi_url]
+            # Default to public omnitruck install script
+            "https://omnitruck.chef.io/install.ps1"
           end
-        end
-
-        def first_boot
-          escape_and_echo(super.to_json)
         end
 
         # escape WIN BATCH special chars
@@ -362,11 +375,51 @@ class Chef
           file_contents.gsub(/^(.*)$/, 'echo.\1').gsub(/([(<|>)^])/, '^\1')
         end
 
-        private
+        # Returns the MSI URL for downloading Chef Infra Client
+        # Supports both chef and chef-ice products, and custom URLs
+        def msi_url(machine_os = nil, machine_arch = nil, download_context = nil)
+          # If a custom MSI URL is provided, use it directly
+          return @config[:msi_url] if @config[:msi_url] && !@config[:msi_url].empty?
 
-        def install_command(executor_quote)
-          "msiexec /qn /log #{executor_quote}%CHEF_CLIENT_MSI_LOG_PATH%#{executor_quote} /i #{executor_quote}%LOCAL_DESTINATION_MSI_PATH%#{executor_quote}"
+          # Determine the product to download
+          product = product_to_install
+
+          # Build the omnitruck URL
+          base_url = if @config[:omnitruck_url]
+                       @config[:omnitruck_url]
+                     else
+                       "https://omnitruck.chef.io"
+                     end
+
+          # Build URL with product name
+          url_path = "#{product}/download"
+
+          # Add parameters in the expected order
+          params = []
+          params << "p=windows"
+          params << "pv=#{machine_os}" if machine_os
+          params << "m=#{machine_arch}" if machine_arch
+          params << "DownloadContext=#{download_context}" if download_context
+          params << "channel=#{@config[:channel]}" if @config[:channel]
+          params << "v=#{version_to_install}"
+          params << "license_id=#{@config[:license_id]}" if @config[:license_id]
+
+          # Format the URL based on whether omnitruck_url contains %s placeholder
+          if base_url.include?("%s")
+            # Custom omnitruck URL with placeholder (e.g., from licensing)
+            url = format(base_url, url_path)
+          else
+            # Standard omnitruck URL
+            url = "#{base_url}/#{url_path}"
+          end
+
+          # Add query parameters if any
+          url += "?#{params.join('&')}" unless params.empty?
+
+          url
         end
+
+        private
 
         # Returns a string for copying the trusted certificates on the workstation to the system being bootstrapped
         # This string should contain both the commands necessary to both create the files, as well as their content
@@ -401,46 +454,22 @@ class Chef
           content
         end
 
-        def fallback_install_task_command
-          # This command will be executed by schtasks.exe in the batch
-          # code below. To handle tasks that contain arguments that
-          # need to be double quoted, schtasks allows the use of single
-          # quotes that will later be converted to double quotes
-          command = install_command("'")
-          <<~EOH
-            @set MSIERRORCODE=!ERRORLEVEL!
-            @if ERRORLEVEL 1 (
-                @echo WARNING: Failed to install #{ChefUtils::Dist::Infra::PRODUCT} MSI package in remote context with status code !MSIERRORCODE!.
-                @echo WARNING: This may be due to a defect in operating system update KB2918614: http://support.microsoft.com/kb/2918614
-                @set OLDLOGLOCATION="%CHEF_CLIENT_MSI_LOG_PATH%-fail.log"
-                @move "%CHEF_CLIENT_MSI_LOG_PATH%" "!OLDLOGLOCATION!" > NUL
-                @echo WARNING: Saving installation log of failure at !OLDLOGLOCATION!
-                @echo WARNING: Retrying installation with local context...
-                @schtasks /create /f  /sc once /st 00:00:00 /tn chefclientbootstraptask /ru SYSTEM /rl HIGHEST /tr \"cmd /c #{command} & sleep 2 & waitfor /s %computername% /si chefclientinstalldone\"
+        # Returns the install command for Windows including license environment variable if needed
+        def install_command(executor_quote)
+          commands = []
 
-                @if ERRORLEVEL 1 (
-                    @echo ERROR: Failed to create #{ChefUtils::Dist::Infra::PRODUCT} installation scheduled task with status code !ERRORLEVEL! > "&2"
-                ) else (
-                    @echo Successfully created scheduled task to install #{ChefUtils::Dist::Infra::PRODUCT}.
-                    @schtasks /run /tn chefclientbootstraptask
-                    @if ERRORLEVEL 1 (
-                        @echo ERROR: Failed to execute #{ChefUtils::Dist::Infra::PRODUCT} installation scheduled task with status code !ERRORLEVEL!. > "&2"
-                    ) else (
-                        @echo Successfully started #{ChefUtils::Dist::Infra::PRODUCT} installation scheduled task.
-                        @echo Waiting for installation to complete -- this may take a few minutes...
-                        waitfor chefclientinstalldone /t 600
-                        if ERRORLEVEL 1 (
-                            @echo ERROR: Timed out waiting for #{ChefUtils::Dist::Infra::PRODUCT} package to install
-                        ) else (
-                            @echo Finished waiting for #{ChefUtils::Dist::Infra::PRODUCT} package to install.
-                        )
-                        @schtasks /delete /f /tn chefclientbootstraptask > NUL
-                    )
-                )
-            ) else (
-                @echo Successfully installed #{ChefUtils::Dist::Infra::PRODUCT} package.
-            )
-          EOH
+          # Add license environment variable if applicable
+          license_key = @config[:license_key] || @config[:license_id]
+
+          # Only add license environment variable for Chef Infra 19+
+          if license_key && chef_ice?
+            commands << "set CHEF_LICENSE_KEY=#{license_key}"
+          end
+
+          # Add the msiexec installation command
+          commands << "msiexec /qn /i chef-client.msi"
+
+          commands.join("\n")
         end
       end
     end

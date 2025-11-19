@@ -286,7 +286,7 @@ describe Chef::Knife::Core::BootstrapContext do
   end
 
   describe "when using disable_license_activation" do
-    let(:config) { { license_id: "123" } }
+    let(:config) { { license_id: "123", color: false } }
     # it "by default it should return license" do
     #   expect(bootstrap_context.start_chef).to eq "chef-client -j /etc/chef/first-boot.json --no-color"
     # end
@@ -294,6 +294,131 @@ describe Chef::Knife::Core::BootstrapContext do
     it "doesn't return the chef-license-key in the start_chef command if it set" do
       config[:disable_license_activation] = true
       expect(bootstrap_context.start_chef).to eq "chef-client -j /etc/chef/first-boot.json --no-color"
+    end
+  end
+
+  describe "#chef_ice?" do
+    context "when product_to_install is chef-ice" do
+      let(:config) { { bootstrap_version: "19.0.0" } }
+
+      it "returns true for Chef Infra 19" do
+        expect(bootstrap_context.chef_ice?).to be true
+      end
+    end
+
+    context "when product_to_install is chef" do
+      let(:config) { { bootstrap_version: "18.0.0" } }
+
+      it "returns false for Chef Infra 18" do
+        expect(bootstrap_context.chef_ice?).to be false
+      end
+    end
+
+    context "when bootstrap_product is explicitly set to chef-ice" do
+      let(:config) { { bootstrap_product: "chef-ice" } }
+
+      it "returns true" do
+        expect(bootstrap_context.chef_ice?).to be true
+      end
+    end
+
+    context "when bootstrap_product is explicitly set to chef" do
+      let(:config) { { bootstrap_product: "chef" } }
+
+      it "returns false" do
+        expect(bootstrap_context.chef_ice?).to be false
+      end
+    end
+  end
+
+  describe "#product_to_install" do
+    context "when bootstrap_product is explicitly set" do
+      let(:config) { { bootstrap_product: "chef-ice" } }
+
+      it "returns the explicitly set product" do
+        expect(bootstrap_context.product_to_install).to eq "chef-ice"
+      end
+    end
+
+    context "when bootstrap_version is latest" do
+      let(:config) { { channel: "unstable" } }
+
+      it "returns chef-ice for latest version" do
+        expect(bootstrap_context.product_to_install).to eq "chef-ice"
+      end
+    end
+
+    context "when bootstrap_version starts with 19" do
+      let(:config) { { bootstrap_version: "19.0.0" } }
+
+      it "returns chef-ice for version 19.x.x" do
+        expect(bootstrap_context.product_to_install).to eq "chef-ice"
+      end
+    end
+
+    context "when bootstrap_version is older than 19" do
+      let(:config) { { bootstrap_version: "18.4.0" } }
+
+      it "returns chef for older versions" do
+        expect(bootstrap_context.product_to_install).to eq "chef"
+      end
+    end
+
+    context "when no version is specified and channel is stable" do
+      let(:config) { { channel: "stable" } }
+
+      it "returns chef-ice if current Chef version is 19+" do
+        # Assuming Chef::VERSION starts with "19"
+        if Chef::VERSION.split(".").first.to_i >= 19
+          expect(bootstrap_context.product_to_install).to eq "chef-ice"
+        else
+          expect(bootstrap_context.product_to_install).to eq "chef"
+        end
+      end
+    end
+  end
+
+  describe "#start_chef with licensing" do
+    context "when license is required and license_key is provided" do
+      let(:config) { { bootstrap_version: "19.0.0", license_key: "test-license-key" } }
+
+      it "includes license environment variable in start_chef command" do
+        expected = 'CHEF_LICENSE_KEY="test-license-key" chef-client -j /etc/chef/first-boot.json'
+        expect(bootstrap_context.start_chef).to eq expected
+      end
+    end
+
+    context "when license is required and license_id is provided" do
+      let(:config) { { bootstrap_version: "19.0.0", license_id: "test-license-id" } }
+
+      it "includes license environment variable with license_id in start_chef command" do
+        expected = 'CHEF_LICENSE_KEY="test-license-id" chef-client -j /etc/chef/first-boot.json'
+        expect(bootstrap_context.start_chef).to eq expected
+      end
+    end
+
+    context "when license is required but no license key/id provided" do
+      let(:config) { { bootstrap_version: "19.0.0" } }
+
+      it "does not include license environment variable" do
+        expected = "chef-client -j /etc/chef/first-boot.json"
+        expect(bootstrap_context.start_chef).to eq expected
+      end
+    end
+
+    context "when license is not required" do
+      let(:config) { { bootstrap_version: "18.0.0", license_key: "test-license-key" } }
+
+      it "does not include license environment variable even if license key provided" do
+        expected = "chef-client -j /etc/chef/first-boot.json"
+        expect(bootstrap_context.start_chef).to eq expected
+      end
+    end
+  end
+
+  describe "#detect_package_manager" do
+    it "returns empty string for base implementation" do
+      expect(bootstrap_context.detect_package_manager).to eq ""
     end
   end
 end

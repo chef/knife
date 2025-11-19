@@ -186,6 +186,9 @@ describe Chef::Knife::Core::WindowsBootstrapContext do
   end
 
   describe "#start_chef" do
+    # These tests are for Chef 18 behavior, so we need to specify version 18
+    let(:config) { { bootstrap_version: "18" } }
+
     it "returns the expected string with default values" do
       expect(bootstrap_context.start_chef).to eq(
         <<~EOH
@@ -223,7 +226,8 @@ describe Chef::Knife::Core::WindowsBootstrapContext do
     context "when msi_url config option is not set" do
       let(:config) { { channel: "stable" } }
       before do
-        expect(bootstrap_context).to receive(:version_to_install).and_return("something")
+        # version_to_install is called twice: once in product_to_install and once in msi_url
+        allow(bootstrap_context).to receive(:version_to_install).and_return("something")
       end
 
       it "returns a chef.io msi url with minimal url parameters" do

@@ -6,7 +6,7 @@ class Chef
       OMNITRUCK_URLS = {
         "free"       => "https://omnitruck.chef.io",
         "trial"      => "https://omnitruck.chef.io",
-        "commercial" => "https://chefdownload-commerical.chef.io",
+        "commercial" => "https://chefdownload-commercial.chef.io",
       }.freeze
 
       attr_reader :license_key, :license_type
@@ -24,6 +24,10 @@ class Chef
 
       def install_sh_url
         format(omnitruck_url, "install.sh")
+      end
+
+      def install_ps1_url
+        format(omnitruck_url, "install.ps1")
       end
 
       class << self

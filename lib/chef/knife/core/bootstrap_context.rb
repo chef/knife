@@ -192,7 +192,16 @@ class Chef
             s << " -l debug"
           end
           s << " -E #{bootstrap_environment}" unless bootstrap_environment.nil?
-          s << " --no-color" unless config[:color]
+          s << " --no-color" if config.key?(:color) && !config[:color]
+
+          # Add license environment variable if required
+          unless config[:disable_license_activation]
+            if chef_ice?
+              license_key = config[:license_key] || config[:license_id]
+              s = "CHEF_LICENSE_KEY=\"#{license_key}\" " + s if license_key
+            end
+          end
+
           s
         end
 
@@ -214,6 +223,31 @@ class Chef
           else
             "latest"
           end
+        end
+
+        def product_to_install
+          # If explicitly specified, use it
+          return config[:bootstrap_product] if config[:bootstrap_product]
+
+          # Determine product based on version
+          version = version_to_install
+          if version == "latest"
+            "chef-ice"
+          elsif version.to_s.start_with?("19")
+            "chef-ice"
+          else
+            "chef"
+          end
+        end
+
+        def chef_ice?
+          product_to_install == "chef-ice"
+        end
+
+        def detect_package_manager
+          # This method would be called from the bootstrap template to detect package manager
+          # For now, return empty string as detection happens in the install script
+          ""
         end
 
         def first_boot

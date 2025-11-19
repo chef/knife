@@ -182,7 +182,28 @@ do_download() {
   else
     echo "-----> Installing Chef Omnibus (<%= @config[:channel] %>/<%= version_to_install %>)"
     do_download ${install_sh} $tmp_dir/install.sh
-    sh $tmp_dir/install.sh -P <%= @config[:bootstrap_product] %> -c <%= @config[:channel] %> -v <%= version_to_install %>
+
+    # Extract license key/ID and modify install script if license is required
+    <% if chef_ice? %>
+      <% if config[:license_key] %>
+    license_key="<%= config[:license_key] %>"
+      <% elsif config[:license_id] %>
+    license_key="<%= config[:license_id] %>"
+      <% elsif config[:license_url] && config[:license_url].include?('license_id=') %>
+    # Extract license_id from the URL
+    license_id=$(echo "<%= config[:license_url] %>" | grep -o 'license_id=[^&]*' | cut -d'=' -f2)
+    license_key="${license_id}"
+      <% else %>
+    license_key=""
+      <% end %>
+
+    # If we have a license key/ID, set environment variable for the package manager
+    if [ ! -z "$license_key" ]; then
+      export CHEF_LICENSE_KEY="$license_key"
+    fi
+    <% end %>
+
+    sh $tmp_dir/install.sh -P <%= product_to_install %> -c <%= @config[:channel] %> -v <%= version_to_install %>
   fi
 <% end %>
 
