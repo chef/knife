@@ -1,10 +1,10 @@
 # Changelog
 
-<!-- latest_release 19.0.80 -->
-## [v19.0.80](https://github.com/chef/knife/tree/v19.0.80) (2025-11-19)
+<!-- latest_release 19.0.81 -->
+## [v19.0.81](https://github.com/chef/knife/tree/v19.0.81) (2025-11-19)
 
 #### Merged Pull Requests
-- [CHEF-17154][CHEF-27323] Knife bootstrap: Chef infra 19 download journey [#36](https://github.com/chef/knife/pull/36) ([ashiqueps](https://github.com/ashiqueps))
+- Fixed the issue with chef-18 bootstrap [#42](https://github.com/chef/knife/pull/42) ([ashiqueps](https://github.com/ashiqueps))
 <!-- latest_release -->
 
 <!-- release_rollup since=18.7.9 -->
@@ -14,6 +14,7 @@
 - COPILOT-SETUP: Add comprehensive GitHub Copilot instructions [#33](https://github.com/chef/knife/pull/33) ([ashiqueps](https://github.com/ashiqueps)) <!-- 19.0.75 -->
 
 #### Merged Pull Requests
+- Fixed the issue with chef-18 bootstrap [#42](https://github.com/chef/knife/pull/42) ([ashiqueps](https://github.com/ashiqueps)) <!-- 19.0.81 -->
 - [CHEF-17154][CHEF-27323] Knife bootstrap: Chef infra 19 download journey [#36](https://github.com/chef/knife/pull/36) ([ashiqueps](https://github.com/ashiqueps)) <!-- 19.0.80 -->
 - Moved the common folder to the home dir [#41](https://github.com/chef/knife/pull/41) ([ashiqueps](https://github.com/ashiqueps)) <!-- 19.0.79 -->
 - [CHEF-27518] Knife changes to fetch plugins from chef-workstation hab pkg [#40](https://github.com/chef/knife/pull/40) ([ashiqueps](https://github.com/ashiqueps)) <!-- 19.0.78 -->
