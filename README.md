@@ -1,33 +1,39 @@
-# knife-standalone-engineeringexcellence
-Repository with copy of knife folder from chef/chef for testing builds, test, and pipelines if it were to be broken out of the chef client repository.  To be renamed when effort is completed.
+# Knife
 
-# NEED a new readme for knife standalone
+Knife is a command-line tool that provides an interface between a local Chef repository and the Chef Infra Server.
 
-TODO: generate first build - remove require relative references, gemfile changes for dep on chef/chef parent, gemspec
-`rake build` seems to work until we dynaically reference these other components 
+## Installation
 
-`rake install`
-knife 19.0.68 built to pkg/knife-19.0.68.gem.
-knife 19.0.68 built to pkg/knife-19.0.68.gem.
-rake aborted!
-knife 19.0.68 built to pkg/knife-19.0.68.gem.
-knife 19.0.68 built to pkg/knife-19.0.68.gem.
-rake aborted!
-rake aborted!
+```bash
+gem install knife
+```
 
-Running `gem install C:/Users/loomis/Documents/GitHub/knife-prototype/knife/pkg/knife-19.0.68.gem` failed with the following output:
+## Quick Start
 
+```bash
+# Configure knife
+knife configure
 
-ERROR:  Could not find a valid gem 'chef' (>= 19) (required by 'C:/Users/loomis/Documents/GitHub/knife-prototype/knife/pkg/knife-19.0.68.gem' (>= 0)) in any repository
-ERROR:  Possible alternatives: chef
+# List nodes
+knife node list
 
-C:/Users/loomis/.local/share/gem/ruby/3.2.0/gems/rake-13.2.1/exe/rake:27:in `<top (required)>'
-Tasks: TOP => install
-(See full trace by running task with --trace)
+# Upload a cookbook
+knife cookbook upload COOKBOOK_NAME
 
-TODO: set up "real" repository in chef GH org with first build
-TODO: check the .gitignore
-TODO: set up build pipelines for gem and into Habitat buuilder to https://bldr.habitat.sh/#/pkgs/chef/knife/latest
+# Bootstrap a node
+knife bootstrap HOST -U USER -i IDENTITY_FILE --node-name NODE_NAME
+```
 
-TODO: relationship to https://github.com/chef/knife-ec-backup ?
-TODO: establish channel strategy - is this LTS?
+## Documentation
+
+- [Official Knife Documentation](https://docs.chef.io/workstation/knife/)
+- [Setting up Knife](https://docs.chef.io/workstation/knife_setup/)
+- [Developer's Guide](docs/dev/README.md)
+
+## Contributing
+
+See the [Developer's Guide](docs/dev/README.md) for development setup and guidelines.
+
+## License
+
+Apache License, Version 2.0
