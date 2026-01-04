@@ -34,6 +34,8 @@ if RUBY_VERSION.start_with?("3.4") && RUBY_PLATFORM.match?(/mswin|mingw|windows/
   gem "win32-process", "~> 0.9"
 end
 
+gem "cheffish", git: "https://github.com/chef/cheffish.git", branch: "main"
+
 # Runtime dependencies
 gem "syslog"
 gem "ostruct"
@@ -41,7 +43,6 @@ gem "csv"
 gem "mixlib-authentication", "=3.0.10" #Pinning this to a specific version to avoid breaking changes
 
 group :development, :test do
-  gem "cheffish", ">= 14"
   gem "webmock"
   gem "crack", "< 0.4.6"
   gem "rake", ">= 12.3.3"
