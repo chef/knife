@@ -15,7 +15,6 @@ Gem::Specification.new do |s|
 
   s.required_ruby_version = ">= 3.1"
 
-  s.add_dependency "train-core", "~> 3.10" # 3.2.28 fixes sudo prompts. See https://github.com/chef/chef/pull/9635
   s.add_dependency "train-core", "~> 3.13", ">= 3.13.4" # Updated to be compatible with InSpec 7
   s.add_dependency "train-winrm", ">= 0.2.17"
   s.add_dependency "license-acceptance", ">= 1.0.5", "< 3"
