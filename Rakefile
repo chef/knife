@@ -39,7 +39,7 @@ begin
   namespace :style do
     desc "Run cookstyle style checks"
     RuboCop::RakeTask.new(:cookstyle) do |task|
-      task.options += ["--chefstyle", "--display-cop-names", "--no-color"]
+      task.options += ["--display-cop-names", "--no-color"]
     end
   end
 

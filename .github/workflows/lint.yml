@@ -21,7 +21,7 @@ jobs:
           ruby-version: 3.4
           bundler-cache: true
       - uses: r7kamura/rubocop-problem-matchers-action@v1  # this shows the failures in the PR
-      - run: bundle exec cookstyle --chefstyle -c .rubocop.yml
+      - run: bundle exec cookstyle -c .rubocop.yml
 
   spellcheck:
     runs-on: ubuntu-latest
