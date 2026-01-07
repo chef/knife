@@ -220,7 +220,7 @@ class Chef
             path = WScript.Arguments.Named("path")
             proxy = null
             '* Vaguely attempt to handle file:// scheme urls by url unescaping and switching all
-            '* / into \.  Also assume that file:/// is a local absolute path and that file://<foo>
+            '* / into . Also assume that file:/// is a local absolute path and that file://<foo>
             '* is possibly a network file path.
             If InStr(url, "file://") = 1 Then
             url = Unescape(url)

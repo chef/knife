@@ -20,5 +20,3 @@ class Chef
     VERSION = "19.0.88".freeze
   end
 end
-
-
