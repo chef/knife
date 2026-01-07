@@ -1258,7 +1258,6 @@ describe Chef::Knife::Bootstrap do
           before do
             # We will use knife's actual config since these tests
             # have assumptions based on CLI default values
-            config = {}
           end
 
           let(:expected_result) do

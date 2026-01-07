@@ -39,7 +39,7 @@ describe Chef::Knife::Core::WindowsBootstrapContext do
     describe "#msi_url" do
       context "when using chef-ice product" do
         let(:config) { { bootstrap_version: "19.0.0", channel: "stable" } }
-        
+
         it "includes chef-ice in the omnitruck URL" do
           url = bootstrap_context.msi_url("2016", "x86_64")
           expect(url).to include("chef-ice/download")
@@ -48,7 +48,7 @@ describe Chef::Knife::Core::WindowsBootstrapContext do
 
       context "when using chef product" do
         let(:config) { { bootstrap_version: "18.0.0", channel: "stable" } }
-        
+
         it "includes chef in the omnitruck URL" do
           url = bootstrap_context.msi_url("2016", "x86_64")
           expect(url).to include("chef/download")
@@ -63,10 +63,10 @@ describe Chef::Knife::Core::WindowsBootstrapContext do
             license_type: "commercial",
             license_url: "https://example.com",
             license_id: "test-license",
-            omnitruck_url: "https://commercial.downloads.chef.co/%s"
+            omnitruck_url: "https://commercial.downloads.chef.co/%s",
           }
         end
-        
+
         it "uses commercial omnitruck URL with chef-ice product" do
           url = bootstrap_context.msi_url("2016", "x86_64")
           expect(url).to include("chef-ice/download")

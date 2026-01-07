@@ -45,14 +45,14 @@ describe Chef::Knife::Core::BootstrapContext do
   end
 
   describe "when in verbosity mode" do
-    let(:config) { { verbosity: 2, color: true} }
+    let(:config) { { verbosity: 2, color: true } }
     it "adds '-l debug' when verbosity is >= 2" do
       expect(bootstrap_context.start_chef).to eq "chef-client -j /etc/chef/first-boot.json -l debug"
     end
   end
 
   describe "when no color value has been set in config" do
-    let(:config) { { color: false} }
+    let(:config) { { color: false } }
     it "adds '--no-color' when color is false" do
       expect(bootstrap_context.start_chef).to eq "chef-client -j /etc/chef/first-boot.json --no-color"
     end

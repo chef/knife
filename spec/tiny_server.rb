@@ -132,7 +132,7 @@ module TinyServer
     end
 
     def call(env)
-      if response = response_for_request(env)
+      if (response = response_for_request(env))
         response.call
       else
         debug_info = { message: "no data matches the request for #{env["REQUEST_URI"]}",
@@ -144,7 +144,7 @@ module TinyServer
     end
 
     def response_for_request(env)
-      if route = @routes[env["REQUEST_METHOD"]].find { |route| route.matches_request?(env["REQUEST_URI"]) }
+      if (route = @routes[env["REQUEST_METHOD"]].find { |route| route.matches_request?(env["REQUEST_URI"]) })
         route.response
       end
     end

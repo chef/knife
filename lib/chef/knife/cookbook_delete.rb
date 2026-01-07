@@ -113,7 +113,7 @@ class Chef
           exit(1)
         end
         versions = responses.map do |response|
-          if version = valid_responses[response]
+          if (version = valid_responses[response])
             version
           else
             ui.error("#{response} is not a valid choice, skipping it")

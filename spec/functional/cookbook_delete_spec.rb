@@ -123,7 +123,7 @@ describe Chef::Knife::CookbookDelete do
     end
 
     it "asks which version to delete and deletes that when not given the -a flag" do
-      cb100_deleted = cb110_deleted = cb120_deleted = nil
+      cb100_deleted = cb120_deleted = nil
       api.delete("/cookbooks/obsolete-cookbook/1.0.0", 200) { cb100_deleted = true; "[\"true\"]" }
       stdin, stdout = StringIO.new, StringIO.new
       allow(knife.ui).to receive(:stdin).and_return(stdin)

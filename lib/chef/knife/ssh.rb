@@ -344,11 +344,11 @@ class Chef
 
       def print_data(host, data)
         @buffers ||= {}
-        if leftover = @buffers[host]
+        if (leftover = @buffers[host])
           @buffers[host] = nil
           print_data(host, leftover + data)
         else
-          if newline_index = data.index("\n")
+          if (newline_index = data.index("\n"))
             line = data.slice!(0...newline_index)
             data.slice!(0)
             print_line(host, line)

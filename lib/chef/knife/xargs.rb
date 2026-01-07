@@ -131,7 +131,6 @@ class Chef
                 begin
                   error = true if xargs_files(command, tempfiles)
                   files = []
-                  ran = true
                 ensure
                   destroy_tempfiles(tempfiles)
                 end

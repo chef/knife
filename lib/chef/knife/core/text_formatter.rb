@@ -64,7 +64,6 @@ class Chef
             end
           elsif data.is_a?(Array)
             data.each_index do |index|
-              item = data[index]
               buffer << text_format(data[index])
               # Separate items with newlines if it's an array of hashes or an
               # array of arrays

@@ -83,7 +83,6 @@ class Chef
           exit(1)
         end
 
-        path = name_args[0]
         data = false
         if config[:input]
           data = File.read(config[:input])
@@ -108,7 +107,7 @@ class Chef
             result = chef_rest.request(method, name_args[0], headers, data)
           end
           output result
-        rescue Timeout::Error => e
+        rescue Timeout::Error
           ui.error "Server timeout"
           exit 1
         rescue Net::HTTPClientException => e
