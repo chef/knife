@@ -1,0 +1,30 @@
+---
+require:
+  - cookstyle/chefstyle
+
+AllCops:
+  TargetRubyVersion: 3.1
+  Include:
+    - "**/*.rb"
+  Exclude:
+    - "vendor/**/*"
+    - "spec/data/**/*"
+    - "pkg/**/*"
+    - "habitat/**/*"
+
+# Style rules for test fixtures
+Style/StringLiterals:
+  Exclude:
+    - "spec/data/**/*"
+
+Style/PercentLiteralDelimiters:
+  Exclude:
+    - "spec/data/**/*"
+
+Layout/TrailingWhitespace:
+  Exclude:
+    - "spec/data/**/*"
+
+Layout/TrailingEmptyLines:
+  Exclude:
+    - "spec/data/**/*"
