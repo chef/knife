@@ -165,6 +165,21 @@ RSpec.configure do |config|
     Chef::Config[:log_level] = :fatal
     Chef::Log.level(Chef::Config[:log_level])
 
+    # Disable Windows cert store authentication for tests
+    # This prevents PowerShell/registry dependencies in Docker containers
+    # that lack full Windows runtime (e.g., rubydistros/windows-2019)
+    if windows?
+      Chef::Config[:ssl_client_cert] = nil
+      Chef::Config[:ssl_client_key] = nil
+      # Disable Windows cert store to avoid PowerShell.Wrapper.dll and registry access
+      if Chef::Config.respond_to?(:windows_cert_store=)
+        Chef::Config[:windows_cert_store] = false
+      elsif Chef::Config.respond_to?(:node_name_for_cert_store=)
+        # Fallback for older Chef versions
+        Chef::Config[:node_name_for_cert_store] = nil
+      end
+    end
+
     # By default, treat deprecation warnings as errors in tests.
     # and set environment variable so the setting persists in child processes
     Chef::Config.treat_deprecation_warnings_as_errors(true)
