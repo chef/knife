@@ -2,6 +2,9 @@ source "https://rubygems.org"
 
 gem "knife", path: "."
 
+# Explicitly fetch libyajl2 from rubygems.org (needed for ffi-yajl 2.7.6)
+gem "libyajl2", ">= 2.1"
+
 # TODO: Once these gems are published to rubygems.org, we don't need to specify them in these conditions.
 if RUBY_PLATFORM.match?(/mswin|mingw|windows/)
   gem "appbundler"
