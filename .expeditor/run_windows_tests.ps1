@@ -8,17 +8,17 @@ $env:ARTIFACTORY_USERNAME = "REDACTED@chef.io"
 $gem_source = "$env:ARTIFACTORY_ENDPOINT/api/gems/omnibus-gems-local"
 
 Write-Host "--- Downloading Chef gem from Artifactory"
-$downloaded_path = "$env:TEMP\chef-19.1.97-universal-unknown.gem"
-Invoke-WebRequest -Uri "$gem_source/gems/chef-19.1.97-universal-unknown.gem" -OutFile $downloaded_path -UseBasicParsing
+$downloaded_path = "$env:TEMP\chef-19.1.116-universal-unknown.gem"
+Invoke-WebRequest -Uri "$gem_source/gems/chef-19.1.116-universal-unknown.gem" -OutFile $downloaded_path -UseBasicParsing
 
 Write-Host "--- Renaming gem file to match correct platform"
-$corrected_path = "$env:TEMP\chef-19.1.97-universal-mingw-ucrt.gem"
+$corrected_path = "$env:TEMP\chef-19.1.116-universal-mingw-ucrt.gem"
 Rename-Item -Path $downloaded_path -NewName (Split-Path $corrected_path -Leaf)
 
 Write-Host "--- Moving gem to vendor/cache"
 $cache_path = "vendor/cache"
 if (!(Test-Path $cache_path)) { New-Item -ItemType Directory -Path $cache_path | Out-Null }
-Move-Item -Path $corrected_path -Destination "$cache_path/chef-19.1.97-universal-mingw-ucrt.gem" -Force
+Move-Item -Path $corrected_path -Destination "$cache_path/chef-19.1.116-universal-mingw-ucrt.gem" -Force
 
 Write-Host "--- Configuring bundler for Windows platform"
 bundle config set --local path vendor/bundle
