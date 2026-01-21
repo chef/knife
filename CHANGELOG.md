@@ -1,10 +1,10 @@
 # Changelog
 
-<!-- latest_release 19.0.83 -->
-## [v19.0.83](https://github.com/chef/knife/tree/v19.0.83) (2026-01-21)
+<!-- latest_release 19.0.84 -->
+## [v19.0.84](https://github.com/chef/knife/tree/v19.0.84) (2026-01-21)
 
 #### Merged Pull Requests
-- updating chef and respective gems to something newer [#53](https://github.com/chef/knife/pull/53) ([sean-sype-simmons](https://github.com/sean-sype-simmons))
+- Sync features  from chef/chef to standalone knife repo [#54](https://github.com/chef/knife/pull/54) ([nikhil2611](https://github.com/nikhil2611))
 <!-- latest_release -->
 
 <!-- release_rollup since=18.7.9 -->
@@ -14,6 +14,7 @@
 - COPILOT-SETUP: Add comprehensive GitHub Copilot instructions [#33](https://github.com/chef/knife/pull/33) ([ashiqueps](https://github.com/ashiqueps)) <!-- 19.0.75 -->
 
 #### Merged Pull Requests
+- Sync features  from chef/chef to standalone knife repo [#54](https://github.com/chef/knife/pull/54) ([nikhil2611](https://github.com/nikhil2611)) <!-- 19.0.84 -->
 - updating chef and respective gems to something newer [#53](https://github.com/chef/knife/pull/53) ([sean-sype-simmons](https://github.com/sean-sype-simmons)) <!-- 19.0.83 -->
 - Removed the temporary docs [#43](https://github.com/chef/knife/pull/43) ([ashiqueps](https://github.com/ashiqueps)) <!-- 19.0.82 -->
 - Fixed the issue with chef-18 bootstrap [#42](https://github.com/chef/knife/pull/42) ([ashiqueps](https://github.com/ashiqueps)) <!-- 19.0.81 -->
