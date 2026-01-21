@@ -37,12 +37,12 @@ function Handle-ArtifactoryChefGem {
     Write-Host "--- Handling temporary Chef gem workaround from Artifactory"
 
     $gem_source = "https://artifactory-internal.ps.chef.co/artifactory/api/gems/omnibus-gems-local"
-    $downloaded_path = "$env:TEMP\chef-19.1.97-universal-unknown.gem"
-    $corrected_path = "$env:TEMP\chef-19.1.97-universal-mingw-ucrt.gem"
+    $downloaded_path = "$env:TEMP\chef-19.1.116-universal-unknown.gem"
+    $corrected_path = "$env:TEMP\chef-19.1.116-universal-mingw-ucrt.gem"
     $cache_path = "$project_root/vendor/cache"
 
     Write-Host "--- Downloading Chef gem from Artifactory"
-    Invoke-WebRequest -Uri "$gem_source/gems/chef-19.1.97-universal-unknown.gem" -OutFile $downloaded_path -UseBasicParsing
+    Invoke-WebRequest -Uri "$gem_source/gems/chef-19.1.116-universal-unknown.gem" -OutFile $downloaded_path -UseBasicParsing
 
     Write-Host "--- Renaming gem file to correct platform"
     Rename-Item -Path $downloaded_path -NewName (Split-Path $corrected_path -Leaf)
@@ -51,7 +51,7 @@ function Handle-ArtifactoryChefGem {
     if (!(Test-Path $cache_path)) {
         New-Item -ItemType Directory -Path $cache_path | Out-Null
     }
-    Move-Item -Path $corrected_path -Destination "$cache_path/chef-19.1.97-universal-mingw-ucrt.gem" -Force
+    Move-Item -Path $corrected_path -Destination "$cache_path/chef-19.1.116-universal-mingw-ucrt.gem" -Force
 }
 
 function Invoke-Build {
