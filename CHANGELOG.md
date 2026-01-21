@@ -1,10 +1,10 @@
 # Changelog
 
-<!-- latest_release 19.0.86 -->
-## [v19.0.86](https://github.com/chef/knife/tree/v19.0.86) (2026-01-21)
+<!-- latest_release 19.0.87 -->
+## [v19.0.87](https://github.com/chef/knife/tree/v19.0.87) (2026-01-21)
 
 #### Merged Pull Requests
-- CHEF-29679 - Sync bug fixes from chef/chef after 2025-01-15 [#51](https://github.com/chef/knife/pull/51) ([nikhil2611](https://github.com/nikhil2611))
+- CHEF-29678 - Sync Ruby 3.4 updates from chef/chef after 2025-01-15 [#50](https://github.com/chef/knife/pull/50) ([nikhil2611](https://github.com/nikhil2611))
 <!-- latest_release -->
 
 <!-- release_rollup since=18.7.9 -->
@@ -14,6 +14,7 @@
 - COPILOT-SETUP: Add comprehensive GitHub Copilot instructions [#33](https://github.com/chef/knife/pull/33) ([ashiqueps](https://github.com/ashiqueps)) <!-- 19.0.75 -->
 
 #### Merged Pull Requests
+- CHEF-29678 - Sync Ruby 3.4 updates from chef/chef after 2025-01-15 [#50](https://github.com/chef/knife/pull/50) ([nikhil2611](https://github.com/nikhil2611)) <!-- 19.0.87 -->
 - CHEF-29679 - Sync bug fixes from chef/chef after 2025-01-15 [#51](https://github.com/chef/knife/pull/51) ([nikhil2611](https://github.com/nikhil2611)) <!-- 19.0.86 -->
 - CHEF-29675 - Sync dependabot fixes from chef/chef to standalone knife repo [#48](https://github.com/chef/knife/pull/48) ([nikhil2611](https://github.com/nikhil2611)) <!-- 19.0.85 -->
 - Sync features  from chef/chef to standalone knife repo [#54](https://github.com/chef/knife/pull/54) ([nikhil2611](https://github.com/nikhil2611)) <!-- 19.0.84 -->
