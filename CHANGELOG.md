@@ -1,10 +1,10 @@
 # Changelog
 
-<!-- latest_release 19.0.82 -->
-## [v19.0.82](https://github.com/chef/knife/tree/v19.0.82) (2025-12-02)
+<!-- latest_release 19.0.83 -->
+## [v19.0.83](https://github.com/chef/knife/tree/v19.0.83) (2026-01-21)
 
 #### Merged Pull Requests
-- Removed the temporary docs [#43](https://github.com/chef/knife/pull/43) ([ashiqueps](https://github.com/ashiqueps))
+- updating chef and respective gems to something newer [#53](https://github.com/chef/knife/pull/53) ([sean-sype-simmons](https://github.com/sean-sype-simmons))
 <!-- latest_release -->
 
 <!-- release_rollup since=18.7.9 -->
@@ -14,6 +14,7 @@
 - COPILOT-SETUP: Add comprehensive GitHub Copilot instructions [#33](https://github.com/chef/knife/pull/33) ([ashiqueps](https://github.com/ashiqueps)) <!-- 19.0.75 -->
 
 #### Merged Pull Requests
+- updating chef and respective gems to something newer [#53](https://github.com/chef/knife/pull/53) ([sean-sype-simmons](https://github.com/sean-sype-simmons)) <!-- 19.0.83 -->
 - Removed the temporary docs [#43](https://github.com/chef/knife/pull/43) ([ashiqueps](https://github.com/ashiqueps)) <!-- 19.0.82 -->
 - Fixed the issue with chef-18 bootstrap [#42](https://github.com/chef/knife/pull/42) ([ashiqueps](https://github.com/ashiqueps)) <!-- 19.0.81 -->
 - [CHEF-17154][CHEF-27323] Knife bootstrap: Chef infra 19 download journey [#36](https://github.com/chef/knife/pull/36) ([ashiqueps](https://github.com/ashiqueps)) <!-- 19.0.80 -->
