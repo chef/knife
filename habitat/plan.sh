@@ -128,3 +128,5 @@ make_pkg_official_distrib() {
   gem install chef-official-distribution --no-document --install-dir "$GEM_HOME/ruby/${ruby_gem_version}"
   gem sources -r "https://artifactory-internal.ps.chef.co/artifactory/omnibus-gems-local/"
 }
+
+
