@@ -4,8 +4,8 @@ class Chef
   class Utils
     class LicensingHandler
       OMNITRUCK_URLS = {
-        "free" => "https://omnitruck.chef.io",
-        "trial" => "https://omnitruck.chef.io",
+        "free"       => "https://omnitruck.chef.io",
+        "trial"      => "https://omnitruck.chef.io",
         "commercial" => "https://chefdownload-commercial.chef.io",
       }.freeze
 
@@ -33,7 +33,7 @@ class Chef
       class << self
         def validate!
           license_keys = begin
-                           ChefLicensing::LicenseKeyFetcher.fetch
+                           ChefLicensing.fetch_and_persist
                          # If the env is airgapped or the local licensing service is unreachable,
                          # the licensing gem will raise ChefLicensing::RestfulClientConnectionError.
                          # In such cases, we are assuming the license is not available.
