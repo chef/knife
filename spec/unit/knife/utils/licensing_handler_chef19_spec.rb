@@ -79,7 +79,7 @@ describe Chef::Utils::LicensingHandler do
     let(:licenses_metadata) { double("licenses_metadata", last: license_metadata) }
 
     before do
-      allow(ChefLicensing::LicenseKeyFetcher).to receive(:fetch).and_return(["test-license"])
+      allow(ChefLicensing).to receive(:fetch_and_persist).and_return(["test-license"])
       allow(ChefLicensing::Api::Describe).to receive(:list).and_return(licenses_metadata)
     end
 
@@ -92,7 +92,7 @@ describe Chef::Utils::LicensingHandler do
     end
 
     it "fetches licenses from licensing service" do
-      expect(ChefLicensing::LicenseKeyFetcher).to receive(:fetch).and_return(["test-license"])
+      expect(ChefLicensing).to receive(:fetch_and_persist).and_return(["test-license"])
 
       described_class.validate!
     end
