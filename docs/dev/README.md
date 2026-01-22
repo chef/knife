@@ -7,16 +7,16 @@ knife is a command-line tool that provides an interface between a local Chef rep
 ## Development setup
 
 To setup knife for development-
-1. Fork and clone the [chef repository](https://github.com/chef/chef) in GitHub.
+1. Fork and clone the [knife repository](https://github.com/chef/knife) in GitHub.
 1. Ensure you have Ruby 3.x installed on your system. You will additionally need tools such as `make` and `gcc`. These are usually already present on most Linux distributions or on your macOS.
-1. Navigate to chef/knife and run `bundle install`.
+1. Navigate to knife and run `bundle install`.
 1. You can run knife commands in this setup by executing `bundle exec knife <subcommand> <argument> <options>`.
 1. Refer to the article [Setting up Knife](https://docs.chef.io/workstation/knife_setup/) for help with necessary configuration.
 1. byebug or your preferred Ruby debugger can be used to step through the execution flow.
 
 ## Execution Flow
 
-The execution starts by instantiating the `Chef::Application::Knife` class with its `run` instance method being invoked. Ref [knife/bin/knife](https://github.com/chef/chef/blob/main/knife/bin/knife). The `Chef::Application` class helps work with CLI command options through the `Mixlib::CLI` module. This `run` instance method in turn invokes the `Chef::Knife`'s `run` class method. `Chef::Knife` acts as the base class for some of the classes associated with knife subcommands such as `Chef::Knife::NodeCreate`, `Chef::Knife::SupermarketList`, `Chef::Knife::Bootstrap`, etc. The role of `Chef::Knife` is summarized here:
+The execution starts by instantiating the `Chef::Application::Knife` class with its `run` instance method being invoked. Ref [knife/bin/knife](https://github.com/chef/knife/blob/main/bin/knife). The `Chef::Application` class helps work with CLI command options through the `Mixlib::CLI` module. This `run` instance method in turn invokes the `Chef::Knife`'s `run` class method. `Chef::Knife` acts as the base class for some of the classes associated with knife subcommands such as `Chef::Knife::NodeCreate`, `Chef::Knife::SupermarketList`, `Chef::Knife::Bootstrap`, etc. The role of `Chef::Knife` is summarized here:
 
 - Identify the subcommand supplied.
 - Merge subcommand specific CLI options, if any.
@@ -42,4 +42,3 @@ As `bootstrap` is a remote/distributed operation, there are several phases to it
 ## Knife Plugins
 
 The choice of mapping subcommand action to `Chef::Knife` subclass makes it easy to author knife custom plugins. These can help with extending knife capabilities for specific cloud platforms or customize knife behavior for a subset of subcommands. Follow the instructions [here](https://docs.chef.io/workstation/plugin_knife_custom/) to develop your own knife plugin. Detailed documentation on writing knife cloud plugins is available [here](https://github.com/chef/knife-cloud/blob/main/README.md).
-
