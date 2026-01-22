@@ -28,8 +28,8 @@ describe Chef::Knife::SupermarketInstall do
   let(:archive) { double(Mixlib::Archive, extract: true) }
   let(:repo) do
     double(sanity_check: true, reset_to_default_state: true,
-           prepare_to_import: true, finalize_updates_to: true,
-           merge_updates_from: true)
+      prepare_to_import: true, finalize_updates_to: true,
+      merge_updates_from: true)
   end
   let(:install_path) do
     if ChefUtils.windows?
@@ -137,7 +137,6 @@ describe Chef::Knife::SupermarketInstall do
       knife.name_args = ["getting-started"]
       knife.config[:use_current_branch] = true
       knife.config[:no_deps] = true
-      upstream_file = File.join(install_path, "getting-started.tar.gz")
       expect(repo).not_to receive(:prepare_to_import)
       expect(repo).not_to receive(:reset_to_default_state)
       knife.run
@@ -192,11 +191,11 @@ describe Chef::Knife::SupermarketInstall do
     end
 
     it "rasies an error if it finds no metadata file" do
-      expect { knife.preferred_metadata }.to raise_error { |error|
+      expect { knife.preferred_metadata }.to(raise_error { |error|
         expect(error).to be_a(Chef::Exceptions::MetadataNotFound)
         expect(error.cookbook_name).to eq("post-punk-kitchen")
         expect(error.install_path).to eq(install_path)
-      }
+      })
     end
 
   end

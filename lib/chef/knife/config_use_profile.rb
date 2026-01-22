@@ -16,7 +16,7 @@
 #
 
 require_relative "../knife"
-require_relative "./config_use"
+require_relative "config_use"
 
 class Chef
   class Knife
@@ -31,8 +31,8 @@ class Chef
       def run
         Chef::Log.warn("knife config use-profile has been deprecated in favor of knife config use. This will be removed in the major release version!")
 
-        credentials_data = self.class.config_loader.parse_credentials_file
-        context_file = ChefConfig::PathHelper.home(".chef", "context").freeze
+        self.class.config_loader.parse_credentials_file
+        ChefConfig::PathHelper.home(".chef", "context").freeze
         profile = @name_args[0]&.strip
         if profile.nil? || profile.empty?
           show_usage

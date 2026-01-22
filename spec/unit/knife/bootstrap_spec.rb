@@ -700,7 +700,7 @@ describe Chef::Knife::Bootstrap do
       end
 
       it "creates /etc/chef/client.d" do
-        expect(rendered_template).to match("mkdir -p /etc/chef/client\.d")
+        expect(rendered_template).to match("mkdir -p /etc/chef/client.d")
       end
 
       context "a flat directory structure" do
@@ -911,7 +911,7 @@ describe Chef::Knife::Bootstrap do
   context "validating use_sudo_password option" do
     it "use_sudo_password contains description and long params for help" do
       expect(knife.options).to(have_key(:use_sudo_password)) \
-        && expect(knife.options[:use_sudo_password][:description].to_s).not_to(eq(""))\
+        && expect(knife.options[:use_sudo_password][:description].to_s).not_to(eq("")) \
         && expect(knife.options[:use_sudo_password][:long].to_s).not_to(eq(""))
     end
   end
@@ -1258,7 +1258,6 @@ describe Chef::Knife::Bootstrap do
           before do
             # We will use knife's actual config since these tests
             # have assumptions based on CLI default values
-            config = {}
           end
 
           let(:expected_result) do

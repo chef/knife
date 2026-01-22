@@ -31,3 +31,26 @@ begin
 rescue LoadError
   puts "rspec not available. bundle install first to make sure all dependencies are installed."
 end
+
+begin
+  require "cookstyle/chefstyle"
+  require "rubocop/rake_task"
+
+  namespace :style do
+    desc "Run cookstyle style checks"
+    RuboCop::RakeTask.new(:cookstyle) do |task|
+      task.options += ["--display-cop-names", "--no-color"]
+    end
+  end
+
+  # Alias for convenience
+  desc "Run cookstyle style checks"
+  task style: "style:cookstyle"
+rescue LoadError
+  puts "cookstyle/chefstyle is not available. (sudo) gem install cookstyle to do style checking."
+end
+
+desc "Run all quality tasks"
+task quality: ["style:cookstyle"]
+
+task default: [:spec]

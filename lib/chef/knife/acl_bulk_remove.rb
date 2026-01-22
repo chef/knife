@@ -59,7 +59,6 @@ class Chef
           exit 1
         end
 
-        objects_to_modify = []
         all_objects = rest.get_rest(object_type)
         objects_to_modify = all_objects.keys.grep(object_name_matcher)
 

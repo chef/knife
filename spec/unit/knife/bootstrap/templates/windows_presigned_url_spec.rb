@@ -75,7 +75,7 @@ describe "windows-chef-client-msi.erb template with presigned URLs" do
 
     it "properly handles the URL in the cscript fallback" do
       # Verify that the cscript fallback also uses the environment variable
-      expect(rendered_template).to include('cscript /nologo')
+      expect(rendered_template).to include("cscript /nologo")
       expect(rendered_template).to match(/wget\.vbs.*BOOTSTRAP_DOWNLOAD_URL/)
     end
 

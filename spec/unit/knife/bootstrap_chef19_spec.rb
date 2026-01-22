@@ -61,7 +61,6 @@ describe Chef::Knife::Bootstrap do
         end
       end
 
-
       context "when custom bootstrap URL is provided" do
         it "skips license fetching" do
           expect(ChefLicensing::Config).not_to receive(:require_license_for)

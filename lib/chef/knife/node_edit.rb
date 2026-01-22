@@ -45,7 +45,7 @@ class Chef
         end
 
         updated_node = node_editor.edit_node
-        if updated_values = node_editor.updated?
+        if (updated_values = node_editor.updated?)
           ui.info "Saving updated #{updated_values.join(", ")} on node #{node.name}"
           updated_node.save
         else

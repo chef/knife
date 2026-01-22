@@ -349,17 +349,17 @@ class Chef
           accumulator
         }
       option :disable_license_activation,
-             long: "--disable-license-activation",
-             description: "By default knife copies the local license key to the node and activates it. This options can be used to disable that.",
-             boolean: true
+        long: "--disable-license-activation",
+        description: "By default knife copies the local license key to the node and activates it. This options can be used to disable that.",
+        boolean: true
 
       option :chef_license_key,
-              long: "--chef-license-key KEY",
-              description: "The Chef License key to be used for license activation. You can run `knife license` command to retrieve it."
+        long: "--chef-license-key KEY",
+        description: "The Chef License key to be used for license activation. You can run `knife license` command to retrieve it."
 
       option :chef_license_server,
-              long: "--chef-license-server URL",
-              description: "The Chef License server URL to be used for license activation. You can run `knife license` command to retrieve it."
+        long: "--chef-license-server URL",
+        description: "The Chef License server URL to be used for license activation. You can run `knife license` command to retrieve it."
 
       # Deprecated options. These must be declared after
       # regular options because they refer to the replacement

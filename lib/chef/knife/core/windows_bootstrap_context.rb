@@ -220,7 +220,7 @@ class Chef
             path = WScript.Arguments.Named("path")
             proxy = null
             '* Vaguely attempt to handle file:// scheme urls by url unescaping and switching all
-            '* / into \.  Also assume that file:/// is a local absolute path and that file://<foo>
+            '* / into . Also assume that file:/// is a local absolute path and that file://<foo>
             '* is possibly a network file path.
             If InStr(url, "file://") = 1 Then
             url = Unescape(url)
@@ -385,11 +385,7 @@ class Chef
           product = product_to_install
 
           # Build the omnitruck URL
-          base_url = if @config[:omnitruck_url]
-                       @config[:omnitruck_url]
-                     else
-                       "https://omnitruck.chef.io"
-                     end
+          base_url = @config[:omnitruck_url] || "https://omnitruck.chef.io"
 
           # Build URL with product name
           url_path = "#{product}/download"
@@ -414,7 +410,7 @@ class Chef
           end
 
           # Add query parameters if any
-          url += "?#{params.join('&')}" unless params.empty?
+          url += "?#{params.join("&")}" unless params.empty?
 
           url
         end

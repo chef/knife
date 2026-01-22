@@ -86,7 +86,7 @@ class Chef
       end
 
       def finalize_updates_to(cookbook_name, version)
-        if update_count = updated?(cookbook_name)
+        if (update_count = updated?(cookbook_name))
           ui.info "#{update_count} files updated, committing changes"
           git("add #{cookbook_name}")
           git("commit -m \"Import #{cookbook_name} version #{version}\" -- #{cookbook_name}")

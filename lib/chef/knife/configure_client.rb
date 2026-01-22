@@ -24,7 +24,7 @@ class Chef
       banner "knife configure client DIRECTORY"
 
       def run
-        unless @config_dir = @name_args[0]
+        unless (@config_dir = @name_args[0])
           ui.fatal "You must provide the directory to put the files in"
           show_usage
           exit(1)

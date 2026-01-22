@@ -566,7 +566,7 @@ Key external dependencies (defined in `knife.gemspec`):
 
 ### Development Dependencies
 - `rspec` - Testing framework
-- `chefstyle` - Ruby code style enforcement
+- `cookstyle` - Ruby code style enforcement (Chef's RuboCop configuration)
 - `bundler` - Dependency management
 
 ## Troubleshooting Common Issues

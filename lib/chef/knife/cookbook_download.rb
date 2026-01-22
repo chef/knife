@@ -130,7 +130,7 @@ class Chef
         question += "\n"
         response = ask_question(question).strip
 
-        unless @version = valid_responses[response]
+        unless (@version = valid_responses[response])
           ui.error("'#{response}' is not a valid value.")
           exit(1)
         end

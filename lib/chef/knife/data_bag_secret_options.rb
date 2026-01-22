@@ -66,7 +66,7 @@ class Chef
           config[:cl_secret]
         elsif config[:cl_secret_file]
           Chef::EncryptedDataBagItem.load_secret(config[:cl_secret_file])
-        elsif secret = config[:secret]
+        elsif (secret = config[:secret])
           secret
         else
           secret_file = config[:secret_file]

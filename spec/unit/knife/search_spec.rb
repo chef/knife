@@ -59,14 +59,14 @@ describe Chef::Knife::Search do
           knife.config[:query] = ":"
 
           expect { knife.run }.to raise_error(SystemExit)
-          expect(stderr.string).to match /Please specify query as an argument or an option via -q, not both/im
+          expect(stderr.string).to match(/Please specify query as an argument or an option via -q, not both/im)
         end
 
         it "should fail if no query passed" do
           knife.name_args = []
 
           expect { knife.run }.to raise_error(SystemExit)
-          expect(stderr.string).to match /No query specified/im
+          expect(stderr.string).to match(/No query specified/im)
         end
       end
 

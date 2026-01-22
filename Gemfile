@@ -57,6 +57,3 @@ group :omnibus_package, :pry do
   gem "pry-stack_explorer"
 end
 
-group :chefstyle do
-  gem "chefstyle"
-end
