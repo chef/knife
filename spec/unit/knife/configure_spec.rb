@@ -158,7 +158,7 @@ describe Chef::Knife::Configure do
     @knife.config[:repository] = "/home/you/chef-repo"
     @knife.run
     expect(config_file.string).to match(/^client_name\s+=\s+'#{Regexp.escape(Etc.getlogin)}'$/)
-    expect(config_file.string).to match(%r{^client_key\s+=\s+'#{Regexp.escape("/home/you/.chef/#{Etc.getlogin}.pem")}'$})
+    expect(config_file.string).to match(/^client_key\s+=\s+'#{Regexp.escape("/home/you/.chef/#{Etc.getlogin}.pem")}'$/)
     expect(config_file.string).to match(/^chef_server_url\s+=\s+'#{Regexp.escape(default_server_url)}'$/)
   end
 

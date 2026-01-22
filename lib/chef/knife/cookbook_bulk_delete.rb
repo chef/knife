@@ -33,7 +33,7 @@ class Chef
       banner "knife cookbook bulk delete REGEX (options)"
 
       def run
-        unless regex_str = @name_args.first
+        unless (regex_str = @name_args.first)
           ui.fatal("You must supply a regular expression to match the results against")
           exit 42
         end

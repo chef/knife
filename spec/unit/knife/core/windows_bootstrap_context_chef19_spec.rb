@@ -39,7 +39,7 @@ describe Chef::Knife::Core::WindowsBootstrapContext do
     describe "#msi_url" do
       context "when using chef-ice product" do
         let(:config) { { bootstrap_version: "19.0.0", channel: "stable" } }
-        
+
         it "includes chef-ice in the omnitruck URL" do
           url = bootstrap_context.msi_url("2016", "x86_64")
           expect(url).to include("chef-ice/download")
@@ -48,7 +48,7 @@ describe Chef::Knife::Core::WindowsBootstrapContext do
 
       context "when using chef product" do
         let(:config) { { bootstrap_version: "18.0.0", channel: "stable" } }
-        
+
         it "includes chef in the omnitruck URL" do
           url = bootstrap_context.msi_url("2016", "x86_64")
           expect(url).to include("chef/download")
@@ -63,10 +63,10 @@ describe Chef::Knife::Core::WindowsBootstrapContext do
             license_type: "commercial",
             license_url: "https://example.com",
             license_id: "test-license",
-            omnitruck_url: "https://commercial.downloads.chef.co/%s"
+            omnitruck_url: "https://commercial.downloads.chef.co/%s",
           }
         end
-        
+
         it "uses commercial omnitruck URL with chef-ice product" do
           url = bootstrap_context.msi_url("2016", "x86_64")
           expect(url).to include("chef-ice/download")
@@ -76,7 +76,7 @@ describe Chef::Knife::Core::WindowsBootstrapContext do
 
       context "when msi_url is explicitly provided" do
         let(:config) { { msi_url: "https://custom.example.com/chef.msi" } }
-        
+
         it "returns the custom MSI URL" do
           url = bootstrap_context.msi_url("2016", "x86_64")
           expect(url).to eq "https://custom.example.com/chef.msi"
@@ -89,7 +89,7 @@ describe Chef::Knife::Core::WindowsBootstrapContext do
 
       context "when license is required and license_key is provided" do
         let(:config) { { bootstrap_version: "19.0.0", license_key: "test-license-key" } }
-        
+
         it "includes license environment variable in install command" do
           command = bootstrap_context.send(:install_command, executor_quote)
           expect(command).to include("set CHEF_LICENSE_KEY=test-license-key")
@@ -99,7 +99,7 @@ describe Chef::Knife::Core::WindowsBootstrapContext do
 
       context "when license is required and license_id is provided" do
         let(:config) { { bootstrap_version: "19.0.0", license_id: "test-license-id" } }
-        
+
         it "includes license environment variable with license_id in install command" do
           command = bootstrap_context.send(:install_command, executor_quote)
           expect(command).to include("set CHEF_LICENSE_KEY=test-license-id")
@@ -108,7 +108,7 @@ describe Chef::Knife::Core::WindowsBootstrapContext do
 
       context "when license is required but no license key/id provided" do
         let(:config) { { bootstrap_version: "19.0.0" } }
-        
+
         it "does not include license environment variable" do
           command = bootstrap_context.send(:install_command, executor_quote)
           expect(command).not_to include("CHEF_LICENSE_KEY")
@@ -118,7 +118,7 @@ describe Chef::Knife::Core::WindowsBootstrapContext do
 
       context "when license is not required" do
         let(:config) { { bootstrap_version: "18.0.0", license_key: "test-license-key" } }
-        
+
         it "does not include license environment variable even if license key provided" do
           command = bootstrap_context.send(:install_command, executor_quote)
           expect(command).not_to include("CHEF_LICENSE_KEY")

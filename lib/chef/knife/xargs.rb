@@ -131,7 +131,6 @@ class Chef
                 begin
                   error = true if xargs_files(command, tempfiles)
                   files = []
-                  ran = true
                 ensure
                   destroy_tempfiles(tempfiles)
                 end
@@ -238,7 +237,7 @@ class Chef
         # Check if the output is different
         tempfiles.each_pair do |tempfile, file|
           # Read the new output
-          new_value = IO.binread(tempfile.path)
+          new_value = File.binread(tempfile.path)
 
           # Upload the output if different
           if config[:force] || new_value != file[:value]

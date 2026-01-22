@@ -1,10 +1,10 @@
 # Changelog
 
-<!-- latest_release 19.0.82 -->
-## [v19.0.82](https://github.com/chef/knife/tree/v19.0.82) (2025-12-02)
+<!-- latest_release 19.0.89 -->
+## [v19.0.89](https://github.com/chef/knife/tree/v19.0.89) (2026-01-22)
 
 #### Merged Pull Requests
-- Removed the temporary docs [#43](https://github.com/chef/knife/pull/43) ([ashiqueps](https://github.com/ashiqueps))
+- CHEF-29680 - Update chefstyle to cookstyle with linting configuration [#46](https://github.com/chef/knife/pull/46) ([nikhil2611](https://github.com/nikhil2611))
 <!-- latest_release -->
 
 <!-- release_rollup since=18.7.9 -->
@@ -14,6 +14,13 @@
 - COPILOT-SETUP: Add comprehensive GitHub Copilot instructions [#33](https://github.com/chef/knife/pull/33) ([ashiqueps](https://github.com/ashiqueps)) <!-- 19.0.75 -->
 
 #### Merged Pull Requests
+- CHEF-29680 - Update chefstyle to cookstyle with linting configuration [#46](https://github.com/chef/knife/pull/46) ([nikhil2611](https://github.com/nikhil2611)) <!-- 19.0.89 -->
+- CHEF-29676 - Sync knife dependency updates from chef/chef after 2025-01-15 [#47](https://github.com/chef/knife/pull/47) ([nikhil2611](https://github.com/nikhil2611)) <!-- 19.0.88 -->
+- CHEF-29678 - Sync Ruby 3.4 updates from chef/chef after 2025-01-15 [#50](https://github.com/chef/knife/pull/50) ([nikhil2611](https://github.com/nikhil2611)) <!-- 19.0.87 -->
+- CHEF-29679 - Sync bug fixes from chef/chef after 2025-01-15 [#51](https://github.com/chef/knife/pull/51) ([nikhil2611](https://github.com/nikhil2611)) <!-- 19.0.86 -->
+- CHEF-29675 - Sync dependabot fixes from chef/chef to standalone knife repo [#48](https://github.com/chef/knife/pull/48) ([nikhil2611](https://github.com/nikhil2611)) <!-- 19.0.85 -->
+- Sync features  from chef/chef to standalone knife repo [#54](https://github.com/chef/knife/pull/54) ([nikhil2611](https://github.com/nikhil2611)) <!-- 19.0.84 -->
+- updating chef and respective gems to something newer [#53](https://github.com/chef/knife/pull/53) ([sean-sype-simmons](https://github.com/sean-sype-simmons)) <!-- 19.0.83 -->
 - Removed the temporary docs [#43](https://github.com/chef/knife/pull/43) ([ashiqueps](https://github.com/ashiqueps)) <!-- 19.0.82 -->
 - Fixed the issue with chef-18 bootstrap [#42](https://github.com/chef/knife/pull/42) ([ashiqueps](https://github.com/ashiqueps)) <!-- 19.0.81 -->
 - [CHEF-17154][CHEF-27323] Knife bootstrap: Chef infra 19 download journey [#36](https://github.com/chef/knife/pull/36) ([ashiqueps](https://github.com/ashiqueps)) <!-- 19.0.80 -->

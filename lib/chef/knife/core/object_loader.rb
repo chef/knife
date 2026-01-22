@@ -39,7 +39,7 @@ class Chef
         end
 
         def load_from(repo_location, *components)
-          unless object_file = find_file(repo_location, *components)
+          unless (object_file = find_file(repo_location, *components))
             ui.error "Could not find or open file '#{components.last}' in current directory or in '#{repo_location}/#{components.join("/")}'"
             exit 1
           end
@@ -87,7 +87,7 @@ class Chef
         def object_from_file(filename)
           case filename
           when /\.(js|json)$/
-            r = FFI_Yajl::Parser.parse(IO.read(filename))
+            r = FFI_Yajl::Parser.parse(File.read(filename))
 
             # Chef::DataBagItem doesn't work well with the json_create method
             if @klass == Chef::DataBagItem

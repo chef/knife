@@ -43,7 +43,7 @@ class Chef
         long: "--concurrency NUM",
         description: "The number of concurrent connections.",
         default: nil,
-        proc: lambda { |o| o.to_i }
+        proc: lambda(&:to_i)
 
       option :ssh_attribute,
         short: "-a ATTR",
@@ -79,7 +79,7 @@ class Chef
         short: "-p PORT",
         long: "--ssh-port PORT",
         description: "The ssh port.",
-        proc: Proc.new { |key| key.strip }
+        proc: Proc.new(&:strip)
 
       option :ssh_timeout,
         short: "-t SECONDS",
@@ -92,7 +92,7 @@ class Chef
         short: "-G GATEWAY",
         long: "--ssh-gateway GATEWAY",
         description: "The ssh gateway.",
-        proc: Proc.new { |key| key.strip }
+        proc: Proc.new(&:strip)
 
       option :ssh_gateway_identity,
         long: "--ssh-gateway-identity SSH_GATEWAY_IDENTITY",
@@ -344,11 +344,11 @@ class Chef
 
       def print_data(host, data)
         @buffers ||= {}
-        if leftover = @buffers[host]
+        if (leftover = @buffers[host])
           @buffers[host] = nil
           print_data(host, leftover + data)
         else
-          if newline_index = data.index("\n")
+          if (newline_index = data.index("\n"))
             line = data.slice!(0...newline_index)
             data.slice!(0)
             print_line(host, line)

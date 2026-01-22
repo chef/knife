@@ -71,7 +71,7 @@ class Chef
 
         error = false
         pattern_args.each do |pattern|
-          fs_error, result = Chef::ChefFS::FileSystem.copy_to(pattern, chef_fs, local_fs, config[:recurse] ? nil : 1, config, ui, proc { |entry| format_path(entry) })
+          fs_error, _result = Chef::ChefFS::FileSystem.copy_to(pattern, chef_fs, local_fs, config[:recurse] ? nil : 1, config, ui, proc { |entry| format_path(entry) })
           if fs_error
             error = true
           end

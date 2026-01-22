@@ -115,7 +115,7 @@ class Chef
             printed_something = true
           end
           output "#{format_path(result)}:"
-          print_results(children.map { |result| maybe_add_slash(result.display_name, result.dir?) }.sort, "")
+          print_results(children.map { |child| maybe_add_slash(child.display_name, child.dir?) }.sort, "")
         end
 
         exit exit_code if exit_code

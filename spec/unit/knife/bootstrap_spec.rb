@@ -75,6 +75,29 @@ describe Chef::Knife::Bootstrap do
         expect(Chef::Config[:chef_license]).to eq("accept-no-persist")
       end
     end
+
+    describe "alias" do
+      before do
+        expect(acceptor).to receive(:license_required?).and_return(false)
+      end
+
+      it "should be aliased to check_license" do
+        expect(knife).to respond_to(:check_license)
+        expect(knife).to respond_to(:check_eula_license)
+
+        knife.check_license
+      end
+
+      it "should logs check_eula_license using check_license" do
+        expect(Chef::Log).to receive(:debug).with("Checking if we need to accept Chef license to bootstrap node")
+        knife.check_license
+      end
+
+      it "should logs the same with check_eula_license" do
+        expect(Chef::Log).to receive(:debug).with("Checking if we need to accept Chef license to bootstrap node")
+        knife.check_eula_license
+      end
+    end
   end
 
   context "#fetch_license" do
@@ -482,7 +505,7 @@ describe Chef::Knife::Bootstrap do
       allow(::File).to receive(:read).and_return('{ "foo" : "bar" }')
       knife.parse_options(["--hint", "openstack=hints/openstack.json"])
       knife.merge_configs
-      expect(knife.render_template).to match(/\{\"foo\":\"bar\"\}/)
+      expect(knife.render_template).to match(/\{ \"foo\" : \"bar\"\ }/)
     end
   end
 
@@ -677,7 +700,7 @@ describe Chef::Knife::Bootstrap do
       end
 
       it "creates /etc/chef/client.d" do
-        expect(rendered_template).to match("mkdir -p /etc/chef/client\.d")
+        expect(rendered_template).to match("mkdir -p /etc/chef/client.d")
       end
 
       context "a flat directory structure" do
@@ -888,7 +911,7 @@ describe Chef::Knife::Bootstrap do
   context "validating use_sudo_password option" do
     it "use_sudo_password contains description and long params for help" do
       expect(knife.options).to(have_key(:use_sudo_password)) \
-        && expect(knife.options[:use_sudo_password][:description].to_s).not_to(eq(""))\
+        && expect(knife.options[:use_sudo_password][:description].to_s).not_to(eq("")) \
         && expect(knife.options[:use_sudo_password][:long].to_s).not_to(eq(""))
     end
   end
@@ -1235,7 +1258,6 @@ describe Chef::Knife::Bootstrap do
           before do
             # We will use knife's actual config since these tests
             # have assumptions based on CLI default values
-            config = {}
           end
 
           let(:expected_result) do

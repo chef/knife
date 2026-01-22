@@ -90,7 +90,7 @@ class Chef
 
       def cn_of(certificate)
         subject = certificate.subject
-        if cn_field_tuple = subject.to_a.find { |field| field[0] == "CN" }
+        if (cn_field_tuple = subject.to_a.find { |field| field[0] == "CN" })
           cn_field_tuple[1]
         else
           nil

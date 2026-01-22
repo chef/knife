@@ -349,17 +349,17 @@ class Chef
           accumulator
         }
       option :disable_license_activation,
-             long: "--disable-license-activation",
-             description: "By default knife copies the local license key to the node and activates it. This options can be used to disable that.",
-             boolean: true
+        long: "--disable-license-activation",
+        description: "By default knife copies the local license key to the node and activates it. This options can be used to disable that.",
+        boolean: true
 
       option :chef_license_key,
-              long: "--chef-license-key KEY",
-              description: "The Chef License key to be used for license activation. You can run `knife license` command to retrieve it."
+        long: "--chef-license-key KEY",
+        description: "The Chef License key to be used for license activation. You can run `knife license` command to retrieve it."
 
       option :chef_license_server,
-              long: "--chef-license-server URL",
-              description: "The Chef License server URL to be used for license activation. You can run `knife license` command to retrieve it."
+        long: "--chef-license-server URL",
+        description: "The Chef License server URL to be used for license activation. You can run `knife license` command to retrieve it."
 
       # Deprecated options. These must be declared after
       # regular options because they refer to the replacement
@@ -466,6 +466,10 @@ class Chef
         end
       end
 
+      # This method was renamed to check_eula_license to better reflect its purpose.
+      # Some of the knife plugins may still be using the old name, so we keep it for backward compatibility.
+      alias_method :check_license, :check_eula_license
+
       # The default bootstrap template to use to bootstrap a server.
       # This is a public API hook which knife plugins use or inherit and override.
       #
@@ -557,7 +561,7 @@ class Chef
         require "erubis" unless defined?(Erubis)
         @config[:first_boot_attributes] = first_boot_attributes
         template_file = find_template
-        template = IO.read(template_file).chomp
+        template = File.read(template_file).chomp
         Erubis::Eruby.new(template).evaluate(bootstrap_context)
       end
 

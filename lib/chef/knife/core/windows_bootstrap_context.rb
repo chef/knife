@@ -44,7 +44,7 @@ class Chef
 
         def validation_key
           if File.exist?(File.expand_path(chef_config[:validation_key]))
-            IO.read(File.expand_path(chef_config[:validation_key]))
+            File.read(File.expand_path(chef_config[:validation_key]))
           else
             false
           end
@@ -220,7 +220,7 @@ class Chef
             path = WScript.Arguments.Named("path")
             proxy = null
             '* Vaguely attempt to handle file:// scheme urls by url unescaping and switching all
-            '* / into \.  Also assume that file:/// is a local absolute path and that file://<foo>
+            '* / into . Also assume that file:/// is a local absolute path and that file://<foo>
             '* is possibly a network file path.
             If InStr(url, "file://") = 1 Then
             url = Unescape(url)
@@ -385,11 +385,7 @@ class Chef
           product = product_to_install
 
           # Build the omnitruck URL
-          base_url = if @config[:omnitruck_url]
-                       @config[:omnitruck_url]
-                     else
-                       "https://omnitruck.chef.io"
-                     end
+          base_url = @config[:omnitruck_url] || "https://omnitruck.chef.io"
 
           # Build URL with product name
           url_path = "#{product}/download"
@@ -414,7 +410,7 @@ class Chef
           end
 
           # Add query parameters if any
-          url += "?#{params.join('&')}" unless params.empty?
+          url += "?#{params.join("&")}" unless params.empty?
 
           url
         end
@@ -428,7 +424,7 @@ class Chef
           if chef_config[:trusted_certs_dir]
             Dir.glob(File.join(ChefConfig::PathHelper.escape_glob_dir(chef_config[:trusted_certs_dir]), "*.{crt,pem}")).each do |cert|
               content << "> #{bootstrap_directory}/trusted_certs/#{File.basename(cert)} (\n" +
-                escape_and_echo(IO.read(File.expand_path(cert))) + "\n)\n"
+                escape_and_echo(File.read(File.expand_path(cert))) + "\n)\n"
             end
           end
           content
@@ -446,7 +442,7 @@ class Chef
                   content << "mkdir #{file_on_node}\n"
                 else
                   content << "> #{file_on_node} (\n" +
-                    escape_and_echo(IO.read(File.expand_path(f))) + "\n)\n"
+                    escape_and_echo(File.read(File.expand_path(f))) + "\n)\n"
                 end
               end
             end

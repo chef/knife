@@ -52,6 +52,7 @@ describe Chef::Knife::CookbookDelete do
 
     it "logs an error and exits" do
       expect { knife.run }.to raise_error(SystemExit)
+
       expect(knife_stderr.string).to match(/Cannot find a cookbook named no-such-cookbook to delete/)
     end
 
@@ -74,7 +75,7 @@ describe Chef::Knife::CookbookDelete do
 
       knife.run
 
-      expect(stdout.string).to match(/#{Regexp.escape('Do you really want to delete obsolete-cookbook version 1.0.0? (Y/N)')}/)
+      expect(stdout.string).to match(/#{Regexp.escape("Do you really want to delete obsolete-cookbook version 1.0.0? (Y/N)")}/)
       expect(cb100_deleted).to be_truthy
     end
 
@@ -90,8 +91,8 @@ describe Chef::Knife::CookbookDelete do
 
       knife.run
 
-      expect(stdout.string).to match(/#{Regexp.escape('Are you sure you want to purge files')}/)
-      expect(stdout.string).to match(/#{Regexp.escape('Do you really want to delete obsolete-cookbook version 1.0.0? (Y/N)')}/)
+      expect(stdout.string).to match(/#{Regexp.escape("Are you sure you want to purge files")}/)
+      expect(stdout.string).to match(/#{Regexp.escape("Do you really want to delete obsolete-cookbook version 1.0.0? (Y/N)")}/)
       expect(cb100_deleted).to be_truthy
 
     end
@@ -122,7 +123,7 @@ describe Chef::Knife::CookbookDelete do
     end
 
     it "asks which version to delete and deletes that when not given the -a flag" do
-      cb100_deleted = cb110_deleted = cb120_deleted = nil
+      cb100_deleted = nil
       api.delete("/cookbooks/obsolete-cookbook/1.0.0", 200) { cb100_deleted = true; "[\"true\"]" }
       stdin, stdout = StringIO.new, StringIO.new
       allow(knife.ui).to receive(:stdin).and_return(stdin)

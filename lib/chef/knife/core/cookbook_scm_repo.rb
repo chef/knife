@@ -22,7 +22,7 @@ class Chef
   class Knife
     class CookbookSCMRepo
 
-      DIRTY_REPO = /^\s+M/.freeze
+      DIRTY_REPO = /^\s+M/
 
       include Chef::Mixin::ShellOut
 
@@ -86,7 +86,7 @@ class Chef
       end
 
       def finalize_updates_to(cookbook_name, version)
-        if update_count = updated?(cookbook_name)
+        if (update_count = updated?(cookbook_name))
           ui.info "#{update_count} files updated, committing changes"
           git("add #{cookbook_name}")
           git("commit -m \"Import #{cookbook_name} version #{version}\" -- #{cookbook_name}")
@@ -102,7 +102,7 @@ class Chef
       def merge_updates_from(cookbook_name, version)
         branch = "chef-vendor-#{cookbook_name}"
         Dir.chdir(repo_path) do
-          if system("git merge #{branch}")
+          if system("git", "merge", branch)
             ui.info("Cookbook #{cookbook_name} version #{version} successfully installed")
           else
             ui.error("You have merge conflicts - please resolve manually")

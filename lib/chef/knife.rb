@@ -286,7 +286,7 @@ class Chef
 
         if CHEF_ORGANIZATION_MANAGEMENT.include?(args[0])
           list_commands("CHEF ORGANIZATION MANAGEMENT")
-        elsif category_commands = guess_category(args)
+        elsif (category_commands = guess_category(args))
           list_commands(category_commands)
         elsif OFFICIAL_PLUGINS.include?(args[0]) # command was an uninstalled official chef knife plugin
           ui.info("Use `#{ChefUtils::Dist::Infra::EXEC} gem install knife-#{args[0]}` to install the plugin into Chef Workstation")

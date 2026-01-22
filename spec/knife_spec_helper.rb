@@ -98,11 +98,6 @@ TEST_PLATFORM = TEST_NODE["platform"]
 TEST_PLATFORM_VERSION = TEST_NODE["platform_version"]
 TEST_PLATFORM_FAMILY = TEST_NODE["platform_family"]
 
-provider_priority_map ||= nil
-resource_priority_map ||= nil
-provider_handler_map ||= nil
-resource_handler_map ||= nil
-
 class UnexpectedSystemExit < RuntimeError
   def self.from(system_exit)
     new(system_exit.message).tap { |e| e.set_backtrace(system_exit.backtrace) }

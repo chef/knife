@@ -105,7 +105,7 @@ class Chef
           # We should be able to use this as-is - but the user might have incorrectly provided
           # us with a path that is based off of the OS root path instead of the Chef-FS root.
           # Do a quick and dirty sanity check.
-          if possible_server_path = @chef_fs_config.server_path(arg)
+          if (possible_server_path = @chef_fs_config.server_path(arg))
             ui.warn("The absolute path provided is suspicious: #{arg}")
             ui.warn("If you wish to refer to a file location, please provide a path that is rooted at the chef-repo.")
             ui.warn("Consider writing '#{possible_server_path}' instead of '#{arg}'")

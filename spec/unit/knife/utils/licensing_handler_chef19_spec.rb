@@ -75,17 +75,16 @@ describe Chef::Utils::LicensingHandler do
   end
 
   describe ".validate!" do
-    let(:config) { {} }
     let(:license_metadata) { double("license_metadata", id: "test-id", license_type: "trial") }
     let(:licenses_metadata) { double("licenses_metadata", last: license_metadata) }
 
     before do
-      allow(ChefLicensing).to receive(:fetch_and_persist).and_return(["test-license"])
+      allow(ChefLicensing::LicenseKeyFetcher).to receive(:fetch).and_return(["test-license"])
       allow(ChefLicensing::Api::Describe).to receive(:list).and_return(licenses_metadata)
     end
 
     it "validates license and returns handler instance" do
-      result = described_class.validate!(config)
+      result = described_class.validate!
 
       expect(result).to be_a(described_class)
       expect(result.license_key).to eq("test-id")
@@ -93,9 +92,9 @@ describe Chef::Utils::LicensingHandler do
     end
 
     it "fetches licenses from licensing service" do
-      expect(ChefLicensing).to receive(:fetch_and_persist).and_return(["test-license"])
+      expect(ChefLicensing::LicenseKeyFetcher).to receive(:fetch).and_return(["test-license"])
 
-      described_class.validate!(config)
+      described_class.validate!
     end
 
     it "describes licenses with license keys" do
@@ -103,7 +102,7 @@ describe Chef::Utils::LicensingHandler do
         hash_including(license_keys: ["test-license"])
       )
 
-      described_class.validate!(config)
+      described_class.validate!
     end
   end
 

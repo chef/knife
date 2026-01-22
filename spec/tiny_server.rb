@@ -19,6 +19,7 @@
 require "webrick"
 require "webrick/https"
 require "rack"
+require "rackup"
 require "singleton"
 require "open-uri"
 require "chef/config"
@@ -131,7 +132,7 @@ module TinyServer
     end
 
     def call(env)
-      if response = response_for_request(env)
+      if (response = response_for_request(env))
         response.call
       else
         debug_info = { message: "no data matches the request for #{env["REQUEST_URI"]}",
@@ -143,7 +144,7 @@ module TinyServer
     end
 
     def response_for_request(env)
-      if route = @routes[env["REQUEST_METHOD"]].find { |route| route.matches_request?(env["REQUEST_URI"]) }
+      if (route = @routes[env["REQUEST_METHOD"]].find { |route| route.matches_request?(env["REQUEST_URI"]) })
         route.response
       end
     end
@@ -172,7 +173,9 @@ module TinyServer
 
     def initialize(response_code = 200, data = nil, headers = nil, &block)
       @response_code, @data = response_code, data
-      @response_headers = headers ? HEADERS.merge(headers) : HEADERS.dup
+      # .merge creates a new hash, headers is sometimes passed as nil, @response_headers gets mutated somewhere
+      # in processing
+      @response_headers = HEADERS.merge(headers || {})
       @block = block_given? ? block : nil
     end
 

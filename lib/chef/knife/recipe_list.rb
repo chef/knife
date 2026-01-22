@@ -23,7 +23,7 @@ class Chef::Knife::RecipeList < Chef::Knife
 
   def run
     recipes = rest.get("cookbooks/_recipes")
-    if pattern = @name_args.first
+    if (pattern = @name_args.first)
       recipes = recipes.grep(Regexp.new(pattern))
     end
     output(recipes)
