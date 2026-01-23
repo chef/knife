@@ -1,10 +1,10 @@
 # Changelog
 
-<!-- latest_release 19.0.89 -->
-## [v19.0.89](https://github.com/chef/knife/tree/v19.0.89) (2026-01-22)
+<!-- latest_release 19.0.90 -->
+## [v19.0.90](https://github.com/chef/knife/tree/v19.0.90) (2026-01-23)
 
 #### Merged Pull Requests
-- CHEF-29680 - Update chefstyle to cookstyle with linting configuration [#46](https://github.com/chef/knife/pull/46) ([nikhil2611](https://github.com/nikhil2611))
+- Fixing argument error coming in knife bootstrap [#55](https://github.com/chef/knife/pull/55) ([nikhil2611](https://github.com/nikhil2611))
 <!-- latest_release -->
 
 <!-- release_rollup since=18.7.9 -->
@@ -14,6 +14,7 @@
 - COPILOT-SETUP: Add comprehensive GitHub Copilot instructions [#33](https://github.com/chef/knife/pull/33) ([ashiqueps](https://github.com/ashiqueps)) <!-- 19.0.75 -->
 
 #### Merged Pull Requests
+- Fixing argument error coming in knife bootstrap [#55](https://github.com/chef/knife/pull/55) ([nikhil2611](https://github.com/nikhil2611)) <!-- 19.0.90 -->
 - CHEF-29680 - Update chefstyle to cookstyle with linting configuration [#46](https://github.com/chef/knife/pull/46) ([nikhil2611](https://github.com/nikhil2611)) <!-- 19.0.89 -->
 - CHEF-29676 - Sync knife dependency updates from chef/chef after 2025-01-15 [#47](https://github.com/chef/knife/pull/47) ([nikhil2611](https://github.com/nikhil2611)) <!-- 19.0.88 -->
 - CHEF-29678 - Sync Ruby 3.4 updates from chef/chef after 2025-01-15 [#50](https://github.com/chef/knife/pull/50) ([nikhil2611](https://github.com/nikhil2611)) <!-- 19.0.87 -->
