@@ -1217,7 +1217,7 @@ class Chef
         # This block will mandate license acceptance
         # require_license_for checks if distribution is official (skip licensing) or unofficial (enforce licensing)
         ChefLicensing::Config.require_license_for do
-          license = Chef::Utils::LicensingHandler.validate!(config)
+          license = Chef::Utils::LicensingHandler.validate!
           config[:license_url] = license.install_sh_url
           config[:license_id] = license.license_key
           config[:omnitruck_url] = license.omnitruck_url

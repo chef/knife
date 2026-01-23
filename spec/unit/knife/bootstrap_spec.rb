@@ -152,7 +152,7 @@ describe Chef::Knife::Bootstrap do
         expect(license_mock).to receive(:omnitruck_url).and_return("https://example.com/omnitruck")
         expect(license_mock).to receive(:license_type).and_return("commercial")
 
-        expect(licensing_handler_mock).to receive(:validate!).with(knife.config).and_return(license_mock)
+        expect(licensing_handler_mock).to receive(:validate!).with(no_args).and_return(license_mock)
 
         expect(licensing_config_mock).to receive(:require_license_for).and_yield
 
@@ -165,7 +165,7 @@ describe Chef::Knife::Bootstrap do
       end
 
       it "handles licensing validation errors gracefully" do
-        expect(licensing_handler_mock).to receive(:validate!).with(knife.config).and_raise(StandardError.new("License validation failed"))
+        expect(licensing_handler_mock).to receive(:validate!).with(no_args).and_raise(StandardError.new("License validation failed"))
 
         expect(licensing_config_mock).to receive(:require_license_for).and_yield
 
@@ -178,7 +178,7 @@ describe Chef::Knife::Bootstrap do
         expect(license_mock).to receive(:omnitruck_url).and_return("https://omnitruck.chef.io")
         expect(license_mock).to receive(:license_type).and_return("trial")
 
-        expect(licensing_handler_mock).to receive(:validate!).with(knife.config).and_return(license_mock)
+        expect(licensing_handler_mock).to receive(:validate!).with(no_args).and_return(license_mock)
         expect(licensing_config_mock).to receive(:require_license_for).and_yield
 
         # Verify that config values are nil before the call
