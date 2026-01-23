@@ -38,7 +38,6 @@ end
 gem "syslog"
 gem "ostruct"
 gem "csv"
-gem "libyajl2", ">= 2.1" # Explicitly require newer version from rubygems.org
 gem "mixlib-authentication", "=3.0.10" #Pinning this to a specific version to avoid breaking changes
 
 group :development, :test do
