@@ -38,6 +38,16 @@ function Invoke-Build {
         Push-Location $project_root
         $env:GEM_HOME = "$HAB_CACHE_SRC_PATH/$pkg_dirname/vendor"
 
+<<<<<<< HEAD
+=======
+        Write-BuildLine " ** Removing Gemfile.lock to generate fresh lock file"
+        Remove-Item -Path "Gemfile.lock" -Force -ErrorAction SilentlyContinue
+
+        # Add only the chef gem manually
+        # Todo: Remove this function once the Chef gem is published with the correct name in Artifactory or rubygems.org.
+        Handle-ArtifactoryChefGem
+
+>>>>>>> e7950a2 (fixing windows pipeline for habitat package)
         Write-BuildLine " ** Configuring bundler for this build environment"
         bundle config --local without integration deploy maintenance
         bundle config --local jobs 4
