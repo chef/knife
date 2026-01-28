@@ -7,9 +7,9 @@ name: CI Pull Request on Main Branch
 
 on: 
   pull_request:
-    branches: [ main, develop, release/** ]
+    branches: [ nikhil/fix-repo-name-in-sbominator, release/** ]
   push:
-    branches: [ main, develop, release/** ]
+    branches: [ nikhil/fix-repo-name-in-sbominator, release/** ]
 
   workflow_dispatch:
 
