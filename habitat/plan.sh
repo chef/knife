@@ -72,6 +72,8 @@ do_build() {
 
     gem build knife.gemspec
 
+    ruby ./scripts/cleanup_lint_roller.rb
+
   popd
 }
 

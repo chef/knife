@@ -80,6 +80,9 @@ function Invoke-Build {
         gem install knife*.gem --no-document
         Install-ChefOfficialDistribution
 
+        Write-BuildLine " ** Cleaning up lint_roller Gemfile.lock"
+        ruby .\scripts\cleanup_lint_roller.rb
+
         If ($LASTEXITCODE -ne 0) { Exit $LASTEXITCODE }
     } finally {
         Pop-Location
