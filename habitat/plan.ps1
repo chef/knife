@@ -81,6 +81,9 @@ function Invoke-Build {
         Install-ChefOfficialDistribution
 
         Write-BuildLine " ** Cleaning up lint_roller Gemfile.lock"
+        # Set GEM_HOME to ruby version directory for cleanup script to find lint_roller gem
+        $env:GEM_HOME = "$HAB_CACHE_SRC_PATH/$pkg_dirname/vendor/ruby/3.4.0"
+        $env:GEM_PATH = "$HAB_CACHE_SRC_PATH/$pkg_dirname/vendor"
         ruby .\scripts\cleanup_lint_roller.rb
 
         If ($LASTEXITCODE -ne 0) { Exit $LASTEXITCODE }
