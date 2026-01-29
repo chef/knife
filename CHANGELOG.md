@@ -1,10 +1,10 @@
 # Changelog
 
-<!-- latest_release 19.0.91 -->
-## [v19.0.91](https://github.com/chef/knife/tree/v19.0.91) (2026-01-27)
+<!-- latest_release 19.0.92 -->
+## [v19.0.92](https://github.com/chef/knife/tree/v19.0.92) (2026-01-29)
 
 #### Merged Pull Requests
-- Added explicit libyajl2 &gt;= 2.1 dependency to allow ffi-yajl 2.7.7 installation [#57](https://github.com/chef/knife/pull/57) ([nikhil2611](https://github.com/nikhil2611))
+- Removing the lint roller gemfile.lock in knife  habitat package  [#59](https://github.com/chef/knife/pull/59) ([nikhil2611](https://github.com/nikhil2611))
 <!-- latest_release -->
 
 <!-- release_rollup since=18.7.9 -->
@@ -14,6 +14,7 @@
 - COPILOT-SETUP: Add comprehensive GitHub Copilot instructions [#33](https://github.com/chef/knife/pull/33) ([ashiqueps](https://github.com/ashiqueps)) <!-- 19.0.75 -->
 
 #### Merged Pull Requests
+- Removing the lint roller gemfile.lock in knife  habitat package  [#59](https://github.com/chef/knife/pull/59) ([nikhil2611](https://github.com/nikhil2611)) <!-- 19.0.92 -->
 - Added explicit libyajl2 &gt;= 2.1 dependency to allow ffi-yajl 2.7.7 installation [#57](https://github.com/chef/knife/pull/57) ([nikhil2611](https://github.com/nikhil2611)) <!-- 19.0.91 -->
 - Fixing argument error coming in knife bootstrap [#55](https://github.com/chef/knife/pull/55) ([nikhil2611](https://github.com/nikhil2611)) <!-- 19.0.90 -->
 - CHEF-29680 - Update chefstyle to cookstyle with linting configuration [#46](https://github.com/chef/knife/pull/46) ([nikhil2611](https://github.com/nikhil2611)) <!-- 19.0.89 -->
