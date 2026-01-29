@@ -81,8 +81,8 @@ function Invoke-Build {
         Install-ChefOfficialDistribution
 
         Write-BuildLine " ** Cleaning up lint_roller Gemfile.lock"
-        # Set GEM_HOME to ruby version directory for cleanup script to find lint_roller gem
-        $env:GEM_HOME = "$HAB_CACHE_SRC_PATH/$pkg_dirname/vendor/ruby/3.4.0"
+        # Set GEM_HOME for cleanup script to find lint_roller gem (Windows uses vendor/gems directly)
+        $env:GEM_HOME = "$HAB_CACHE_SRC_PATH/$pkg_dirname/vendor"
         $env:GEM_PATH = "$HAB_CACHE_SRC_PATH/$pkg_dirname/vendor"
         ruby .\scripts\cleanup_lint_roller.rb
 
