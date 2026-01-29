@@ -80,6 +80,12 @@ function Invoke-Build {
         gem install knife*.gem --no-document
         Install-ChefOfficialDistribution
 
+        Write-BuildLine " ** Cleaning up lint_roller Gemfile.lock"
+        # Set GEM_HOME for cleanup script to find lint_roller gem (Windows uses vendor/gems directly)
+        $env:GEM_HOME = "$HAB_CACHE_SRC_PATH/$pkg_dirname/vendor"
+        $env:GEM_PATH = "$HAB_CACHE_SRC_PATH/$pkg_dirname/vendor"
+        ruby .\scripts\cleanup_lint_roller.rb
+
         If ($LASTEXITCODE -ne 0) { Exit $LASTEXITCODE }
     } finally {
         Pop-Location
