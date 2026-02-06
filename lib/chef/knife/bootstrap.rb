@@ -567,7 +567,7 @@ class Chef
 
       def run
         # For RC3 release only
-        validate_bootstrap_url!
+        # validate_bootstrap_url!
 
         check_eula_license if ChefUtils::Dist::Org::ENFORCE_LICENSE
         fetch_license
@@ -1225,18 +1225,18 @@ class Chef
         end
       end
 
-      def validate_bootstrap_url!
-        # By default the bootstrap_product will be nil which defaults to "chef-ice"
-        return unless (config[:bootstrap_product].nil? || config[:bootstrap_product] == "chef-ice") && config[:bootstrap_url].nil?
+      # def validate_bootstrap_url!
+      #   # By default the bootstrap_product will be nil which defaults to "chef-ice"
+      #   return unless (config[:bootstrap_product].nil? || config[:bootstrap_product] == "chef-ice") && config[:bootstrap_url].nil?
 
-        ui.error <<~EOM
-          You are trying to bootstrap chef-infra-client 19 which is not available on the download portal yet.
-          Please pass the pre-signed url of the install script to the --bootstrap-url option to bootstrap chef-infra-client 19.
+      #   ui.error <<~EOM
+      #     You are trying to bootstrap chef-infra-client 19 which is not available on the download portal yet.
+      #     Please pass the pre-signed url of the install script to the --bootstrap-url option to bootstrap chef-infra-client 19.
 
-          If you wish to bootstrap chef infra client 18 or earlier, please set the --bootstrap-product option to 'chef'.
-        EOM
-        exit 1
-      end
+      #     If you wish to bootstrap chef infra client 18 or earlier, please set the --bootstrap-product option to 'chef'.
+      #   EOM
+      #   exit 1
+      # end
     end
   end
 end

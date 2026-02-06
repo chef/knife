@@ -4,8 +4,8 @@ class Chef
   class Utils
     class LicensingHandler
       OMNITRUCK_URLS = {
-        "free" => "https://omnitruck.chef.io",
-        "trial" => "https://omnitruck.chef.io",
+        "free" => "https://chefdownload-trial.chef.io",
+        "trial" => "https://chefdownload-trial.chef.io",
         "commercial" => "https://chefdownload-commercial.chef.io",
       }.freeze
 
