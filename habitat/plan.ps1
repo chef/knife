@@ -32,37 +32,11 @@ function Invoke-SetupEnvironment {
     Set-RuntimeEnv LC_CTYPE "en_US.UTF-8"
 }
 
-# Todo: Remove this function once the Chef gem is published with the correct name in Artifactory or rubygems.org.
-function Handle-ArtifactoryChefGem {
-    Write-Host "--- Handling temporary Chef gem workaround from Artifactory"
-
-    $gem_source = "https://artifactory-internal.ps.chef.co/artifactory/api/gems/omnibus-gems-local"
-    $downloaded_path = "$env:TEMP\chef-19.1.116-universal-unknown.gem"
-    $corrected_path = "$env:TEMP\chef-19.1.116-universal-mingw-ucrt.gem"
-    $cache_path = "$project_root/vendor/cache"
-
-    Write-Host "--- Downloading Chef gem from Artifactory"
-    Invoke-WebRequest -Uri "$gem_source/gems/chef-19.1.116-universal-unknown.gem" -OutFile $downloaded_path -UseBasicParsing
-
-    Write-Host "--- Renaming gem file to correct platform"
-    Rename-Item -Path $downloaded_path -NewName (Split-Path $corrected_path -Leaf)
-
-    Write-Host "--- Moving gem to vendor/cache"
-    if (!(Test-Path $cache_path)) {
-        New-Item -ItemType Directory -Path $cache_path | Out-Null
-    }
-    Move-Item -Path $corrected_path -Destination "$cache_path/chef-19.1.116-universal-mingw-ucrt.gem" -Force
-}
-
 function Invoke-Build {
     try {
         $env:Path += ";C:\Program Files\Git\bin"
         Push-Location $project_root
         $env:GEM_HOME = "$HAB_CACHE_SRC_PATH/$pkg_dirname/vendor"
-
-        # Add only the chef gem manually
-        # Todo: Remove this function once the Chef gem is published with the correct name in Artifactory or rubygems.org.
-        Handle-ArtifactoryChefGem
 
         Write-BuildLine " ** Configuring bundler for this build environment"
         bundle config --local without integration deploy maintenance

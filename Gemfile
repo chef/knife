@@ -2,30 +2,14 @@ source "https://rubygems.org"
 
 gem "knife", path: "."
 
-# TODO: Once these gems are published to rubygems.org, we don't need to specify them in these conditions.
+gem "chef", ">= 19.1"
+gem "chef-config", ">= 19.1"
+gem "chef-utils", ">= 19.1"
+gem "ohai", ">= 19.1"
+
+# Windows-specific gems
 if RUBY_PLATFORM.match?(/mswin|mingw|windows/)
   gem "appbundler"
-
-  # --- Windows: chef from vendor/cache, others from Artifactory ---
-
-  # Force Bundler to resolve chef from vendor/cache by declaring it without a source block
-  gem "chef", "19.1.116"
-
-  # Other Chef gems from Artifactory
-  source "https://artifactory-internal.ps.chef.co/artifactory/api/gems/omnibus-gems-local" do
-    gem "chef-config", "19.1.116"
-    gem "chef-utils", "19.1.116"
-    gem "ohai", ">= 19.1"
-  end
-
-else
-  # --- Linux/macOS: all Chef gems from Artifactory ---
-  source "https://artifactory-internal.ps.chef.co/artifactory/api/gems/omnibus-gems-local" do
-    gem "chef", ">= 19.1"
-    gem "chef-config", ">= 19.1"
-    gem "chef-utils", ">= 19.1"
-    gem "ohai", ">= 19.1"
-  end
 end
 
 # Only include these gems when Ruby version is 3.4.x
