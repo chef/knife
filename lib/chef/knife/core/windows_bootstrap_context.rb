@@ -368,46 +368,6 @@ class Chef
           file_contents.gsub(/^(.*)$/, 'echo.\1').gsub(/([(<|>)^])/, '^\1')
         end
 
-        # Returns the MSI URL for downloading Chef Infra Client
-        # Supports both chef and chef-ice products, and custom URLs
-        # def msi_url(machine_os = nil, machine_arch = nil, download_context = nil)
-        #   # If a custom MSI URL is provided, use it directly
-        #   return @config[:msi_url] if @config[:msi_url] && !@config[:msi_url].empty?
-
-        #   # Determine the product to download
-        #   product = product_to_install
-
-        #   # Build the omnitruck URL
-        #   base_url = @config[:omnitruck_url] || "https://omnitruck.chef.io"
-
-        #   # Build URL with product name
-        #   url_path = "#{product}/download"
-
-        #   # Add parameters in the expected order
-        #   params = []
-        #   params << "p=windows"
-        #   params << "pv=#{machine_os}" if machine_os
-        #   params << "m=#{machine_arch}" if machine_arch
-        #   params << "DownloadContext=#{download_context}" if download_context
-        #   params << "channel=#{@config[:channel]}" if @config[:channel]
-        #   params << "v=#{version_to_install}"
-        #   params << "license_id=#{@config[:license_id]}" if @config[:license_id]
-
-        #   # Format the URL based on whether omnitruck_url contains %s placeholder
-        #   if base_url.include?("%s")
-        #     # Custom omnitruck URL with placeholder (e.g., from licensing)
-        #     url = format(base_url, url_path)
-        #   else
-        #     # Standard omnitruck URL
-        #     url = "#{base_url}/#{url_path}"
-        #   end
-
-        #   # Add query parameters if any
-        #   url += "?#{params.join("&")}" unless params.empty?
-
-        #   url
-        # end
-
         private
 
         # Returns a string for copying the trusted certificates on the workstation to the system being bootstrapped
