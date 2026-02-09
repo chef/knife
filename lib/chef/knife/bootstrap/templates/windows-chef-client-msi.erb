@@ -299,7 +299,7 @@ If !ERRORLEVEL!==0 (
 
   @if "!CHEF_FOUND!"=="1" (
       @echo Testing <%= ChefUtils::Dist::Infra::CLIENT %> command...
-      "!CHEF_CLIENT_PATH!" --version >nul 2>nul
+      @call "!CHEF_CLIENT_PATH!" --version >nul 2>nul
       @if !ERRORLEVEL! NEQ 0 (
           echo Error: <%= ChefUtils::Dist::Infra::CLIENT %> found but failed to execute > "&2"
           echo Location: !CHEF_CLIENT_PATH! > "&2"
@@ -307,7 +307,7 @@ If !ERRORLEVEL!==0 (
           echo Please check the installation logs above. > "&2"
           exit /b 1
       ) else (
-          "!CHEF_CLIENT_PATH!" --version
+          @call "!CHEF_CLIENT_PATH!" --version
           echo <%= ChefUtils::Dist::Infra::CLIENT %> is successfully installed and verified.
       )
   ) else (
