@@ -26,9 +26,9 @@ class Chef
         format(omnitruck_url, "install.sh")
       end
 
-      def install_ps1_url
-        format(omnitruck_url, "install.ps1")
-      end
+      # def install_ps1_url
+      #   format(omnitruck_url, "install.ps1")
+      # end
 
       class << self
         def validate!
