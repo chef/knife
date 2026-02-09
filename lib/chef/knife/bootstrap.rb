@@ -566,7 +566,6 @@ class Chef
       end
 
       def run
-
         check_eula_license if ChefUtils::Dist::Org::ENFORCE_LICENSE
         fetch_license
 
