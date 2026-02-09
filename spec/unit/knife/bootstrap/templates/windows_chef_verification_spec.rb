@@ -32,103 +32,46 @@ describe "windows-chef-client-msi.erb Chef installation verification" do
 
   let(:rendered_template) { knife.render_template }
 
-  context "with Chef ICE (default for version 19+)" do
-    describe "Chef installation verification logic" do
-      it "includes Chef installation verification section" do
-        expect(rendered_template).to include("Verifying Chef installation...")
-      end
+  # Chef verification logic has been removed from the template
+  # The template now focuses on downloading and installing Chef without post-install verification
+  
+  context "installation process" do
+    it "downloads the install script using PowerShell" do
+      expect(rendered_template).to include("Attempting to download install script using PowerShell")
+    end
 
-      it "checks for Habitat installation" do
-        expect(rendered_template).to include("WHERE hab")
-      end
+    it "executes the install script" do
+      expect(rendered_template).to include("Installing Chef Infra Client using PowerShell install script")
+    end
 
-      it "verifies Habitat at C:\\hab\\bin" do
-        expect(rendered_template).to include('C:\hab\bin\hab.exe')
-      end
+    it "handles download errors with retry logic" do
+      expect(rendered_template).to include("Failed PowerShell download with status code")
+      expect(rendered_template).to include("Retrying download with cscript")
+    end
 
-      it "adds Habitat directory to PATH when found" do
-        expect(rendered_template).to include('SET "PATH=C:\hab\bin;%PATH%"')
-      end
+    it "handles installation errors appropriately" do
+      expect(rendered_template).to include("install script failed with status code")
+    end
 
-      it "tests chef-client command execution via hab pkg exec" do
-        expect(rendered_template).to include("hab pkg exec chef/chef-infra-client chef-client --version")
-      end
-
-      it "shows success message when Chef ICE is verified" do
-        expect(rendered_template).to include("Chef ICE is successfully installed and verified")
-      end
-
-      it "displays error if Habitat is not found and exits" do
-        expect(rendered_template).to include("Error: Habitat installation not found")
-        expect(rendered_template).to include("Chef ICE requires Habitat to be installed")
-      end
+    it "cleans up the downloaded script after installation" do
+      expect(rendered_template).to include("Clean up the downloaded script")
     end
   end
 
-  context "with standard Chef installation" do
-    before do
-      # Force standard Chef by explicitly setting the product
-      knife.config[:bootstrap_product] = "chef"
-      knife.config[:bootstrap_version] = "18"
+  context "with default bootstrap URL" do
+    it "uses -File parameter for wget.ps1 download" do
+      expect(rendered_template).to match(/powershell\.exe -ExecutionPolicy Unrestricted -InputFormat None -NoProfile -NonInteractive -File.*wget\.ps1/)
     end
 
-    describe "Chef installation verification logic" do
-      it "includes Chef installation verification section" do
-        expect(rendered_template).to include("Verifying Chef installation...")
-      end
-
-      it "checks for chef-client in PATH first" do
-        expect(rendered_template).to include("WHERE chef-client")
-      end
-
-      it "checks standard Chef installation location C:\\opscode\\chef\\bin" do
-        expect(rendered_template).to include('C:\opscode\chef\bin\chef-client')
-      end
-
-      it "checks alternate Chef installation location C:\\chef\\bin" do
-        expect(rendered_template).to include('C:\chef\bin\chef-client')
-      end
-
-      it "tests chef-client command execution after finding it" do
-        expect(rendered_template).to include("CHEF_CLIENT_PATH!\" --version")
-      end
-
-      it "displays error and exits if chef-client is not found" do
-        # Should have error message for not found
-        expect(rendered_template).to include("Error: chef-client installation not found in any standard location")
-        expect(rendered_template).to include("Checked locations:")
-      end
-
-      it "shows success message when chef-client is found" do
-        expect(rendered_template).to include("chef-client is successfully installed and verified")
-      end
-
-      it "tracks CHEF_FOUND variable to determine if Chef was located" do
-        expect(rendered_template).to match(/CHEF_FOUND.*=.*0/)
-        expect(rendered_template).to match(/CHEF_FOUND.*=.*1/)
-      end
-
-      it "provides helpful guidance when chef-client cannot be executed" do
-        expect(rendered_template).to include("found but failed to execute")
-        expect(rendered_template).to include("This may indicate a corrupted installation")
-      end
-
-      it "distinguishes between chef-client not found vs not executable" do
-        expect(rendered_template).to include("installation not found")
-        expect(rendered_template).to include("found but failed to execute")
-      end
+    it "passes download URL as command argument" do
+      expect(rendered_template).to include("%REMOTE_SOURCE_SCRIPT_URL%")
     end
 
-    describe "PATH manipulation" do
-      it "adds both bin and embedded\\bin directories to PATH at bootstrap" do
-        # The PATH is set at the end before running chef-client
-        expect(rendered_template).to include('opscode\chef\bin')
-        expect(rendered_template).to include('opscode\chef\embedded\bin')
-      end
-
-      it "prepends Chef directories to existing PATH" do
-        expect(rendered_template).to include(';%PATH%"')
-      end
+    it "uses -Command parameter for install execution with parameters" do
+      expect(rendered_template).to include("powershell.exe -ExecutionPolicy Unrestricted -Command")
+      expect(rendered_template).to include("install -Channel")
+      expect(rendered_template).to include("-Project")
+      expect(rendered_template).to include("-Version")
     end
   end
 
@@ -182,8 +125,45 @@ describe "windows-chef-client-msi.erb Chef installation verification" do
     it "cleans up downloaded script after verification" do
       verification_index = rendered_template.index("Verifying Chef installation")
       cleanup_index = rendered_template.index("Clean up the downloaded script")
+URL scenarios" do
+    context "when using custom bootstrap_url" do
+      before do
+        knife.config[:bootstrap_url] = "https://example.com/custom-install.ps1?signature=abc123"
+      end
 
-      expect(cleanup_index).to be > verification_index
+      let(:rendered_template) { knife.render_template }
+
+      it "sets BOOTSTRAP_DOWNLOAD_URL environment variable with escaped percent signs" do
+        expect(rendered_template).to include('set "BOOTSTRAP_DOWNLOAD_URL=')
+      end
+
+      it "uses -Command parameter for wget.ps1 with environment variable" do
+        expect(rendered_template).to match(/powershell\.exe -ExecutionPolicy Unrestricted -InputFormat None -NoProfile -NonInteractive -Command "& '.*wget\.ps1' -remoteUrl \$env:BOOTSTRAP_DOWNLOAD_URL/)
+      end
+
+      it "uses -File parameter for install script execution" do
+        expect(rendered_template).to include('powershell.exe -ExecutionPolicy Unrestricted -File "%LOCAL_DESTINATION_SCRIPT_PATH%"')
+      end
+
+      it "does not pass install function parameters for custom URLs" do
+        # Custom URLs are executed as-is without install function invocation
+        custom_section = rendered_template.split("Custom bootstrap URL").last
+        expect(custom_section).not_to include("install -Channel"downloads install script before executing it" do
+      download_section = rendered_template.index("Attempting to download install script")
+      install_section = rendered_template.index("Installing Chef Infra Client using PowerShell")
+
+      expect(download_section).to be < install_section
     end
-  end
-end
+
+    it "cleans up downloaded script after installation" do
+      install_section = rendered_template.index("Installing Chef Infra Client using PowerShell")
+      cleanup_index = rendered_template.index("Clean up the downloaded script")
+
+      expect(cleanup_index).to be > install_section
+    end
+
+    it "starts chef-client after successful installation" do
+      cleanup_section = rendered_template.index("Clean up the downloaded script")
+      chef_run_section = rendered_template.index("Starting chef-client to bootstrap")
+
+      expect(chef_run_section).to be > cleanup_section
