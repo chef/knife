@@ -213,7 +213,7 @@ class Chef
           return config[:bootstrap_version] if config[:bootstrap_version]
 
           if config[:license_url]
-            if config[:channel] == "stable" && config[:license_type] == "commercial"
+            if config[:channel] == "stable" && config[:license_type] == "commercial" && (config[:bootstrap_product] == "chef-ice" || config[:bootstrap_product].nil?)
               Chef::VERSION.split(".").first
             else
               "latest"
