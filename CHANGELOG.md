@@ -1,10 +1,10 @@
 # Changelog
 
-<!-- latest_release 19.0.93 -->
-## [v19.0.93](https://github.com/chef/knife/tree/v19.0.93) (2026-02-06)
+<!-- latest_release 19.0.94 -->
+## [v19.0.94](https://github.com/chef/knife/tree/v19.0.94) (2026-02-10)
 
 #### Merged Pull Requests
-- Stop pulling Chef gems from Artifactory and use RubyGems instead [#60](https://github.com/chef/knife/pull/60) ([nikhil2611](https://github.com/nikhil2611))
+- Updating the download url&#39;s and other fixes - knife Linux hab pkg fix [#61](https://github.com/chef/knife/pull/61) ([nikhil2611](https://github.com/nikhil2611))
 <!-- latest_release -->
 
 <!-- release_rollup since=18.7.9 -->
@@ -14,6 +14,7 @@
 - COPILOT-SETUP: Add comprehensive GitHub Copilot instructions [#33](https://github.com/chef/knife/pull/33) ([ashiqueps](https://github.com/ashiqueps)) <!-- 19.0.75 -->
 
 #### Merged Pull Requests
+- Updating the download url&#39;s and other fixes - knife Linux hab pkg fix [#61](https://github.com/chef/knife/pull/61) ([nikhil2611](https://github.com/nikhil2611)) <!-- 19.0.94 -->
 - Stop pulling Chef gems from Artifactory and use RubyGems instead [#60](https://github.com/chef/knife/pull/60) ([nikhil2611](https://github.com/nikhil2611)) <!-- 19.0.93 -->
 - Removing the lint roller gemfile.lock in knife  habitat package  [#59](https://github.com/chef/knife/pull/59) ([nikhil2611](https://github.com/nikhil2611)) <!-- 19.0.92 -->
 - Added explicit libyajl2 &gt;= 2.1 dependency to allow ffi-yajl 2.7.7 installation [#57](https://github.com/chef/knife/pull/57) ([nikhil2611](https://github.com/nikhil2611)) <!-- 19.0.91 -->
