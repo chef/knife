@@ -66,11 +66,11 @@ describe Chef::Utils::LicensingHandler do
     end
   end
 
-  describe "OMNITRUCK_URLS constant" do
+  describe "DOWNLOAD_URLS constant" do
     it "has correct URLs for each license type" do
-      expect(described_class::OMNITRUCK_URLS["free"]).to eq("https://chefdownload-trial.chef.io")
-      expect(described_class::OMNITRUCK_URLS["trial"]).to eq("https://chefdownload-trial.chef.io")
-      expect(described_class::OMNITRUCK_URLS["commercial"]).to eq("https://chefdownload-commercial.chef.io")
+      expect(described_class::DOWNLOAD_URLS["free"]).to eq("https://chefdownload-trial.chef.io")
+      expect(described_class::DOWNLOAD_URLS["trial"]).to eq("https://chefdownload-trial.chef.io")
+      expect(described_class::DOWNLOAD_URLS["commercial"]).to eq("https://chefdownload-commercial.chef.io")
     end
   end
 
