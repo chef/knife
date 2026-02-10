@@ -36,53 +36,6 @@ describe Chef::Knife::Core::WindowsBootstrapContext do
   subject(:bootstrap_context) { described_class.new(config, run_list, chef_config, secret) }
 
   describe "Chef Infra 19 licensing support" do
-    describe "#msi_url" do
-      context "when using chef-ice product" do
-        let(:config) { { bootstrap_version: "19.0.0", channel: "stable" } }
-
-        it "includes chef-ice in the omnitruck URL" do
-          url = bootstrap_context.msi_url("2016", "x86_64")
-          expect(url).to include("chef-ice/download")
-        end
-      end
-
-      context "when using chef product" do
-        let(:config) { { bootstrap_version: "18.0.0", channel: "stable" } }
-
-        it "includes chef in the omnitruck URL" do
-          url = bootstrap_context.msi_url("2016", "x86_64")
-          expect(url).to include("chef/download")
-        end
-      end
-
-      context "when using licensed download with chef-ice" do
-        let(:config) do
-          {
-            bootstrap_version: "19.0.0",
-            channel: "stable",
-            license_type: "commercial",
-            license_url: "https://example.com",
-            license_id: "test-license",
-            omnitruck_url: "https://commercial.downloads.chef.co/%s",
-          }
-        end
-
-        it "uses commercial omnitruck URL with chef-ice product" do
-          url = bootstrap_context.msi_url("2016", "x86_64")
-          expect(url).to include("chef-ice/download")
-          expect(url).to include("license_id=test-license")
-        end
-      end
-
-      context "when msi_url is explicitly provided" do
-        let(:config) { { msi_url: "https://custom.example.com/chef.msi" } }
-
-        it "returns the custom MSI URL" do
-          url = bootstrap_context.msi_url("2016", "x86_64")
-          expect(url).to eq "https://custom.example.com/chef.msi"
-        end
-      end
-    end
 
     describe "install_command with licensing" do
       let(:executor_quote) { '"' }

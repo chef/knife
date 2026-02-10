@@ -123,6 +123,82 @@ If !ERRORLEVEL!==0 (
 @rem If user has provided the custom installation command, execute it
 <% if @config[:bootstrap_install_command] %>
   <%= @config[:bootstrap_install_command] %>
+<% elsif @config[:msi_url] %>
+  @rem Direct MSI download and installation
+  @set "LOCAL_DESTINATION_MSI_PATH=%TEMP%\chef-client.msi"
+
+  @rem Clear any pre-existing downloads
+  @echo Checking for existing downloaded MSI at "%LOCAL_DESTINATION_MSI_PATH%"
+  @if EXIST "%LOCAL_DESTINATION_MSI_PATH%" (
+      @echo Found existing downloaded MSI, deleting.
+      @del /f /q "%LOCAL_DESTINATION_MSI_PATH%"
+      @if ERRORLEVEL 1 (
+          echo Warning: Failed to delete pre-existing MSI with status code !ERRORLEVEL! > "&2"
+      )
+  ) else (
+      echo No existing downloaded MSI to delete.
+    )
+
+  @echo Attempting to download client package using PowerShell if available...
+  @set "REMOTE_SOURCE_MSI_URL=<%= msi_url('%MACHINE_OS%', '%MACHINE_ARCH%', 'PowerShell') %>"
+  @set powershell_download=powershell.exe -ExecutionPolicy Unrestricted -InputFormat None -NoProfile -NonInteractive -File  <%= bootstrap_directory %>\wget.ps1 "%REMOTE_SOURCE_MSI_URL%" "%LOCAL_DESTINATION_MSI_PATH%"
+  @echo !powershell_download!
+  @call !powershell_download!
+
+  @set DOWNLOAD_ERROR_STATUS=!ERRORLEVEL!
+
+  @if ERRORLEVEL 1 (
+      @echo Failed PowerShell download with status code !DOWNLOAD_ERROR_STATUS! > "&2"
+      @if !DOWNLOAD_ERROR_STATUS!==0 set DOWNLOAD_ERROR_STATUS=2
+  ) else (
+      @rem Sometimes the error level is not set even when the download failed,
+      @rem so check for the file to be sure it is there -- if it is not, we will retry
+      @if NOT EXIST "%LOCAL_DESTINATION_MSI_PATH%" (
+          echo Failed download: download completed, but downloaded file not found > "&2"
+          set DOWNLOAD_ERROR_STATUS=2
+      ) else (
+          echo Download via PowerShell succeeded.
+        )
+    )
+
+  @if NOT %DOWNLOAD_ERROR_STATUS%==0 (
+      @echo Warning: Failed to download "%REMOTE_SOURCE_MSI_URL%" to "%LOCAL_DESTINATION_MSI_PATH%"
+      @echo Warning: Retrying download with cscript ...
+
+      @if EXIST "%LOCAL_DESTINATION_MSI_PATH%" del /f /q "%LOCAL_DESTINATION_MSI_PATH%"
+
+      @set "REMOTE_SOURCE_MSI_URL=<%= msi_url('%MACHINE_OS%', '%MACHINE_ARCH%') %>"
+      cscript /nologo <%= bootstrap_directory %>\wget.vbs /url:"%REMOTE_SOURCE_MSI_URL%" /path:"%LOCAL_DESTINATION_MSI_PATH%"
+
+      @if NOT ERRORLEVEL 1 (
+          @rem Sometimes the error level is not set even when the download failed,
+          @rem so check for the file to be sure it is there.
+          @if NOT EXIST "%LOCAL_DESTINATION_MSI_PATH%" (
+              echo Failed download: download completed, but downloaded file not found > "&2"
+              echo Exiting without bootstrapping due to download failure. > "&2"
+              exit /b 1
+          ) else (
+              echo Download via cscript succeeded.
+            )
+      ) else (
+          echo Failed to download "%REMOTE_SOURCE_MSI_URL%" with status code !ERRORLEVEL!. > "&2"
+          echo Exiting without bootstrapping due to download failure. > "&2"
+          exit /b 1
+        )
+  )
+
+  @echo Installing <%= ChefUtils::Dist::Infra::PRODUCT %> using MSI...
+  msiexec /qn /i "%LOCAL_DESTINATION_MSI_PATH%"
+
+  @set INSTALL_ERROR_STATUS=!ERRORLEVEL!
+  @if !INSTALL_ERROR_STATUS! NEQ 0 (
+      echo <%= ChefUtils::Dist::Infra::CLIENT %> MSI installation failed with status code !INSTALL_ERROR_STATUS!. > "&2"
+      exit /b !INSTALL_ERROR_STATUS!
+  )
+
+  @rem Clean up the downloaded MSI
+  @if EXIST "%LOCAL_DESTINATION_MSI_PATH%" del /f /q "%LOCAL_DESTINATION_MSI_PATH%"
+
 <% else %>
   @rem Install Chef using the PowerShell install script
 
