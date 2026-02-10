@@ -194,11 +194,7 @@ class Chef
         end
 
         def build_chef_executable
-          if chef_ice?
-            "hab pkg exec chef/chef-infra-client #{ChefUtils::Dist::Infra::CLIENT}"
-          else
-            ChefUtils::Dist::Infra::CLIENT
-          end
+          ChefUtils::Dist::Infra::CLIENT
         end
 
         def build_license_argument

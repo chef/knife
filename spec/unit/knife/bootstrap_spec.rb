@@ -482,7 +482,6 @@ describe Chef::Knife::Bootstrap do
         knife.parse_options(["--json-attribute-file", jsonfile.path])
         knife.merge_configs
         allow(knife).to receive(:validate_name_args!)
-        expect(knife).to receive(:validate_bootstrap_url!)
         expect(knife).to receive(:check_eula_license)
         expect(knife).to receive(:fetch_license)
 
@@ -1822,7 +1821,6 @@ describe Chef::Knife::Bootstrap do
   end
   describe "#run" do
     it "performs the steps we expect to run a bootstrap" do
-      expect(knife).to receive(:validate_bootstrap_url!)
       expect(knife).to receive(:check_eula_license)
       expect(knife).to receive(:fetch_license)
       expect(knife).to receive(:validate_name_args!).ordered
@@ -2094,7 +2092,6 @@ describe Chef::Knife::Bootstrap do
 
   it "verifies that a server to bootstrap was given as a command line arg" do
     knife.name_args = nil
-    expect(knife).to receive(:validate_bootstrap_url!)
     expect(knife).to receive(:check_eula_license)
     expect(knife).to receive(:fetch_license)
     expect { knife.run }.to raise_error(SystemExit)

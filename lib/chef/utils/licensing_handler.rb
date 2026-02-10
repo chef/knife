@@ -3,9 +3,10 @@ require_relative "licensing_config"
 class Chef
   class Utils
     class LicensingHandler
-      OMNITRUCK_URLS = {
-        "free" => "https://omnitruck.chef.io",
-        "trial" => "https://omnitruck.chef.io",
+      # Omnitruck URLs are no longer used. Updated to new download URLs.
+      DOWNLOAD_URLS = {
+        "free" => "https://chefdownload-trial.chef.io",
+        "trial" => "https://chefdownload-trial.chef.io",
         "commercial" => "https://chefdownload-commercial.chef.io",
       }.freeze
 
@@ -17,7 +18,7 @@ class Chef
       end
 
       def omnitruck_url
-        url = OMNITRUCK_URLS[license_type]
+        url = DOWNLOAD_URLS[license_type]
 
         "#{url}/%s?license_id=#{license_key}"
       end

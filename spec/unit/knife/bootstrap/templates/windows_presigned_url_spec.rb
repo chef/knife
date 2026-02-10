@@ -57,10 +57,17 @@ describe "windows-chef-client-msi.erb template with presigned URLs" do
       expect(rendered_template).to match(/set "BOOTSTRAP_DOWNLOAD_URL=.*%%2F.*%%2F/)
     end
 
-    it "uses environment variable to pass URL to PowerShell" do
+    it "uses environment variable to pass URL to PowerShell for download" do
       # Verify that the URL is passed via environment variable to avoid batch expansion issues
       expect(rendered_template).to include("$env:BOOTSTRAP_DOWNLOAD_URL")
       expect(rendered_template).to include("powershell.exe -ExecutionPolicy Unrestricted")
+      # Verify download uses -Command parameter with script block for custom URLs
+      expect(rendered_template).to match(/powershell\.exe -ExecutionPolicy Unrestricted -InputFormat None -NoProfile -NonInteractive -Command "& '.*wget\.ps1'/)
+    end
+
+    it "uses -File parameter for install script execution" do
+      # Verify that the install script execution uses -File parameter for custom bootstrap URLs
+      expect(rendered_template).to match(/powershell\.exe -ExecutionPolicy Unrestricted -File "%LOCAL_DESTINATION_SCRIPT_PATH%"/)
     end
 
     it "does not use batch variable expansion for custom bootstrap URLs" do
