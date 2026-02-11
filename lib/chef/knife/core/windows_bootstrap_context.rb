@@ -183,12 +183,10 @@ class Chef
         def build_path_command
           base_path = "SET \"PATH=%SYSTEM32%;%SystemRoot%;%SYSTEM32%\\Wbem;%SYSTEM32%\\WindowsPowerShell\\v1.0\\;"
 
-          additional_paths = if chef_ice?
-                               "C:\\hab\\bin"
-                             else
-                               c_opscode_dir = ChefConfig::PathHelper.cleanpath(ChefConfig::Config.c_opscode_dir, windows: true)
-                               "C:\\ruby\\bin;#{c_opscode_dir}\\bin;#{c_opscode_dir}\\embedded\\bin"
-                             end
+          # Include paths for both Chef 18 (opscode) and Chef 19+ (hab) installations
+          # This ensures chef-client is found regardless of which version is installed
+          c_opscode_dir = ChefConfig::PathHelper.cleanpath(ChefConfig::Config.c_opscode_dir, windows: true)
+          additional_paths = "C:\\ruby\\bin;#{c_opscode_dir}\\bin;#{c_opscode_dir}\\embedded\\bin;C:\\hab\\bin"
 
           "#{base_path}#{additional_paths};%PATH%\"\n"
         end
@@ -410,7 +408,16 @@ class Chef
           content
         end
 
-        # Returns the install command for Windows including license environment variable if needed
+        def install_chef
+          # The normal install command uses regular double quotes in
+          # the install command, so request such a string from msi_install_command
+          msi_install_command('"') + "\n" + fallback_install_task_command
+        end
+
+        def msi_install_command(executor_quote)
+          "msiexec /qn /log #{executor_quote}%CHEF_CLIENT_MSI_LOG_PATH%#{executor_quote} /i #{executor_quote}%LOCAL_DESTINATION_MSI_PATH%#{executor_quote}"
+        end
+
         def install_command(executor_quote)
           commands = []
 
@@ -423,10 +430,53 @@ class Chef
           end
 
           # Add the msiexec installation command
-          commands << "msiexec /qn /i chef-client.msi"
+          commands << msi_install_command(executor_quote)
 
           commands.join("\n")
         end
+
+        def fallback_install_task_command
+          # This command will be executed by schtasks.exe in the batch
+          # code below. To handle tasks that contain arguments that
+          # need to be double quoted, schtasks allows the use of single
+          # quotes that will later be converted to double quotes
+          command = msi_install_command("'")
+          <<~EOH
+            @set MSIERRORCODE=!ERRORLEVEL!
+            @if ERRORLEVEL 1 (
+                @echo WARNING: Failed to install #{ChefUtils::Dist::Infra::PRODUCT} MSI package in remote context with status code !MSIERRORCODE!.
+                @echo WARNING: This may be due to a defect in operating system update KB2918614: http://support.microsoft.com/kb/2918614
+                @set OLDLOGLOCATION="%CHEF_CLIENT_MSI_LOG_PATH%-fail.log"
+                @move "%CHEF_CLIENT_MSI_LOG_PATH%" "!OLDLOGLOCATION!" > NUL
+                @echo WARNING: Saving installation log of failure at !OLDLOGLOCATION!
+                @echo WARNING: Retrying installation with local context...
+                @schtasks /create /f  /sc once /st 00:00:00 /tn chefclientbootstraptask /ru SYSTEM /rl HIGHEST /tr \"cmd /c #{command} & sleep 2 & waitfor /s %computername% /si chefclientinstalldone\"
+
+                @if ERRORLEVEL 1 (
+                    @echo ERROR: Failed to create #{ChefUtils::Dist::Infra::PRODUCT} installation scheduled task with status code !ERRORLEVEL! > "&2"
+                ) else (
+                    @echo Successfully created scheduled task to install #{ChefUtils::Dist::Infra::PRODUCT}.
+                    @schtasks /run /tn chefclientbootstraptask
+                    @if ERRORLEVEL 1 (
+                        @echo ERROR: Failed to execute #{ChefUtils::Dist::Infra::PRODUCT} installation scheduled task with status code !ERRORLEVEL!. > "&2"
+                    ) else (
+                        @echo Successfully started #{ChefUtils::Dist::Infra::PRODUCT} installation scheduled task.
+                        @echo Waiting for installation to complete -- this may take a few minutes...
+                        waitfor chefclientinstalldone /t 600
+                        if ERRORLEVEL 1 (
+                            @echo ERROR: Timed out waiting for #{ChefUtils::Dist::Infra::PRODUCT} package to install
+                        ) else (
+                            @echo Finished waiting for #{ChefUtils::Dist::Infra::PRODUCT} package to install.
+                        )
+                        @schtasks /delete /f /tn chefclientbootstraptask > NUL
+                    )
+                )
+            ) else (
+                @echo Successfully installed #{ChefUtils::Dist::Infra::PRODUCT} package.
+            )
+          EOH
+        end
+
       end
     end
   end

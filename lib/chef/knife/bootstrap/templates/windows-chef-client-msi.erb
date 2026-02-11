@@ -124,20 +124,25 @@ If !ERRORLEVEL!==0 (
 <% if @config[:bootstrap_install_command] %>
   <%= @config[:bootstrap_install_command] %>
 <% elsif @config[:msi_url] && !@config[:msi_url].empty? %>
-  @rem Direct MSI download and installation
+  @rem Install Chef using the MSI installer
+
   @set "LOCAL_DESTINATION_MSI_PATH=%TEMP%\chef-client.msi"
+  @set "CHEF_CLIENT_MSI_LOG_PATH=%TEMP%\<%= ChefUtils::Dist::Infra::CLIENT %>-msi%RANDOM%.log"
 
   @rem Clear any pre-existing downloads
-  @echo Checking for existing downloaded MSI at "%LOCAL_DESTINATION_MSI_PATH%"
+  @echo Checking for existing downloaded package at "%LOCAL_DESTINATION_MSI_PATH%"
   @if EXIST "%LOCAL_DESTINATION_MSI_PATH%" (
-      @echo Found existing downloaded MSI, deleting.
+      @echo Found existing downloaded package, deleting.
       @del /f /q "%LOCAL_DESTINATION_MSI_PATH%"
       @if ERRORLEVEL 1 (
-          echo Warning: Failed to delete pre-existing MSI with status code !ERRORLEVEL! > "&2"
+          echo Warning: Failed to delete pre-existing package with status code !ERRORLEVEL! > "&2"
       )
   ) else (
-      echo No existing downloaded MSI to delete.
+      echo No existing downloaded packages to delete.
     )
+
+  @rem If there is somehow a name collision, remove pre-existing log
+  @if EXIST "%CHEF_CLIENT_MSI_LOG_PATH%" del /f /q "%CHEF_CLIENT_MSI_LOG_PATH%"
 
   @echo Attempting to download client package using PowerShell if available...
   @set "REMOTE_SOURCE_MSI_URL=<%= msi_url('%MACHINE_OS%', '%MACHINE_ARCH%', 'PowerShell') %>"
@@ -187,17 +192,17 @@ If !ERRORLEVEL!==0 (
         )
   )
 
-  @echo Installing <%= ChefUtils::Dist::Infra::PRODUCT %> using MSI...
-  msiexec /qn /i "%LOCAL_DESTINATION_MSI_PATH%"
+  @echo Installing downloaded client package...
 
-  @set INSTALL_ERROR_STATUS=!ERRORLEVEL!
-  @if !INSTALL_ERROR_STATUS! NEQ 0 (
-      echo <%= ChefUtils::Dist::Infra::CLIENT %> MSI installation failed with status code !INSTALL_ERROR_STATUS!. > "&2"
-      exit /b !INSTALL_ERROR_STATUS!
+  <%= install_chef %>
+
+  @if ERRORLEVEL 1 (
+      echo <%= ChefUtils::Dist::Infra::CLIENT %> package failed to install with status code !ERRORLEVEL!. > "&2"
+      echo See installation log for additional detail: %CHEF_CLIENT_MSI_LOG_PATH%. > "&2"
+  ) else (
+      @echo Installation completed successfully
+      del /f /q "%CHEF_CLIENT_MSI_LOG_PATH%"
   )
-
-  @rem Clean up the downloaded MSI
-  @if EXIST "%LOCAL_DESTINATION_MSI_PATH%" del /f /q "%LOCAL_DESTINATION_MSI_PATH%"
 
 <% else %>
   @rem Install Chef using the PowerShell install script
