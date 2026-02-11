@@ -183,21 +183,45 @@ class Chef
         def build_path_command
           base_path = "SET \"PATH=%SYSTEM32%;%SystemRoot%;%SYSTEM32%\\Wbem;%SYSTEM32%\\WindowsPowerShell\\v1.0\\;"
 
-          # Include paths for both Chef 18 (opscode) and Chef 19+ (hab) installations
-          # This ensures chef-client is found regardless of which version is installed
-          c_opscode_dir = ChefConfig::PathHelper.cleanpath(ChefConfig::Config.c_opscode_dir, windows: true)
-          additional_paths = "C:\\ruby\\bin;#{c_opscode_dir}\\bin;#{c_opscode_dir}\\embedded\\bin;C:\\hab\\bin"
+          # For --bootstrap-url, use conditional logic based on chef_ice? since we don't know what the script installs
+          if config[:bootstrap_url] && !config[:bootstrap_url].empty?
+            additional_paths = if chef_ice?
+                                 "C:\\hab\\bin"
+                               else
+                                 c_opscode_dir = ChefConfig::PathHelper.cleanpath(ChefConfig::Config.c_opscode_dir, windows: true)
+                                 "C:\\ruby\\bin;#{c_opscode_dir}\\bin;#{c_opscode_dir}\\embedded\\bin"
+                               end
+          else
+            # For default/msi flows, use standard paths
+            c_opscode_dir = ChefConfig::PathHelper.cleanpath(ChefConfig::Config.c_opscode_dir, windows: true)
+            additional_paths = "C:\\ruby\\bin;#{c_opscode_dir}\\bin;#{c_opscode_dir}\\embedded\\bin;C:\\hab\\bin"
+          end
 
           "#{base_path}#{additional_paths};%PATH%\"\n"
         end
 
         def build_chef_executable
-          ChefUtils::Dist::Infra::CLIENT
+          # For --bootstrap-url, use conditional logic based on chef_ice? since we don't know what the script installs
+          if config[:bootstrap_url] && !config[:bootstrap_url].empty?
+            if chef_ice?
+              # Set HAB_LICENSE to auto-accept Habitat license for non-interactive bootstrap
+              "SET \"HAB_LICENSE=accept-no-persist\"\nhab pkg exec chef/chef-infra-client #{ChefUtils::Dist::Infra::CLIENT}"
+            else
+              ChefUtils::Dist::Infra::CLIENT
+            end
+          else
+            # For default/msi flows, use standard chef-client
+            ChefUtils::Dist::Infra::CLIENT
+          end
         end
 
         def build_license_argument
           return "" if config[:disable_license_activation]
           return "" unless chef_ice? && config[:license_id]
+
+          # Skip license flag when using custom MSI or bootstrap URLs
+          return "" if config[:msi_url] && !config[:msi_url].empty?
+          return "" if config[:bootstrap_url] && !config[:bootstrap_url].empty?
 
           " --chef-license-key #{config[:license_id]}"
         end
