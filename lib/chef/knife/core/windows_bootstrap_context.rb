@@ -368,6 +368,13 @@ class Chef
           file_contents.gsub(/^(.*)$/, 'echo.\1').gsub(/([(<|>)^])/, '^\1')
         end
 
+        # Returns the MSI URL for downloading Chef Infra Client
+        # Supports both chef and chef-ice products, and custom URLs
+        def msi_url(machine_os = nil, machine_arch = nil, download_context = nil)
+          # If a custom MSI URL is provided, use it directly
+          return config[:msi_url] if config[:msi_url] && !config[:msi_url].empty?
+        end
+
         private
 
         # Returns a string for copying the trusted certificates on the workstation to the system being bootstrapped

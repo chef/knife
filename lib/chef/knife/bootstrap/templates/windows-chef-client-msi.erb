@@ -123,7 +123,7 @@ If !ERRORLEVEL!==0 (
 @rem If user has provided the custom installation command, execute it
 <% if @config[:bootstrap_install_command] %>
   <%= @config[:bootstrap_install_command] %>
-<% elsif @config[:msi_url] %>
+<% elsif @config[:msi_url] && !@config[:msi_url].empty? %>
   @rem Direct MSI download and installation
   @set "LOCAL_DESTINATION_MSI_PATH=%TEMP%\chef-client.msi"
 
