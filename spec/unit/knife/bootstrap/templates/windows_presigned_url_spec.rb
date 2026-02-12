@@ -109,6 +109,10 @@ describe "windows-chef-client-msi.erb template with presigned URLs" do
   end
 
   describe "with standard bootstrap URL (no special characters)" do
+    before do
+      knife.config[:license_url] = "https://chefdownload-trial.chef.io/install.sh?license_id=test-license"
+    end
+
     let(:rendered_template) { knife.render_template }
 
     it "uses REMOTE_SOURCE_SCRIPT_URL for standard URLs" do
@@ -116,8 +120,8 @@ describe "windows-chef-client-msi.erb template with presigned URLs" do
       expect(rendered_template).to include("%REMOTE_SOURCE_SCRIPT_URL%")
     end
 
-    it "defaults to omnitruck URL when no bootstrap_url is provided" do
-      expect(rendered_template).to include("https://omnitruck.chef.io/install.ps1")
+    it "uses license URL when no bootstrap_url is provided" do
+      expect(rendered_template).to include("https://chefdownload-trial.chef.io/install.ps1?license_id=test-license")
     end
   end
 

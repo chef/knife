@@ -192,7 +192,7 @@ describe Chef::Knife::Core::WindowsBootstrapContext do
     it "returns the expected string with default values" do
       expect(bootstrap_context.start_chef).to eq(
         <<~EOH
-          SET "PATH=%SYSTEM32%;%SystemRoot%;%SYSTEM32%\\Wbem;%SYSTEM32%\\WindowsPowerShell\\v1.0\\;C:\\ruby\\bin;C:\\opscode\\chef\\bin;C:\\opscode\\chef\\embedded\\bin;%PATH%"
+          SET "PATH=%SYSTEM32%;%SystemRoot%;%SYSTEM32%\\Wbem;%SYSTEM32%\\WindowsPowerShell\\v1.0\\;C:\\ruby\\bin;C:\\opscode\\chef\\bin;C:\\opscode\\chef\\embedded\\bin;C:\\hab\\bin;%PATH%"
           chef-client -c C:\\chef\\client.rb -j C:\\chef\\first-boot.json
         EOH
       )
@@ -203,7 +203,7 @@ describe Chef::Knife::Core::WindowsBootstrapContext do
 
       expect(bootstrap_context.start_chef).to eq(
         <<~EOH
-          SET "PATH=%SYSTEM32%;%SystemRoot%;%SYSTEM32%\\Wbem;%SYSTEM32%\\WindowsPowerShell\\v1.0\\;C:\\ruby\\bin;C:\\opscode\\chef\\bin;C:\\opscode\\chef\\embedded\\bin;%PATH%"
+          SET "PATH=%SYSTEM32%;%SystemRoot%;%SYSTEM32%\\Wbem;%SYSTEM32%\\WindowsPowerShell\\v1.0\\;C:\\ruby\\bin;C:\\opscode\\chef\\bin;C:\\opscode\\chef\\embedded\\bin;C:\\hab\\bin;%PATH%"
           chef-client -c C:\\chef\\client.rb -j C:\\chef\\first-boot.json
         EOH
       )
@@ -215,8 +215,26 @@ describe Chef::Knife::Core::WindowsBootstrapContext do
 
       expect(bootstrap_context.start_chef).to eq(
         <<~EOH
-          SET "PATH=%SYSTEM32%;%SystemRoot%;%SYSTEM32%\\Wbem;%SYSTEM32%\\WindowsPowerShell\\v1.0\\;C:\\ruby\\bin;C:\\opscode\\chef\\bin;C:\\opscode\\chef\\embedded\\bin;%PATH%"
+          SET "PATH=%SYSTEM32%;%SystemRoot%;%SYSTEM32%\\Wbem;%SYSTEM32%\\WindowsPowerShell\\v1.0\\;C:\\ruby\\bin;C:\\opscode\\chef\\bin;C:\\opscode\\chef\\embedded\\bin;C:\\hab\\bin;%PATH%"
           chef-client -c C:\\chef\\client.rb -j C:\\chef\\first-boot.json
+        EOH
+      )
+    end
+  end
+
+  describe "#start_chef with bootstrap_url and chef-ice" do
+    let(:config) { { bootstrap_url: "https://example.com/install.ps1" } }
+
+    before do
+      allow(bootstrap_context).to receive(:chef_ice?).and_return(true)
+    end
+
+    it "includes HAB_LICENSE and uses hab pkg exec" do
+      expect(bootstrap_context.start_chef).to eq(
+        <<~EOH
+          SET "PATH=%SYSTEM32%;%SystemRoot%;%SYSTEM32%\\Wbem;%SYSTEM32%\\WindowsPowerShell\\v1.0\\;C:\\hab\\bin;%PATH%"
+          SET "HAB_LICENSE=accept-no-persist"
+          hab pkg exec chef/chef-infra-client chef-client -c C:\\chef\\client.rb -j C:\\chef\\first-boot.json
         EOH
       )
     end
@@ -225,27 +243,13 @@ describe Chef::Knife::Core::WindowsBootstrapContext do
   describe "msi_url" do
     context "when msi_url config option is not set" do
       let(:config) { { channel: "stable" } }
-      before do
-        # version_to_install is called twice: once in product_to_install and once in msi_url
-        allow(bootstrap_context).to receive(:version_to_install).and_return("something")
+
+      it "returns nil when no msi_url is provided" do
+        expect(bootstrap_context.msi_url).to be_nil
       end
 
-      it "returns a chef.io msi url with minimal url parameters" do
-        reference_url = "https://omnitruck.chef.io/chef/download?p=windows&channel=stable&v=something"
-        expect(bootstrap_context.msi_url).to eq(reference_url)
-      end
-
-      it "returns a chef.io msi url with provided url parameters substituted" do
-        reference_url = "https://omnitruck.chef.io/chef/download?p=windows&pv=machine&m=arch&DownloadContext=ctx&channel=stable&v=something"
-        expect(bootstrap_context.msi_url("machine", "arch", "ctx")).to eq(reference_url)
-      end
-
-      context "when a channel is provided in config" do
-        let(:config) { { channel: "current" } }
-        it "returns a chef.io msi url with the requested channel" do
-          reference_url = "https://omnitruck.chef.io/chef/download?p=windows&channel=current&v=something"
-          expect(bootstrap_context.msi_url).to eq(reference_url)
-        end
+      it "returns nil even with parameters when no msi_url is provided" do
+        expect(bootstrap_context.msi_url("machine", "arch", "ctx")).to be_nil
       end
     end
 

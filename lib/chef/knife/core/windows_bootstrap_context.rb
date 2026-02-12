@@ -372,7 +372,7 @@ class Chef
           ChefConfig::Config.etc_chef_dir(windows: true)
         end
 
-       # Build a URL for the PowerShell install script (install.ps1)
+        # Build a URL for the PowerShell install script (install.ps1)
         def install_ps1_url
           if config[:bootstrap_url]
             # Use custom bootstrap URL if provided
@@ -394,7 +394,7 @@ class Chef
         # Supports both chef and chef-ice products, and custom URLs
         def msi_url(machine_os = nil, machine_arch = nil, download_context = nil)
           # If a custom MSI URL is provided, use it directly
-          return config[:msi_url] if config[:msi_url] && !config[:msi_url].empty?
+          config[:msi_url] if config[:msi_url] && !config[:msi_url].empty?
         end
 
         private
@@ -474,7 +474,7 @@ class Chef
                 @move "%CHEF_CLIENT_MSI_LOG_PATH%" "!OLDLOGLOCATION!" > NUL
                 @echo WARNING: Saving installation log of failure at !OLDLOGLOCATION!
                 @echo WARNING: Retrying installation with local context...
-                @schtasks /create /f  /sc once /st 00:00:00 /tn chefclientbootstraptask /ru SYSTEM /rl HIGHEST /tr \"cmd /c #{command} & sleep 2 & waitfor /s %computername% /si chefclientinstalldone\"
+                @schtasks /create /f  /sc once /st 00:00:00 /tn chefclientbootstraptask /ru SYSTEM /rl HIGHEST /tr "cmd /c #{command} & sleep 2 & waitfor /s %computername% /si chefclientinstalldone"
 
                 @if ERRORLEVEL 1 (
                     @echo ERROR: Failed to create #{ChefUtils::Dist::Infra::PRODUCT} installation scheduled task with status code !ERRORLEVEL! > "&2"
