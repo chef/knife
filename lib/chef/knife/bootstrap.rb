@@ -1208,8 +1208,8 @@ class Chef
 
       # Fetch the workstation license stored in the system
       def fetch_license
-        # The license is not needed if we are using a custom bootstrap URL or template
-        return if config[:bootstrap_url] || config[:bootstrap_template]
+        # The license is not needed if we are using a custom bootstrap URL, MSI URL, or template
+        return if config[:bootstrap_url] || config[:bootstrap_template] || config[:msi_url]
 
         # This block will mandate license acceptance
         # require_license_for checks if distribution is official (skip licensing) or unofficial (enforce licensing)

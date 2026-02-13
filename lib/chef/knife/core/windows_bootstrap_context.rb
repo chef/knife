@@ -392,7 +392,7 @@ class Chef
 
         # Returns the MSI URL for downloading Chef Infra Client
         # Supports both chef and chef-ice products, and custom URLs
-        def msi_url(machine_os = nil, machine_arch = nil, download_context = nil)
+        def msi_url
           # If a custom MSI URL is provided, use it directly
           config[:msi_url] if config[:msi_url] && !config[:msi_url].empty?
         end
