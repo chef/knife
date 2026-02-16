@@ -123,7 +123,7 @@ If !ERRORLEVEL!==0 (
 @rem If user has provided the custom installation command, execute it
 <% if @config[:bootstrap_install_command] %>
   <%= @config[:bootstrap_install_command] %>
-<% elsif @config[:msi_url] && !@config[:msi_url].empty? %>
+<% elsif msi_url %>
   @rem Install Chef using the MSI installer
 
   @set "LOCAL_DESTINATION_MSI_PATH=%TEMP%\chef-client.msi"
@@ -145,7 +145,7 @@ If !ERRORLEVEL!==0 (
   @if EXIST "%CHEF_CLIENT_MSI_LOG_PATH%" del /f /q "%CHEF_CLIENT_MSI_LOG_PATH%"
 
   @echo Attempting to download client package using PowerShell if available...
-  @set "REMOTE_SOURCE_MSI_URL=<%= msi_url('%MACHINE_OS%', '%MACHINE_ARCH%', 'PowerShell') %>"
+  @set "REMOTE_SOURCE_MSI_URL=<%= msi_url %>"
   @set powershell_download=powershell.exe -ExecutionPolicy Unrestricted -InputFormat None -NoProfile -NonInteractive -File  <%= bootstrap_directory %>\wget.ps1 "%REMOTE_SOURCE_MSI_URL%" "%LOCAL_DESTINATION_MSI_PATH%"
   @echo !powershell_download!
   @call !powershell_download!
@@ -172,7 +172,7 @@ If !ERRORLEVEL!==0 (
 
       @if EXIST "%LOCAL_DESTINATION_MSI_PATH%" del /f /q "%LOCAL_DESTINATION_MSI_PATH%"
 
-      @set "REMOTE_SOURCE_MSI_URL=<%= msi_url('%MACHINE_OS%', '%MACHINE_ARCH%') %>"
+      @set "REMOTE_SOURCE_MSI_URL=<%= msi_url %>"
       cscript /nologo <%= bootstrap_directory %>\wget.vbs /url:"%REMOTE_SOURCE_MSI_URL%" /path:"%LOCAL_DESTINATION_MSI_PATH%"
 
       @if NOT ERRORLEVEL 1 (

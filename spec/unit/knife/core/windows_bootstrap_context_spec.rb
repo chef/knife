@@ -249,7 +249,7 @@ describe Chef::Knife::Core::WindowsBootstrapContext do
       end
 
       it "returns nil even with parameters when no msi_url is provided" do
-        expect(bootstrap_context.msi_url("machine", "arch", "ctx")).to be_nil
+        expect(bootstrap_context.msi_url).to be_nil
       end
     end
 
@@ -262,7 +262,7 @@ describe Chef::Knife::Core::WindowsBootstrapContext do
       end
 
       it "doesn't introduce any unnecessary query parameters if provided by the template" do
-        expect(bootstrap_context.msi_url("machine", "arch", "ctx")).to eq(custom_url)
+        expect(bootstrap_context.msi_url).to eq(custom_url)
       end
     end
   end
