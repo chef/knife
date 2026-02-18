@@ -20,7 +20,6 @@ pkg_license=('Apache-2.0')
 pkg_deps=(
   ${ruby_pkg}
   core/coreutils
-  core/git
   core/bash
 )
 
@@ -28,6 +27,7 @@ pkg_deps=(
 pkg_build_deps=(
   core/gcc
   core/make
+  core/git
 )
 
 pkg_version() {
