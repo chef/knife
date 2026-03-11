@@ -1,10 +1,10 @@
 # Changelog
 
-<!-- latest_release 19.0.97 -->
-## [v19.0.97](https://github.com/chef/knife/tree/v19.0.97) (2026-02-19)
+<!-- latest_release 19.0.98 -->
+## [v19.0.98](https://github.com/chef/knife/tree/v19.0.98) (2026-03-11)
 
 #### Merged Pull Requests
-- Moving git dependency from package dep to build dep [#65](https://github.com/chef/knife/pull/65) ([nikhil2611](https://github.com/nikhil2611))
+- Update Expeditor config to promote Habitat packages to current and base-2025 channels [#67](https://github.com/chef/knife/pull/67) ([nikhil2611](https://github.com/nikhil2611))
 <!-- latest_release -->
 
 <!-- release_rollup since=18.7.9 -->
@@ -14,6 +14,7 @@
 - COPILOT-SETUP: Add comprehensive GitHub Copilot instructions [#33](https://github.com/chef/knife/pull/33) ([ashiqueps](https://github.com/ashiqueps)) <!-- 19.0.75 -->
 
 #### Merged Pull Requests
+- Update Expeditor config to promote Habitat packages to current and base-2025 channels [#67](https://github.com/chef/knife/pull/67) ([nikhil2611](https://github.com/nikhil2611)) <!-- 19.0.98 -->
 - Moving git dependency from package dep to build dep [#65](https://github.com/chef/knife/pull/65) ([nikhil2611](https://github.com/nikhil2611)) <!-- 19.0.97 -->
 - With msi-url license should not prompt and addressed comments of previous PR - 62 [#63](https://github.com/chef/knife/pull/63) ([nikhil2611](https://github.com/nikhil2611)) <!-- 19.0.96 -->
 - Added msi_url support and and fixed the path issue [#62](https://github.com/chef/knife/pull/62) ([nikhil2611](https://github.com/nikhil2611)) <!-- 19.0.95 -->
