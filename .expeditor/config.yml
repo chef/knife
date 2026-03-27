@@ -34,6 +34,7 @@ artifact_channels:
 
 pipelines:
   - verify:
+      public: true
       description: Pull Request validation tests
   - habitat/build:
       env:
