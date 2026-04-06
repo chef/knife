@@ -1,0 +1,99 @@
+---
+name: unit_specs
+
+"on":
+  pull_request:
+    branches: [main, "chef-*"]
+  push:
+    branches: [main, "chef-*"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: unit-specs-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: true
+
+env:
+  CHEF_LICENSE: accept-no-persist
+  FORCE_FFI_YAJL: ext
+
+jobs:
+  unit:
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-22.04
+          - ubuntu-24.04
+          - windows-2022
+          - windows-2025
+          - macos-14
+          - macos-15
+        ruby: ["3.4"]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    steps:
+      - name: Configure git line endings (Windows)
+        if: runner.os == 'Windows'
+        run: git config --global core.autocrlf false
+        shell: pwsh
+      - uses: actions/checkout@v6
+        with:
+          clean: true
+      - name: Install native deps (Ubuntu)
+        if: startsWith(matrix.os, 'ubuntu')
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libssl-dev libarchive-dev libffi-dev libyaml-dev
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: false
+      - name: Create unit test node fixtures
+        run: mkdir -p spec/data/nodes && touch spec/data/nodes/test.rb spec/data/nodes/default.rb spec/data/nodes/test.example.com.rb
+        shell: bash
+      - run: bundle install
+      - name: Set RUBY_DLL_PATH for chef-powershell (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $gem_lib = gem which chef-powershell 2>$null | Select-Object -First 1
+          if ($gem_lib) {
+            $gem_path = Split-Path $gem_lib | Split-Path
+            echo "RUBY_DLL_PATH=$gem_path/bin/ruby_bin_folder/$env:PROCESSOR_ARCHITECTURE" >> $env:GITHUB_ENV
+          }
+      - run: bundle exec rake spec
+
+  unit-rocky:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runs-on: ubuntu-24.04
+            container: chefes/omnibus-toolchain-rocky-9:3.0.39
+          - runs-on: ubuntu-24.04-arm
+            container: chefes/omnibus-toolchain-rocky-9:aarch64
+    runs-on: ${{ matrix.runs-on }}
+    container: ${{ matrix.container }}
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          clean: true
+      - name: Install dependencies and Ruby via rbenv
+        run: |
+          dnf clean metadata
+          dnf install -y --enablerepo=devel openssl-devel libarchive-devel libffi-devel libyaml-devel readline-devel zlib-devel
+          curl -fsSL https://github.com/rbenv/rbenv-installer/raw/HEAD/bin/rbenv-installer | bash
+          export PATH="$HOME/.rbenv/bin:$PATH"
+          eval "$(rbenv init -)"
+          rbenv install 3.4.8
+          rbenv global 3.4.8
+          gem install bundler
+          echo "$HOME/.rbenv/bin" >> $GITHUB_PATH
+          echo "$HOME/.rbenv/shims" >> $GITHUB_PATH
+      - name: Create unit test node fixtures
+        run: mkdir -p spec/data/nodes && touch spec/data/nodes/test.rb spec/data/nodes/default.rb spec/data/nodes/test.example.com.rb
+      - run: bundle install
+      - run: bundle exec rake spec

@@ -41,4 +41,3 @@ group :omnibus_package, :pry do
   gem "pry-byebug"
   gem "pry-stack_explorer"
 end
-

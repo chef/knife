@@ -1,0 +1,6 @@
+documentation:
+  - changed-files:
+      - any-glob-to-any-file:
+        - 'README.md'
+        - 'CODE_OF_CONDUCT.md'
+        - 'CONTRIBUTING.md'
