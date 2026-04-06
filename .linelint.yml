@@ -1,0 +1,18 @@
+rules:
+  end-of-file:
+    enable: true
+    single-new-line: true
+    ignore:
+      # leaving security stuff alone
+      - .github/workflows/ci-main-pull-request-stub.yml
+      # these are not text files, leave them as-is
+      - spec/data/apt/var/www/apt/dists/sid/main/binary-amd64/Packages
+      - spec/data/cb_version_cookbooks/tatft/files/default/giant_blob.tgz
+      # tests of specific line ending stuff
+      - spec/data/cookbooks/openldap/templates/default/all_windows_line_endings.erb
+      - spec/data/cookbooks/openldap/templates/default/no_windows_line_endings.erb
+      - spec/data/cookbooks/openldap/templates/default/some_windows_line_endings.erb
+      - spec/data/ssl/private_key_with_whitespace.pem
+      # automatically generated
+      - CHANGELOG.md
+      - VERSION

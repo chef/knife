@@ -148,17 +148,19 @@ describe Chef::Knife::Configure do
   end
 
   it "writes the new data to a config file" do
+    user = "some-user"
+    allow(Etc).to receive(:getlogin).and_return(user)
     allow(Chef::Util::PathHelper).to receive(:home).with(".chef").and_return("/home/you/.chef")
     allow(File).to receive(:expand_path).with("/home/you/.chef/credentials").and_return("/home/you/.chef/credentials")
-    allow(File).to receive(:expand_path).with("/home/you/.chef/#{Etc.getlogin}.pem").and_return("/home/you/.chef/#{Etc.getlogin}.pem")
+    allow(File).to receive(:expand_path).with("/home/you/.chef/#{user}.pem").and_return("/home/you/.chef/#{user}.pem")
     allow(File).to receive(:expand_path).with(default_admin_key).and_return(default_admin_key)
     expect(FileUtils).to receive(:mkdir_p).with("/home/you/.chef")
     config_file = StringIO.new
     expect(::File).to receive(:open).with("/home/you/.chef/credentials", "w").and_yield config_file
     @knife.config[:repository] = "/home/you/chef-repo"
     @knife.run
-    expect(config_file.string).to match(/^client_name\s+=\s+'#{Regexp.escape(Etc.getlogin)}'$/)
-    expect(config_file.string).to match(/^client_key\s+=\s+'#{Regexp.escape("/home/you/.chef/#{Etc.getlogin}.pem")}'$/)
+    expect(config_file.string).to match(/^client_name\s+=\s+'#{Regexp.escape(user)}'$/)
+    expect(config_file.string).to match(/^client_key\s+=\s+'#{Regexp.escape("/home/you/.chef/#{user}.pem")}'$/)
     expect(config_file.string).to match(/^chef_server_url\s+=\s+'#{Regexp.escape(default_server_url)}'$/)
   end
 

@@ -1,0 +1,16 @@
+name: "Pull Request Labeler"
+on:
+  pull_request_target:
+    branches:
+      - main
+concurrency:
+  group: labeler--${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  triage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/labeler@v6.0.1
+        with:
+          repo-token: "${{ secrets.GITHUB_TOKEN }}"
