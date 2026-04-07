@@ -102,27 +102,17 @@ class Chef
     def self.inherited(subclass)
       super
       unless subclass.unnamed?
-        caller_path = if subclass.superclass.to_s == "Chef::ChefFS::Knife"
-                        # ChefFS-based commands have a superclass that defines an
-                        # inherited method which calls super. This means that the
-                        # top of the call stack is not the class definition for
-                        # our subcommand.  Try the second entry in the call stack.
-                        path_from_caller(caller[1])
-                      else
-                        path_from_caller(caller[0])
-                      end
-
-        # Skip classes defined inside a subdirectory of chef/knife/ (e.g.
-        # chef/knife/cloud/server/create_command.rb). By convention, real knife
-        # subcommands live directly at chef/knife/<name>.rb — the same flat
-        # pattern that GemGlobLoader uses when discovering commands. Abstract
-        # base classes from plugins like knife-cloud are nested in subdirs and
-        # are only loaded transitively; registering them causes spurious
-        # categories (e.g. ** SERVER COMMANDS **) to appear in 'knife --help'.
-        return if caller_path.match?(%r{/chef/knife/[^/]+/})
-
         subcommands[subclass.snake_case_name] = subclass
-        subcommand_files[subclass.snake_case_name] += [caller_path]
+        subcommand_files[subclass.snake_case_name] +=
+          if subclass.superclass.to_s == "Chef::ChefFS::Knife"
+            # ChefFS-based commands have a superclass that defines an
+            # inherited method which calls super. This means that the
+            # top of the call stack is not the class definition for
+            # our subcommand.  Try the second entry in the call stack.
+            [path_from_caller(caller[1])]
+          else
+            [path_from_caller(caller[0])]
+          end
       end
     end
 
