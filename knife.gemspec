@@ -30,7 +30,7 @@ Gem::Specification.new do |s|
   # s.add_dependency "x25519", ">= 1.0.9" # ed25519 KEX module. 1.0.9+ required to resolve sigill failures
   s.add_dependency "highline", ">= 1.6.9", "< 3" # Used in UI to present a list, no other usage.
   s.add_dependency "abbrev"
-  
+
   s.add_dependency "tty-prompt", "~> 0.21" # knife ui.ask prompt
   s.add_dependency "tty-screen", "~> 0.6" # knife list
   s.add_dependency "tty-table", "~> 0.11" # knife render table output.
@@ -56,6 +56,6 @@ Gem::Specification.new do |s|
     "documentation_uri" => "https://docs.chef.io/",
     "homepage_uri"      => "https://www.chef.io",
     "mailing_list_uri"  => "https://discourse.chef.io/",
-    "source_code_uri"   => "https://github.com/chef/chef/",
+    "source_code_uri"   => "https://github.com/chef/knife/",
   }
 end
