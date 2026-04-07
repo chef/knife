@@ -1,10 +1,10 @@
 # Changelog
 
-<!-- latest_release 19.0.100 -->
-## [v19.0.100](https://github.com/chef/knife/tree/v19.0.100) (2026-04-06)
+<!-- latest_release 19.0.101 -->
+## [v19.0.101](https://github.com/chef/knife/tree/v19.0.101) (2026-04-07)
 
 #### Merged Pull Requests
-- [CHEF-33284] Fix spurious SERVER COMMANDS in knife --help [#71](https://github.com/chef/knife/pull/71) ([ashiqueps](https://github.com/ashiqueps))
+- Revert &quot;[CHEF-33284] Fix spurious SERVER COMMANDS in knife --help&quot; [#75](https://github.com/chef/knife/pull/75) ([ashiqueps](https://github.com/ashiqueps))
 <!-- latest_release -->
 
 <!-- release_rollup since=18.7.9 -->
@@ -14,6 +14,7 @@
 - COPILOT-SETUP: Add comprehensive GitHub Copilot instructions [#33](https://github.com/chef/knife/pull/33) ([ashiqueps](https://github.com/ashiqueps)) <!-- 19.0.75 -->
 
 #### Merged Pull Requests
+- Revert &quot;[CHEF-33284] Fix spurious SERVER COMMANDS in knife --help&quot; [#75](https://github.com/chef/knife/pull/75) ([ashiqueps](https://github.com/ashiqueps)) <!-- 19.0.101 -->
 - [CHEF-33284] Fix spurious SERVER COMMANDS in knife --help [#71](https://github.com/chef/knife/pull/71) ([ashiqueps](https://github.com/ashiqueps)) <!-- 19.0.100 -->
 - Adding NOTICE file to the hab pkg [#64](https://github.com/chef/knife/pull/64) ([nikhil2611](https://github.com/nikhil2611)) <!-- 19.0.99 -->
 - Update Expeditor config to promote Habitat packages to current and base-2025 channels [#67](https://github.com/chef/knife/pull/67) ([nikhil2611](https://github.com/nikhil2611)) <!-- 19.0.98 -->
