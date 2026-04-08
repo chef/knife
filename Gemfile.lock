@@ -171,7 +171,8 @@ GEM
       rubocop (= 1.84.2)
     corefoundation (0.3.13)
       ffi (>= 1.15.0)
-    crack (0.4.5)
+    crack (1.0.1)
+      bigdecimal
       rexml
     csv (3.3.5)
     date (3.5.1)
@@ -478,7 +479,7 @@ DEPENDENCIES
   chef-config (>= 19.1)
   chef-utils (>= 19.1)
   cheffish (>= 14)
-  crack (< 0.4.6)
+  crack (< 1.0.2)
   csv
   knife!
   libyajl2 (>= 2.1)
