@@ -54,6 +54,13 @@ install_dependencies() {
 
 install_dependencies
 
+# omnibus-toolchain images manage Ruby via rbenv; add shims to PATH if present
+if [ -d "$HOME/.rbenv" ]; then
+  echo "--- activating rbenv"
+  export PATH="$HOME/.rbenv/bin:$HOME/.rbenv/shims:$PATH"
+  eval "$(rbenv init -)"
+fi
+
 echo "--- bundle install"
 
 bundle config --local path vendor/bundle
