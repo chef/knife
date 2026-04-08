@@ -23,7 +23,16 @@ install_dependencies() {
 	elif command -v dnf >/dev/null 2>&1; then
 		echo "--- installing native dependencies via dnf"
 		dnf clean metadata
-		dnf install -y --enablerepo=devel \
+		if [ -r /etc/os-release ]; then
+			. /etc/os-release
+		fi
+
+		DNF_OPTS="-y"
+		if [ "${ID:-}" = "rocky" ] && dnf repolist all 2>/dev/null | grep -q '^devel'; then
+			DNF_OPTS="$DNF_OPTS --enablerepo=devel"
+		fi
+
+		dnf install $DNF_OPTS \
 			gcc \
 			gcc-c++ \
 			git \
@@ -52,19 +61,52 @@ install_dependencies() {
 	fi
 }
 
-install_dependencies
+setup_ruby_path() {
+	if command -v ruby >/dev/null 2>&1 && command -v bundle >/dev/null 2>&1; then
+		return
+	fi
 
-# omnibus-toolchain images manage Ruby via rbenv
-if [ -d "$HOME/.rbenv" ]; then
-  echo "--- activating rbenv"
-  export PATH="$HOME/.rbenv/bin:$PATH"
-  # Use subshell to avoid set -e issues with eval
-  eval "$(rbenv init - --no-rehash)" || true
-  rbenv global || rbenv global 3.0.39
-fi
+	if [ -d "$HOME/.rbenv" ]; then
+		echo "--- attempting rbenv ruby activation"
+		export PATH="$HOME/.rbenv/bin:$HOME/.rbenv/shims:$PATH"
+
+		if command -v rbenv >/dev/null 2>&1; then
+			eval "$(rbenv init - bash --no-rehash)" || true
+
+			if ! command -v ruby >/dev/null 2>&1; then
+				if [ -n "${RUBY_VERSION:-}" ] && rbenv versions --bare | grep -qx "$RUBY_VERSION"; then
+					rbenv global "$RUBY_VERSION"
+				elif rbenv versions --bare | grep -q .; then
+					rbenv global "$(rbenv versions --bare | tail -n 1)"
+				fi
+			fi
+		fi
+	fi
+
+	if ! command -v ruby >/dev/null 2>&1; then
+		for candidate in /opt/chef/bin /opt/chef/embedded/bin /opt/chef-workstation/embedded/bin; do
+			if [ -x "$candidate/ruby" ]; then
+				export PATH="$candidate:$PATH"
+				break
+			fi
+		done
+	fi
+}
+
+install_dependencies
+setup_ruby_path
 
 echo "--- ruby version"
+if ! command -v ruby >/dev/null 2>&1; then
+	echo "ruby not found after setup; PATH=$PATH"
+	exit 1
+fi
 ruby --version
+
+if ! command -v bundle >/dev/null 2>&1; then
+	echo "bundle not found after setup; PATH=$PATH"
+	exit 1
+fi
 
 echo "--- bundle install"
 
