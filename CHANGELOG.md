@@ -1,22 +1,20 @@
 # Changelog
 
-<!-- latest_release 19.0.105 -->
-## [v19.0.105](https://github.com/chef/knife/tree/v19.0.105) (2026-04-08)
-
-#### Merged Pull Requests
-- Updated Repo urls in gemspec and Added Copyright [#76](https://github.com/chef/knife/pull/76) ([ashiqueps](https://github.com/ashiqueps))
+<!-- latest_release -->
 <!-- latest_release -->
 
-<!-- release_rollup since=19.0.102 -->
-### Changes not yet released to rubygems.org
-
-#### Merged Pull Requests
-- Updated Repo urls in gemspec and Added Copyright [#76](https://github.com/chef/knife/pull/76) ([ashiqueps](https://github.com/ashiqueps)) <!-- 19.0.105 -->
-- First pass at making this repo work [#74](https://github.com/chef/knife/pull/74) ([jaymzh](https://github.com/jaymzh)) <!-- 19.0.104 -->
-- Tweaking docs [#72](https://github.com/chef/knife/pull/72) ([johnmccrae](https://github.com/johnmccrae)) <!-- 19.0.103 -->
+<!-- release_rollup -->
 <!-- release_rollup -->
 
 <!-- latest_stable_release -->
+## [v19.0.105](https://github.com/chef/knife/tree/v19.0.105) (2026-04-08)
+
+#### Merged Pull Requests
+- Tweaking docs [#72](https://github.com/chef/knife/pull/72) ([johnmccrae](https://github.com/johnmccrae))
+- First pass at making this repo work [#74](https://github.com/chef/knife/pull/74) ([jaymzh](https://github.com/jaymzh))
+- Updated Repo urls in gemspec and Added Copyright [#76](https://github.com/chef/knife/pull/76) ([ashiqueps](https://github.com/ashiqueps))
+<!-- latest_stable_release -->
+
 ## [v19.0.102](https://github.com/chef/knife/tree/v19.0.102) (2026-04-07)
 
 #### Features & Enhancements
@@ -56,4 +54,3 @@
 - [CHEF-33284] Fix spurious SERVER COMMANDS in knife --help [#71](https://github.com/chef/knife/pull/71) ([ashiqueps](https://github.com/ashiqueps))
 - Revert &quot;[CHEF-33284] Fix spurious SERVER COMMANDS in knife --help&quot; [#75](https://github.com/chef/knife/pull/75) ([ashiqueps](https://github.com/ashiqueps))
 -  Update config for knife gem release [#70](https://github.com/chef/knife/pull/70) ([nikhil2611](https://github.com/nikhil2611))
-<!-- latest_stable_release -->
