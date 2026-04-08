@@ -64,15 +64,25 @@ install_dependencies() {
 setup_ruby_path() {
 	echo "--- activating ruby/rbenv"
 
-	# omnibus-toolchain images use rbenv in $HOME
-	if [ -d "$HOME/.rbenv" ]; then
-		export PATH="$HOME/.rbenv/bin:$PATH"
+	local rbenv_root=""
+	local home_dir="${HOME:-}"
 
-		# Properly initialize rbenv - this creates the shims and sets everything up
-		# Use set +e to tolerate rbenv init issues without breaking on set -e
-		set +e
-		eval "$(rbenv init - bash)"
-		set -e
+	# Buildkite docker jobs sometimes do not set HOME to /root.
+	if [ -n "$home_dir" ] && [ -d "$home_dir/.rbenv" ]; then
+		rbenv_root="$home_dir/.rbenv"
+	elif [ -d "/root/.rbenv" ]; then
+		rbenv_root="/root/.rbenv"
+	fi
+
+	if [ -n "$rbenv_root" ]; then
+		export RBENV_ROOT="$rbenv_root"
+		export PATH="$RBENV_ROOT/bin:$RBENV_ROOT/shims:$PATH"
+
+		if command -v rbenv >/dev/null 2>&1; then
+			set +e
+			eval "$(rbenv init - bash)"
+			set -e
+		fi
 	fi
 }
 
@@ -82,6 +92,10 @@ setup_ruby_path
 echo "--- ruby version"
 if ! command -v ruby >/dev/null 2>&1; then
 	echo "ruby not found after setup; PATH=$PATH"
+	echo "HOME=${HOME:-<unset>}"
+	echo "RBENV_ROOT=${RBENV_ROOT:-<unset>}"
+	if [ -d "/root/.rbenv" ]; then echo "/root/.rbenv exists"; fi
+	if [ -n "${HOME:-}" ] && [ -d "${HOME}/.rbenv" ]; then echo "${HOME}/.rbenv exists"; fi
 	exit 1
 fi
 ruby --version
