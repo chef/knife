@@ -36,7 +36,7 @@ pipelines:
   - verify:
       public: true
       description: Pull Request validation tests
-      definition: .buildkite/verify.pipeline.sh
+      definition: .expeditor/verify.pipeline.yml
   - habitat/build:
       env:
         - HAB_NOCOLORING: "true"

@@ -1,95 +1,12 @@
 ---
 expeditor:
-  # cached_folders:
-  #   - vendor
   defaults:
     buildkite:
       retry:
         automatic:
           limit: 1
-      timeout_in_minutes: 90
+      timeout_in_minutes: 60
 
 steps:
-  - label: cookstyle-ruby-3.4
-    command:
-      - .expeditor/run_linux_tests.sh "rake style"
-    expeditor:
-      executor:
-        docker:
-          image: ruby:3.4
-
-  - label: run-specs-rocky-8-ruby-3.4
-    command:
-      - .expeditor/run_linux_tests.sh rake spec
-    expeditor:
-      executor:
-        docker:
-          image: chefes/omnibus-toolchain-rocky-8:3.0.39
-          environment:
-            - FORCE_FFI_YAJL=ext
-            - CHEF_LICENSE=accept-no-persist
-            - CHEF_LICENSE_SERVER=http://hosted-license-service-lb-8000-606952349.us-west-2.elb.amazonaws.com:8000/
-
-  - label: run-specs-rhel-9-ruby-3.4
-    command:
-      - .expeditor/run_linux_tests.sh rake spec
-    expeditor:
-      executor:
-        docker:
-          image: chefes/omnibus-toolchain-rhel-9:3.0.39
-          environment:
-            - FORCE_FFI_YAJL=ext
-            - CHEF_LICENSE=accept-no-persist
-            - CHEF_LICENSE_SERVER=http://hosted-license-service-lb-8000-606952349.us-west-2.elb.amazonaws.com:8000/
-
-  - label: run-specs-debian-11-ruby-3.4
-    command:
-      - .expeditor/run_linux_tests.sh rake spec
-    expeditor:
-      executor:
-        docker:
-          image: chefes/omnibus-toolchain-debian-11:3.0.39
-          environment:
-            - FORCE_FFI_YAJL=ext
-            - CHEF_LICENSE=accept-no-persist
-            - CHEF_LICENSE_SERVER=http://hosted-license-service-lb-8000-606952349.us-west-2.elb.amazonaws.com:8000/
-
-  - label: run-specs-rocky-9-ruby-3.4
-    command:
-      - .expeditor/run_linux_tests.sh rake spec
-    expeditor:
-      executor:
-        docker:
-          image: chefes/omnibus-toolchain-rocky-9:3.0.39
-          environment:
-            - FORCE_FFI_YAJL=ext
-            - CHEF_LICENSE=accept-no-persist
-            - CHEF_LICENSE_SERVER=http://hosted-license-service-lb-8000-606952349.us-west-2.elb.amazonaws.com:8000/
-
-  - label: run-specs-ubuntu-2204-ruby-3.4
-    command:
-      - .expeditor/run_linux_tests.sh rake spec
-    expeditor:
-      executor:
-        docker:
-          image: chefes/omnibus-toolchain-ubuntu-2204:3.0.39
-          environment:
-            - FORCE_FFI_YAJL=ext
-            - CHEF_LICENSE=accept-no-persist
-            - CHEF_LICENSE_SERVER=http://hosted-license-service-lb-8000-606952349.us-west-2.elb.amazonaws.com:8000/
-
-  - label: run-specs-windows-ruby-3.4
-    command:
-      - powershell .expeditor/run_windows_tests.ps1 rake spec
-    expeditor:
-      executor:
-        docker:
-          host_os: windows
-          shell: ["powershell", "-Command"]
-          image: rubydistros/windows-2019:3.4
-          user: 'NT AUTHORITY\SYSTEM'
-          environment:
-            - FORCE_FFI_YAJL=ext
-            - EXPIRE_CACHE=true
-            - CHEF_LICENSE=accept-no-persist
-            - CHEF_LICENSE_SERVER=http://hosted-license-service-lb-8000-606952349.us-west-2.elb.amazonaws.com:8000/
+  - command: .buildkite/verify.pipeline.sh | buildkite-agent pipeline upload
+    label: ":pipeline: Upload"
