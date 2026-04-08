@@ -63,29 +63,36 @@ install_dependencies() {
 
 setup_ruby_path() {
 	if command -v ruby >/dev/null 2>&1 && command -v bundle >/dev/null 2>&1; then
+		echo "--- ruby and bundle already available"
 		return
 	fi
 
-	if [ -d "$HOME/.rbenv" ]; then
-		echo "--- attempting rbenv ruby activation"
-		export PATH="$HOME/.rbenv/bin:$HOME/.rbenv/shims:$PATH"
+	echo "--- setting up ruby path"
+	
+	# omnibus-toolchain images use rbenv; add shims early
+	if [ -d "$HOME/.rbenv/shims" ]; then
+		export PATH="$HOME/.rbenv/shims:$HOME/.rbenv/bin:$PATH"
+		echo "--- added rbenv to PATH: $PATH"
+	fi
 
-		if command -v rbenv >/dev/null 2>&1; then
-			eval "$(rbenv init - bash --no-rehash)" || true
-
-			if ! command -v ruby >/dev/null 2>&1; then
-				if [ -n "${RUBY_VERSION:-}" ] && rbenv versions --bare | grep -qx "$RUBY_VERSION"; then
-					rbenv global "$RUBY_VERSION"
-				elif rbenv versions --bare | grep -q .; then
-					rbenv global "$(rbenv versions --bare | tail -n 1)"
-				fi
+	# Try to find and activate a ruby version
+	if [ -d "$HOME/.rbenv" ] && command -v rbenv >/dev/null 2>&1; then
+		# List available versions and select one if ruby still not found
+		if ! command -v ruby >/dev/null 2>&1; then
+			local latest_ruby
+			latest_ruby=$(rbenv versions --bare 2>/dev/null | tail -n 1)
+			if [ -n "$latest_ruby" ]; then
+				echo "--- setting rbenv global to $latest_ruby"
+				rbenv global "$latest_ruby" || true
 			fi
 		fi
 	fi
 
+	# Fallback to omnibus paths if rbenv didn't work
 	if ! command -v ruby >/dev/null 2>&1; then
 		for candidate in /opt/chef/bin /opt/chef/embedded/bin /opt/chef-workstation/embedded/bin; do
 			if [ -x "$candidate/ruby" ]; then
+				echo "--- found ruby at $candidate/ruby"
 				export PATH="$candidate:$PATH"
 				break
 			fi
