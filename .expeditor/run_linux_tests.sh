@@ -13,6 +13,7 @@ install_dependencies() {
 		apt-get update -y
 		DEBIAN_FRONTEND=noninteractive apt-get install -y \
 			build-essential \
+			curl \
 			git \
 			libarchive-dev \
 			libffi-dev \
@@ -33,6 +34,7 @@ install_dependencies() {
 		fi
 
 		dnf install $DNF_OPTS \
+			curl \
 			gcc \
 			gcc-c++ \
 			git \
@@ -46,6 +48,7 @@ install_dependencies() {
 	elif command -v yum >/dev/null 2>&1; then
 		echo "--- installing native dependencies via yum"
 		yum install -y \
+			curl \
 			gcc \
 			gcc-c++ \
 			git \
@@ -86,8 +89,47 @@ setup_ruby_path() {
 	fi
 }
 
+bootstrap_ruby_if_missing() {
+	if command -v ruby >/dev/null 2>&1 && command -v bundle >/dev/null 2>&1; then
+		return
+	fi
+
+	echo "--- bootstrapping ruby via rbenv"
+	export HOME="${HOME:-/root}"
+
+	if [ ! -d "$HOME/.rbenv" ]; then
+		if ! command -v curl >/dev/null 2>&1; then
+			echo "curl is required to install rbenv"
+			exit 1
+		fi
+		curl -fsSL https://github.com/rbenv/rbenv-installer/raw/HEAD/bin/rbenv-installer | bash
+	fi
+
+	export RBENV_ROOT="$HOME/.rbenv"
+	export PATH="$RBENV_ROOT/bin:$RBENV_ROOT/shims:$PATH"
+
+	if ! command -v rbenv >/dev/null 2>&1; then
+		echo "rbenv not found after installer; PATH=$PATH"
+		exit 1
+	fi
+
+	set +e
+	eval "$(rbenv init - bash)"
+	set -e
+
+	local ruby_version="${RUBY_VERSION:-3.4.8}"
+	rbenv install -s "$ruby_version"
+	rbenv global "$ruby_version"
+
+	if ! command -v bundle >/dev/null 2>&1; then
+		gem install bundler
+		rbenv rehash || true
+	fi
+}
+
 install_dependencies
 setup_ruby_path
+bootstrap_ruby_if_missing
 
 echo "--- ruby version"
 if ! command -v ruby >/dev/null 2>&1; then
