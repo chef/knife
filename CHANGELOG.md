@@ -1,9 +1,17 @@
 # Changelog
 
-<!-- latest_release -->
+<!-- latest_release 19.0.106 -->
+## [v19.0.106](https://github.com/chef/knife/tree/v19.0.106) (2026-04-08)
+
+#### Merged Pull Requests
+- Bump streetsidesoftware/cspell-action from 8.3.0 to 8.4.0 [#78](https://github.com/chef/knife/pull/78) ([dependabot[bot]](https://github.com/dependabot[bot]))
 <!-- latest_release -->
 
-<!-- release_rollup -->
+<!-- release_rollup since=19.0.105 -->
+### Changes not yet released to rubygems.org
+
+#### Merged Pull Requests
+- Bump streetsidesoftware/cspell-action from 8.3.0 to 8.4.0 [#78](https://github.com/chef/knife/pull/78) ([dependabot[bot]](https://github.com/dependabot[bot])) <!-- 19.0.106 -->
 <!-- release_rollup -->
 
 <!-- latest_stable_release -->
