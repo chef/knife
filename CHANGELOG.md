@@ -1,16 +1,17 @@
 # Changelog
 
-<!-- latest_release 19.0.103 -->
-## [v19.0.103](https://github.com/chef/knife/tree/v19.0.103) (2026-04-07)
+<!-- latest_release 19.0.104 -->
+## [v19.0.104](https://github.com/chef/knife/tree/v19.0.104) (2026-04-08)
 
 #### Merged Pull Requests
-- Tweaking docs [#72](https://github.com/chef/knife/pull/72) ([johnmccrae](https://github.com/johnmccrae))
+- First pass at making this repo work [#74](https://github.com/chef/knife/pull/74) ([jaymzh](https://github.com/jaymzh))
 <!-- latest_release -->
 
 <!-- release_rollup since=19.0.102 -->
 ### Changes not yet released to rubygems.org
 
 #### Merged Pull Requests
+- First pass at making this repo work [#74](https://github.com/chef/knife/pull/74) ([jaymzh](https://github.com/jaymzh)) <!-- 19.0.104 -->
 - Tweaking docs [#72](https://github.com/chef/knife/pull/72) ([johnmccrae](https://github.com/johnmccrae)) <!-- 19.0.103 -->
 <!-- release_rollup -->
 
