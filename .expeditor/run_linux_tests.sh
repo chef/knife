@@ -34,7 +34,7 @@ install_dependencies() {
 		fi
 
 		dnf install $DNF_OPTS \
-			curl \
+			curl-minimal \
 			gcc \
 			gcc-c++ \
 			git \
@@ -48,7 +48,7 @@ install_dependencies() {
 	elif command -v yum >/dev/null 2>&1; then
 		echo "--- installing native dependencies via yum"
 		yum install -y \
-			curl \
+			curl-minimal \
 			gcc \
 			gcc-c++ \
 			git \
