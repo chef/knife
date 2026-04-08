@@ -55,11 +55,18 @@ install_dependencies() {
 install_dependencies
 
 # omnibus-toolchain images manage Ruby via rbenv; add shims to PATH if present
-if [ -d "$HOME/.rbenv" ]; then
+if [ -d "$HOME/.rbenv/shims" ]; then
   echo "--- activating rbenv"
-  export PATH="$HOME/.rbenv/bin:$HOME/.rbenv/shims:$PATH"
-  eval "$(rbenv init -)"
+  export PATH="$HOME/.rbenv/shims:$HOME/.rbenv/bin:$PATH"
 fi
+
+# Also try /opt/chef for environments where omnibus packages Ruby
+if [ -d "/opt/chef/bin" ]; then
+  export PATH="/opt/chef/bin:$PATH"
+fi
+
+echo "--- ruby version"
+ruby --version
 
 echo "--- bundle install"
 
