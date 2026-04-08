@@ -28,7 +28,7 @@ gem "mixlib-authentication", "=3.0.10" #Pinning this to a specific version to av
 group :development, :test do
   gem "cheffish", ">= 14"
   gem "webmock"
-  gem "crack", "< 0.4.6"
+  gem "crack", "< 1.0.2"
   gem "rake", ">= 12.3.3"
   gem "rspec"
   gem "abbrev"
