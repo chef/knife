@@ -18,7 +18,7 @@ Knife is the command-line interface for Chef Infra, allowing developers and syst
 ## Repository Structure
 
 ```
-/Users/asaidala/Projects/knife/
+knife/
 ├── .expeditor/                    # Expeditor CI/CD configuration
 │   ├── config.yml                 # Main Expeditor config with pipelines
 │   ├── verify.pipeline.yml        # PR validation pipeline
@@ -74,7 +74,7 @@ All development work must follow a structured, prompt-based approach with explic
 **Objective**: Understand requirements and plan implementation
 
 **When Jira ID is provided:**
-1. **Jira Analysis**: 
+1. **Jira Analysis**:
    ```
    I'll fetch the Jira issue details for [JIRA_ID] to understand the requirements.
    ```
@@ -196,7 +196,7 @@ require "knife_spec_helper"
 describe Chef::Knife::[CommandName] do
   let(:knife) { described_class.new }
   let(:ui) { double("UI") }
-  
+
   before do
     allow(knife).to receive(:ui).and_return(ui)
   end
@@ -296,7 +296,7 @@ The repository uses Expeditor for automated builds and releases:
 
 **Build Channels**:
 - `base-2025-current` - Latest unstable builds
-- `base-2025` - Stable release channel  
+- `base-2025` - Stable release channel
 - `stable` - Production-ready releases
 
 ### Available Build Commands
@@ -311,7 +311,7 @@ bundle exec rspec
 # Build gem locally
 rake build
 
-# Install gem locally  
+# Install gem locally
 rake install
 
 # Build Habitat package (requires Habitat CLI)
@@ -329,7 +329,7 @@ bundle exec rspec spec/integration/
 rake -T
 
 # Primary tasks:
-rake spec          # Run all RSpec tests  
+rake spec          # Run all RSpec tests
 rake build         # Build knife-[version].gem into pkg/ directory
 rake install       # Build and install gem locally
 rake release       # Create tag v[version], build, and push gem to rubygems.org
@@ -340,7 +340,7 @@ rake release       # Create tag v[version], build, and push gem to rubygems.org
 ### Repository-Specific Labels
 ```
 bug                 - Something isn't working
-documentation       - Improvements or additions to documentation  
+documentation       - Improvements or additions to documentation
 duplicate          - This issue or pull request already exists
 enhancement        - New feature or request
 good first issue   - Good for newcomers
@@ -352,7 +352,7 @@ wontfix            - This will not be worked on
 
 ### Label Selection Guidelines
 - **Bug fixes**: Use `bug` label
-- **New features**: Use `enhancement` label  
+- **New features**: Use `enhancement` label
 - **Documentation updates**: Use `documentation` label + skip labels
 - **Test-only changes**: Use appropriate skip labels
 - **CI/build changes**: Use skip version bump labels
@@ -462,7 +462,7 @@ end
 class Chef
   class Knife
     class CommandName < Knife
-      
+
       banner "knife command-name [ARGS] (options)"
 
       deps do
@@ -503,7 +503,7 @@ end
 ### License Header Template
 ```ruby
 #
-# Copyright:: Copyright (c) Chef Software Inc.
+# Copyright:: Copyright (c) 2009-2026 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -557,7 +557,7 @@ Knife integrates with multiple Chef components:
 Key external dependencies (defined in `knife.gemspec`):
 - `train-core` - Transport abstraction for remote connections
 - `train-winrm` - Windows remote management
-- `tty-prompt` - Interactive command-line prompts  
+- `tty-prompt` - Interactive command-line prompts
 - `tty-screen` - Terminal screen information
 - `tty-table` - Table formatting for output
 - `highline` - Advanced command-line interactions
@@ -617,7 +617,7 @@ git commit --amend --signoff --no-edit
 All development tasks must follow this conversational pattern:
 
 1. **Task Acknowledgment**: Confirm understanding of the request
-2. **Phase Execution**: Execute current phase completely  
+2. **Phase Execution**: Execute current phase completely
 3. **Progress Summary**: Summarize what was accomplished
 4. **Next Step Preview**: Clearly state what the next phase involves
 5. **Approval Request**: "Do you want me to continue with [next phase]?"
@@ -635,7 +635,7 @@ Phase 1: Initial Setup & Analysis
 - [Analysis results]
 - Created implementation plan with test strategy for >80% coverage
 
-Phase 1 complete. I've analyzed the requirements and created a comprehensive implementation plan. 
+Phase 1 complete. I've analyzed the requirements and created a comprehensive implementation plan.
 
 Next step: Phase 2 will involve implementing the core functionality and creating comprehensive unit tests to meet the >80% coverage requirement.
 
@@ -733,7 +733,7 @@ end
 ```ruby
 def run
   validate_name_args!
-  
+
   begin
     result = perform_operation
     output_result(result)
@@ -750,7 +750,7 @@ def handle_http_error(error)
   case error.response.code
   when "404"
     ui.fatal("Resource not found")
-  when "401", "403"  
+  when "401", "403"
     ui.fatal("Authentication failed")
   else
     ui.fatal("Server error: #{error.message}")
@@ -814,7 +814,7 @@ hab pkg exec chef/knife spec
 
 ### Critical Reminders
 - **ALL work is performed locally** - Never suggest cloud-based solutions
-- **>80% test coverage is MANDATORY** - Cannot be compromised under any circumstances  
+- **>80% test coverage is MANDATORY** - Cannot be compromised under any circumstances
 - **DCO signoff is REQUIRED** - All commits must include `--signoff` flag
 - **Phase-based development** - Always wait for approval between phases
 - **Comprehensive testing** - Test positive, negative, and edge cases
@@ -833,7 +833,7 @@ hab pkg exec chef/knife spec
 - Core application entry points without careful consideration
 - Third-party vendor files
 
-### Performance Considerations  
+### Performance Considerations
 - Mock external API calls in tests
 - Use efficient algorithms for data processing
 - Consider memory usage for large datasets
