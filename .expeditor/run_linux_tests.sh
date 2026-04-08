@@ -28,13 +28,8 @@ install_dependencies() {
 			. /etc/os-release
 		fi
 
-		DNF_OPTS="-y"
-		if [ "${ID:-}" = "rocky" ] && dnf repolist all 2>/dev/null | grep -q '^devel'; then
-			DNF_OPTS="$DNF_OPTS --enablerepo=devel"
-		fi
-
-		dnf install $DNF_OPTS \
-			curl-minimal \
+		# Try default repos first to avoid Rocky devel conflicts.
+		if ! dnf install -y \
 			gcc \
 			gcc-c++ \
 			git \
@@ -44,7 +39,25 @@ install_dependencies() {
 			make \
 			openssl-devel \
 			readline-devel \
-			zlib-devel
+			zlib-devel; then
+			if [ "${ID:-}" = "rocky" ] && dnf repolist all 2>/dev/null | grep -q '^devel'; then
+				echo "--- retrying dnf install with rocky devel repo enabled"
+				dnf install -y --enablerepo=devel \
+					gcc \
+					gcc-c++ \
+					git \
+					libarchive-devel \
+					libffi-devel \
+					libyaml-devel \
+					make \
+					openssl-devel \
+					readline-devel \
+					zlib-devel
+			else
+				echo "dnf dependency installation failed and no safe fallback repo was available"
+				exit 1
+			fi
+		fi
 	elif command -v yum >/dev/null 2>&1; then
 		echo "--- installing native dependencies via yum"
 		yum install -y \
