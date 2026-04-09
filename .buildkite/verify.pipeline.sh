@@ -12,7 +12,7 @@ emit_linux_step() {
   platform="$1"
 
   if [[ "$platform" == *"-aarch64" ]]; then
-    image="chefes/omnibus-toolchain-${platform%-aarch64}:aarch64"
+    image="chefes/omnibus-toolchain-${platform%-aarch64}:3.0.39"
     queue="default-privileged-aarch64"
   else
     image="chefes/omnibus-toolchain-${platform}:3.0.39"
