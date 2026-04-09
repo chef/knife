@@ -32,25 +32,23 @@ rescue LoadError
   puts "rspec not available. bundle install first to make sure all dependencies are installed."
 end
 
-begin
-  require "cookstyle/chefstyle"
+desc "Check Linting and code style."
+task :style do
   require "rubocop/rake_task"
+  require "cookstyle/chefstyle"
 
-  namespace :style do
-    desc "Run cookstyle style checks"
-    RuboCop::RakeTask.new(:cookstyle) do |task|
-      task.options += ["--display-cop-names", "--no-color"]
-    end
+  if RbConfig::CONFIG["host_os"] =~ /mswin|mingw|cygwin/
+    # Windows-specific command, rubocop erroneously reports the CRLF in each file which is removed when your PR is uploaded to GitHub.
+    # This is a workaround to ignore the CRLF from the files before running cookstyle.
+    sh "cookstyle --chefstyle -c .rubocop.yml --except Layout/EndOfLine"
+  else
+    sh "cookstyle --chefstyle -c .rubocop.yml"
   end
-
-  # Alias for convenience
-  desc "Run cookstyle style checks"
-  task style: "style:cookstyle"
 rescue LoadError
-  puts "cookstyle/chefstyle is not available. (sudo) gem install cookstyle to do style checking."
+  puts "Rubocop or Cookstyle gems are not installed. bundle install first to make sure all dependencies are installed."
 end
 
 desc "Run all quality tasks"
-task quality: ["style:cookstyle"]
+task quality: [:style]
 
 task default: [:spec]
