@@ -112,9 +112,13 @@ function Invoke-After {
 function Install-ChefOfficialDistribution {
     Write-BuildLine "Installing chef-official-distribution gem from Artifactory"
 
+    # Test artifactory access and install chef-official-distribution if accessible
+    Write-BuildLine "******* Testing access to artifactory*****"
     $artifactorySource = "https://artifactory-internal.ps.chef.co/artifactory/omnibus-gems-local/"
 
     try {
+        $null = Invoke-WebRequest -Uri $artifactorySource -UseBasicParsing -TimeoutSec 5 -ErrorAction Stop
+        Write-BuildLine "******* Artifactory is accessible, installing chef-official-distribution gem*****"
         # Add Artifactory as gem source
         gem sources --add $artifactorySource
         if ($LASTEXITCODE -ne 0) {
@@ -127,7 +131,14 @@ function Install-ChefOfficialDistribution {
             throw "Failed to install chef-official-distribution gem"
         }
 
-        Write-BuildLine "Successfully installed chef-official-distribution"
+        # Verify chef-official-distribution installation
+        Write-BuildLine "******* Verifying chef-official-distribution installation******"
+        gem list chef-official-distribution
+        If ($lastexitcode -ne 0) {
+          Exit $lastexitcode
+        } else {
+          Write-BuildLine "chef-official-distribution gem installed successfully"
+        }
     }
     catch {
         Write-Error "Error installing chef-official-distribution: $_"

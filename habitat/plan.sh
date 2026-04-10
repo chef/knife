@@ -136,9 +136,23 @@ EOF
 }
 
 make_pkg_official_distrib() {
-  build_line "Installing chef-official-distribution gem"
-  gem source --add "https://artifactory-internal.ps.chef.co/artifactory/omnibus-gems-local/"
-  # Install to the Bundler-created ruby gem directory structure
-  gem install chef-official-distribution --no-document --install-dir "$GEM_HOME/ruby/${ruby_gem_version}"
-  gem sources -r "https://artifactory-internal.ps.chef.co/artifactory/omnibus-gems-local/"
+  # Test if artifactory-internal.ps.chef.co is reachable
+  build_line "Testing connectivity to artifactory-internal.ps.chef.co..."
+  artifactory_url="https://artifactory-internal.ps.chef.co/artifactory/omnibus-gems-local/"
+  if wget --spider --timeout=30 --tries=1 --quiet "$artifactory_url" > /dev/null 2>&1; then
+    build_line "Artifactory is reachable, proceeding with chef-official-distribution installation"
+    # Install to the Bundler-created ruby gem directory structure
+    local install_dir="$GEM_HOME/ruby/${ruby_gem_version}"
+    gem sources --add "$artifactory_url"
+    gem install chef-official-distribution --no-document --install-dir "$install_dir"
+    gem sources -r "$artifactory_url"
+
+    build_line "Verifying chef-official-distribution installation"
+    if ! GEM_HOME="$install_dir" GEM_PATH="$install_dir" gem list -i chef-official-distribution; then
+      build_line "Error: chef-official-distribution installation failed"
+      exit 1
+    fi
+  else
+    build_line "Artifactory is not reachable, skipping chef-official-distribution installation"
+  fi
 }
