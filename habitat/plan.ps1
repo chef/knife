@@ -113,12 +113,12 @@ function Install-ChefOfficialDistribution {
     Write-BuildLine "Installing chef-official-distribution gem from Artifactory"
 
     # Test artifactory access and install chef-official-distribution if accessible
-    Write-BuildLine "******* Testing access to artifactory*****"
+    Write-BuildLine "******* Testing access to artifactory *******"
     $artifactorySource = "https://artifactory-internal.ps.chef.co/artifactory/omnibus-gems-local/"
 
     try {
         $null = Invoke-WebRequest -Uri $artifactorySource -UseBasicParsing -TimeoutSec 5 -ErrorAction Stop
-        Write-BuildLine "******* Artifactory is accessible, installing chef-official-distribution gem*****"
+        Write-BuildLine "******* Artifactory is accessible, installing chef-official-distribution gem *******"
         # Add Artifactory as gem source
         gem sources --add $artifactorySource
         if ($LASTEXITCODE -ne 0) {
@@ -132,7 +132,7 @@ function Install-ChefOfficialDistribution {
         }
 
         # Verify chef-official-distribution installation
-        Write-BuildLine "******* Verifying chef-official-distribution installation******"
+        Write-BuildLine "******* Verifying chef-official-distribution installation *******"
         gem list chef-official-distribution
         If ($lastexitcode -ne 0) {
           Exit $lastexitcode
@@ -141,8 +141,8 @@ function Install-ChefOfficialDistribution {
         }
     }
     catch {
-        Write-BuildLine "******* Artifactory is not accessible, skipping chef-official-distribution installation*****"
-        Write-BuildLine "******* Error: $($_.Exception.Message)*****"
+        Write-BuildLine "******* Artifactory is not accessible, skipping chef-official-distribution installation *******"
+        Write-BuildLine "******* Error: $($_.Exception.Message) *******"
     }
     finally {
         # Always clean up gem sources
