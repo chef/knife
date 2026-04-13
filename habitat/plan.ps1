@@ -141,8 +141,8 @@ function Install-ChefOfficialDistribution {
         }
     }
     catch {
-        Write-Error "Error installing chef-official-distribution: $_"
-        exit 1
+        Write-BuildLine "******* Artifactory is not accessible, skipping chef-official-distribution installation*****"
+        Write-BuildLine "******* Error: $($_.Exception.Message)*****"
     }
     finally {
         # Always clean up gem sources
