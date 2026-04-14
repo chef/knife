@@ -17,7 +17,7 @@ permissions:
   contents: read
   
 env:
-  STUB_VERSION: "1.0.7" 
+  STUB_VERSION: "1.0.8"
 
 jobs: 
   echo_version:
@@ -32,10 +32,32 @@ jobs:
     name: 'Detect custom properties'
     runs-on: ubuntu-latest
     outputs:
-      primaryApp: ${{ steps.set-custom-metadata.outputs.primaryApplication }}
+      primaryApplication: ${{ steps.set-custom-metadata.outputs.primaryApplication }}
       appBuildLanguage: ${{ steps.set-custom-metadata.outputs.applicationBuildLanguage }}
       appBuildProfile: ${{ steps.set-custom-metadata.outputs.applicationBuildProfile }}
+      versionFromFile: ${{ steps.set-version-from-file.outputs.versionFromFile }}
     steps:
+      - name: 'Checkout repository'
+        uses: actions/checkout@v4
+
+      - name: 'Detect version from file'
+        id: set-version-from-file
+        shell: bash
+        run: |
+          if [[ -f "VERSION" ]]; then
+            version=$(head -1 VERSION)
+            echo "VERSION_FROM_FILE=${version}" >> $GITHUB_ENV
+            echo "versionFromFile=${version}" >> $GITHUB_OUTPUT
+          elif [[ -f "go.mod" ]]; then
+            version=$(grep -Eo 'v[0-9]+\.[0-9]+\.[0-9]+' go.mod | head -1)
+            echo "VERSION_FROM_FILE=${version}" >> $GITHUB_ENV
+            echo "versionFromFile=${version}" >> $GITHUB_OUTPUT
+          else
+            echo "VERSION_FROM_FILE not found, defaulting to empty"
+            echo "versionFromFile=" >> $GITHUB_OUTPUT
+          fi
+        # do not do echo "::set-output name=versionFromFile::$version" any more per https://github.blog/changelog/2022-10-11-github-actions-deprecating-save-state-and-set-output-commands/
+
       - name: 'Detect app, language, and build profile environment variables from repository custom properties'
         id: set-custom-metadata
       # GH API returns something like [{"property_name":"GABuildLanguage","value":"go"},{"property_name":"GABuildProfile","value":"cli"},{"property_name":"primaryApplication","value":"chef-360"}]'
@@ -46,19 +68,14 @@ jobs:
           GABuildLanguage=$(echo "$response" | jq -r '.[] | select(.property_name=="GABuildLanguage") | .value')
           GABuildProfile=$(echo "$response" | jq -r '.[] | select(.property_name=="GABuildProfile") | .value')
           
-          echo "PRIMARY APP... $primaryApplication"
-          echo "BUILD LANG... $GABuildLanguage"
-          echo "BUILD PROFILE... $GABuildProfile"
-          
           echo "PRIMARY_APPLICATION=$primaryApplication" >> $GITHUB_ENV
           echo "GA_BUILD_LANGUAGE=$GABuildLanguage" >> $GITHUB_ENV
           echo "GA_BUILD_PROFILE=$GABuildProfile" >> $GITHUB_ENV
 
           # If workflow_dispatch, use inputs (left), if other trigger, use default env (right)
-          # echo "::set-output name=build-and-verify::${{ github.event.inputs.build-and-verify || 'true' }}"
-          echo "::set-output name=primaryApplication::$primaryApplication"
-          echo "::set-output name=applicationBuildLanguage::$GABuildLanguage"
-          echo "::set-output name=applicationBuildProfile::$GABuildProfile"
+          echo "primaryApplication=${primaryApplication}" >> $GITHUB_OUTPUT
+          echo "applicationBuildLanguage=${GABuildLanguage}" >> $GITHUB_OUTPUT
+          echo "applicationBuildProfile=${GABuildProfile}" >> $GITHUB_OUTPUT
         continue-on-error: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
@@ -72,13 +89,13 @@ jobs:
       contents: read
 
     with:   
-      application: ${{ needs.detect-custom-metadata.outputs.primaryApp }}
+      application: ${{ needs.detect-custom-metadata.outputs.primaryApplication }}
       visibility: ${{ github.event.repository.visibility }}   #  private, public, or internal
       # go-private-modules: GOPRIVATE for Go private modules, default is 'github.com/progress-platform-services/*
 
       # if version specified, it takes precedence; can be a semver like 1.0.2-xyz or a tag like "latest"
-      version: '19.0.98' # ${{ github.event.repository.version }}
-      detect-version-source-type: 'none' # options include "none" (do not detect), "file", "github-tag" or "github-release"
+      version: ${{ needs.detect-custom-metadata.outputs.versionFromFile }}
+      detect-version-source-type: 'file' # options include "none" (do not detect), "file", "github-tag" or "github-release"
       detect-version-source-parameter: '' # use for file name
       language: ${{ needs.detect-custom-metadata.outputs.appBuildLanguage }} # Go, Ruby, Rust, JavaScript, TypeScript, Python, Java, C#, PHP, other - used for build and SonarQube language setting
       
@@ -88,6 +105,11 @@ jobs:
       perform-language-linting: false    # Perform language-specific linting and pre-compilation checks
       perform-trufflehog-scan: true
       perform-trivy-scan: true
+
+      # grype vulnerability scanning
+      perform-grype-scan: true
+      grype-fail-on-high: true
+      grype-fail-on-critical: true
              
       # perform application build and unit testing, will use custom repository properties when implemented for chef-primary-application, chef-build-profile, and chef-build-language
       build: true
@@ -113,6 +135,17 @@ jobs:
       # polaris-config-path: ''   # Path to Detect configuration file, typically a file supplied at root level like ./detect-config.yml
       # polaris-coverity-config-path: ''  # Path to Coverity configuration file, typically a file supplied at root level like ./coverity.yml
       # polaris-coverity-args: '' # Additional Coverity arguments,can supply extra arguments like "--config-override capture.build.build-command=make
+
+      # Perform Grype Scan on habitat packages
+      perform-grype-hab-scan: true
+      grype-hab-build-package: false
+      grype-hab-origin: 'chef'
+      grype-hab-package: 'knife'
+      grype-hab-version: ${{ needs.detect-custom-metadata.outputs.versionFromFile }}
+      grype-hab-channel: 'unstable'
+      grype-hab-scan-linux: true
+      grype-hab-scan-windows: true
+      grype-hab-scan-macos: false
       
       # perform SonarQube scan, with or without unit test coverage data
       # requires secrets SONAR_TOKEN and SONAR_HOST_URL (progress.sonar.com)
@@ -130,17 +163,6 @@ jobs:
       # quality-service-name: 'YourServiceOrRepoName'
       # quality-junit-report: 'path/to/junit/report''
 
-      # perform Habitat-based and native packaging, publish to package repositories
-      package-binaries: false     # Package binaries (e.g., RPM, DEB, MSI, dpkg + signing + SHA)
-      habitat-build: false        # Create Habitat packages
-      publish-habitat-packages: false   # Publish Habitat packages to Builder
-      publish-habitat-hab_package: false # Chef Habitat package to install (e.g., core/nginx)
-      publish-habitat-hab_version: "1.0.0" # Chef Habitat package version (optional)
-      publish-habitat-hab_release: "20240101010101"  # Chef Habitat package release (optional)
-      publish-habitat-hab_channel: "stable"  # Chef Habitat package channel (e.g., stable, base, base-2025); default is stable
-      publish-habitat-hab_auth_token: ""   # Chef Habitat Builder authentication token (uses secret if not provided)
-      publish-habitat-runner_os: "ubuntu-latest"   # OS runner for Habitat package publishing job, can also be windows-latest
-      habitat-grype-scan: false  # Scan built Habitat packages with Grype for vulnerabilities
       publish-packages: false     # Publish packages (e.g., container from Dockerfile to ECR, go-releaser binary to releases page, omnibus to artifactory, gems, choco, homebrew, other app stores)
 
       # generate and export Software Bill of Materials (SBOM) in various formats
@@ -153,9 +175,9 @@ jobs:
       perform-blackduck-sca-scan: true # combined with generate sbom & generate github-sbom, also needs version above
       blackduck-project-group-name: 'Chef-Agents' # typically one of (Chef), Chef-Agents, Chef-Automate, Chef-Chef360, Chef-Habitat, Chef-Infrastructure-Server, Chef-Shared-Services, Chef-Non-Product'
       blackduck-project-name: 'chef-knife' # BlackDuck project name, typically the repository name
-      
-      run-bundle-install: true
 
+      run-bundle-install: true
+  
       # udf1: 'default' # user defined flag 1
-      # udf2: 'default' # user defined flag 2
-      # udf3: 'default' # user defined flag 3
+      # udf2: 'default' # user defined flag 2 
+      # udf3: 'default' # user defined flag 3  
