@@ -234,8 +234,7 @@ class Chef
             tf.sync = true
             tf.puts output
             tf.close
-            raise 
-            "Please set EDITOR environment variable. See https://docs.chef.io/workstation/26/tools/knife/set_up/#set-a-text-editor for details." unless system("#{config[:editor]} #{tf.path}")
+            raise "Please set EDITOR environment variable. See https://docs.chef.io/workstation/26/tools/knife/set_up/#set-a-text-editor for details." unless system("#{config[:editor]} #{tf.path}")
 
             output = File.read(tf.path)
           end
