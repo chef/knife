@@ -1,16 +1,17 @@
 # Changelog
 
-<!-- latest_release 19.0.110 -->
-## [v19.0.110](https://github.com/chef/knife/tree/v19.0.110) (2026-04-17)
+<!-- latest_release 19.0.111 -->
+## [v19.0.111](https://github.com/chef/knife/tree/v19.0.111) (2026-04-17)
 
 #### Merged Pull Requests
-- Setup &#39;external&#39; tests, add knife-windows [#91](https://github.com/chef/knife/pull/91) ([jaymzh](https://github.com/jaymzh))
+- Dependabot: disable autorebase [#92](https://github.com/chef/knife/pull/92) ([jaymzh](https://github.com/jaymzh))
 <!-- latest_release -->
 
 <!-- release_rollup since=19.0.105 -->
 ### Changes not yet released to rubygems.org
 
 #### Merged Pull Requests
+- Dependabot: disable autorebase [#92](https://github.com/chef/knife/pull/92) ([jaymzh](https://github.com/jaymzh)) <!-- 19.0.111 -->
 - Setup &#39;external&#39; tests, add knife-windows [#91](https://github.com/chef/knife/pull/91) ([jaymzh](https://github.com/jaymzh)) <!-- 19.0.110 -->
 - Move habitat-test to public [#84](https://github.com/chef/knife/pull/84) ([tpowell-progress](https://github.com/tpowell-progress)) <!-- 19.0.109 -->
 - Bump crack from 0.4.5 to 1.0.1 [#80](https://github.com/chef/knife/pull/80) ([dependabot[bot]](https://github.com/dependabot[bot])) <!-- 19.0.108 -->
