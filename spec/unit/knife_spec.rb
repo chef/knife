@@ -158,6 +158,68 @@ describe Chef::Knife do
 
   end
 
+  describe "subdirectory subcommand filtering" do
+    before do
+      Chef::Knife.reset_subcommands!
+    end
+
+    after do
+      %i{CloudSubdirCommand FlatKnifeCommand HabitatKnifeCommand CheffsSubdirCommand}.each do |const|
+        KnifeSpecs.send(:remove_const, const) if KnifeSpecs.const_defined?(const)
+      end
+    end
+
+    it "does not register subcommands defined in a subdirectory of lib/chef/knife/" do
+      allow(Chef::Knife).to receive(:path_from_caller)
+        .and_return("/some/gem/lib/chef/knife/cloud/server/create_command.rb")
+
+      module KnifeSpecs
+        class CloudSubdirCommand < Chef::Knife; end
+      end
+
+      expect(Chef::Knife.subcommands).not_to have_key("cloud_subdir_command")
+      expect(Chef::Knife.subcommand_files).not_to have_key("cloud_subdir_command")
+    end
+
+    it "registers subcommands defined directly in lib/chef/knife/ (flat path)" do
+      allow(Chef::Knife).to receive(:path_from_caller)
+        .and_return("/some/gem/lib/chef/knife/flat_knife_command.rb")
+
+      module KnifeSpecs
+        class FlatKnifeCommand < Chef::Knife; end
+      end
+
+      expect(Chef::Knife.subcommands).to have_key("flat_knife_command")
+      expect(Chef::Knife.subcommand_files["flat_knife_command"]).to eq(["/some/gem/lib/chef/knife/flat_knife_command.rb"])
+    end
+
+    it "does not filter subcommands loaded from Habitat package paths" do
+      # Habitat paths contain /chef/knife/ as the package origin/name segment,
+      # e.g. /hab/pkgs/chef/knife/19.0.99/lib/chef/knife/foo.rb. The regex must
+      # anchor to /lib/chef/knife/ to avoid false positives on these paths.
+      allow(Chef::Knife).to receive(:path_from_caller)
+        .and_return("/hab/pkgs/chef/knife/19.0.99/lib/chef/knife/habitat_knife_command.rb")
+
+      module KnifeSpecs
+        class HabitatKnifeCommand < Chef::Knife; end
+      end
+
+      expect(Chef::Knife.subcommands).to have_key("habitat_knife_command")
+    end
+
+    it "does not register ChefFS-based subcommands defined in subdirectories of lib/chef/knife/" do
+      # ChefFS commands use caller[1] for path detection; filtering should still apply.
+      allow(Chef::Knife).to receive(:path_from_caller)
+        .and_return("/some/gem/lib/chef/knife/cloud/cheffs_subdir_command.rb")
+
+      module KnifeSpecs
+        class CheffsSubdirCommand < Chef::ChefFS::Knife; end
+      end
+
+      expect(Chef::Knife.subcommands).not_to have_key("cheffs_subdir_command")
+    end
+  end
+
   describe "the headers include X-Remote-Request-Id" do
 
     let(:headers) do
