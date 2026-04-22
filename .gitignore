@@ -75,6 +75,7 @@ binstubs/
 .idea
 
 bin/
+!tasks/bin/
 # ignore nodes generated during local testing
 # nodes/
 

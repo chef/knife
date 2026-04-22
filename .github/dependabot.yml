@@ -8,6 +8,9 @@ updates:
     open-pull-requests-limit: 20
     labels:
       - "Type: Chore"
+    # don't automatically rebase on every single time we're out of date with
+    # base (whith is always) because it kills CI capacity
+    rebase-strategy: disabled
 
   - package-ecosystem: github-actions
     directory: "/"
@@ -16,3 +19,6 @@ updates:
     open-pull-requests-limit: 10
     labels:
       - "Type: Chore"
+    # don't automatically rebase on every single time we're out of date with
+    # base (whith is always) because it kills CI capacity
+    rebase-strategy: disabled

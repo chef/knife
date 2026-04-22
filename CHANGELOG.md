@@ -1,16 +1,20 @@
 # Changelog
 
-<!-- latest_release 19.0.109 -->
-## [v19.0.109](https://github.com/chef/knife/tree/v19.0.109) (2026-04-13)
+<!-- latest_release 19.0.113 -->
+## [v19.0.113](https://github.com/chef/knife/tree/v19.0.113) (2026-04-21)
 
 #### Merged Pull Requests
-- Move habitat-test to public [#84](https://github.com/chef/knife/pull/84) ([tpowell-progress](https://github.com/tpowell-progress))
+- Bump train-core from 3.16.1 to 3.16.2 [#93](https://github.com/chef/knife/pull/93) ([dependabot[bot]](https://github.com/dependabot[bot]))
 <!-- latest_release -->
 
 <!-- release_rollup since=19.0.105 -->
 ### Changes not yet released to rubygems.org
 
 #### Merged Pull Requests
+- Bump train-core from 3.16.1 to 3.16.2 [#93](https://github.com/chef/knife/pull/93) ([dependabot[bot]](https://github.com/dependabot[bot])) <!-- 19.0.113 -->
+- Bump rake from 13.3.1 to 13.4.2 [#90](https://github.com/chef/knife/pull/90) ([dependabot[bot]](https://github.com/dependabot[bot])) <!-- 19.0.112 -->
+- Dependabot: disable autorebase [#92](https://github.com/chef/knife/pull/92) ([jaymzh](https://github.com/jaymzh)) <!-- 19.0.111 -->
+- Setup &#39;external&#39; tests, add knife-windows [#91](https://github.com/chef/knife/pull/91) ([jaymzh](https://github.com/jaymzh)) <!-- 19.0.110 -->
 - Move habitat-test to public [#84](https://github.com/chef/knife/pull/84) ([tpowell-progress](https://github.com/tpowell-progress)) <!-- 19.0.109 -->
 - Bump crack from 0.4.5 to 1.0.1 [#80](https://github.com/chef/knife/pull/80) ([dependabot[bot]](https://github.com/dependabot[bot])) <!-- 19.0.108 -->
 - Update highline requirement from &gt;= 1.6.9, &lt; 3 to &gt;= 1.6.9, &lt; 4 [#79](https://github.com/chef/knife/pull/79) ([dependabot[bot]](https://github.com/dependabot[bot])) <!-- 19.0.107 -->
