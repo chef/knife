@@ -1,16 +1,17 @@
 # Changelog
 
-<!-- latest_release 19.0.113 -->
-## [v19.0.113](https://github.com/chef/knife/tree/v19.0.113) (2026-04-21)
+<!-- latest_release 19.0.114 -->
+## [v19.0.114](https://github.com/chef/knife/tree/v19.0.114) (2026-04-28)
 
 #### Merged Pull Requests
-- Bump train-core from 3.16.1 to 3.16.2 [#93](https://github.com/chef/knife/pull/93) ([dependabot[bot]](https://github.com/dependabot[bot]))
+- Fixed the issue with knife -h command showing invalid subcommands [#88](https://github.com/chef/knife/pull/88) ([ashiqueps](https://github.com/ashiqueps))
 <!-- latest_release -->
 
 <!-- release_rollup since=19.0.105 -->
 ### Changes not yet released to rubygems.org
 
 #### Merged Pull Requests
+- Fixed the issue with knife -h command showing invalid subcommands [#88](https://github.com/chef/knife/pull/88) ([ashiqueps](https://github.com/ashiqueps)) <!-- 19.0.114 -->
 - Bump train-core from 3.16.1 to 3.16.2 [#93](https://github.com/chef/knife/pull/93) ([dependabot[bot]](https://github.com/dependabot[bot])) <!-- 19.0.113 -->
 - Bump rake from 13.3.1 to 13.4.2 [#90](https://github.com/chef/knife/pull/90) ([dependabot[bot]](https://github.com/dependabot[bot])) <!-- 19.0.112 -->
 - Dependabot: disable autorebase [#92](https://github.com/chef/knife/pull/92) ([jaymzh](https://github.com/jaymzh)) <!-- 19.0.111 -->
