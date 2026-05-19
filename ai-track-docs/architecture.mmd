@@ -1,0 +1,13 @@
+%%{init: {"theme": "default"}}%%
+graph TD
+    A["bin/knife (CLI entry point)"] --> B["lib/chef/application/knife.rb"]
+    B --> C["lib/chef/knife.rb (Knife base class)"]
+    C --> D["lib/chef/knife/*.rb (Subcommands)"]
+    C --> E["lib/chef/knife/core/ (Core utilities)"]
+    D --> F["Chef Infra Server API"]
+    D --> G["Local Chef repo / cookbooks"]
+    E --> H["Formatters, UI, Bootstrap helpers"]
+
+    style A fill:#f9f,stroke:#333
+    style F fill:#bbf,stroke:#333
+    style G fill:#bbf,stroke:#333
