@@ -32,8 +32,8 @@ GEM
       public_suffix (>= 2.0.2, < 8.0)
     ast (2.4.3)
     aws-eventstream (1.4.0)
-    aws-partitions (1.1235.0)
-    aws-sdk-core (3.244.0)
+    aws-partitions (1.1252.0)
+    aws-sdk-core (3.247.0)
       aws-eventstream (~> 1, >= 1.3.0)
       aws-partitions (~> 1, >= 1.992.0)
       aws-sigv4 (~> 1.9)
@@ -41,15 +41,15 @@ GEM
       bigdecimal
       jmespath (~> 1, >= 1.6.1)
       logger
-    aws-sdk-kms (1.123.0)
-      aws-sdk-core (~> 3, >= 3.244.0)
+    aws-sdk-kms (1.127.0)
+      aws-sdk-core (~> 3, >= 3.247.0)
       aws-sigv4 (~> 1.5)
-    aws-sdk-s3 (1.218.0)
-      aws-sdk-core (~> 3, >= 3.244.0)
+    aws-sdk-s3 (1.223.0)
+      aws-sdk-core (~> 3, >= 3.247.0)
       aws-sdk-kms (~> 1)
       aws-sigv4 (~> 1.5)
-    aws-sdk-secretsmanager (1.129.0)
-      aws-sdk-core (~> 3, >= 3.244.0)
+    aws-sdk-secretsmanager (1.131.0)
+      aws-sdk-core (~> 3, >= 3.247.0)
       aws-sigv4 (~> 1.5)
     aws-sigv4 (1.12.1)
       aws-eventstream (~> 1, >= 1.0.2)
@@ -58,20 +58,20 @@ GEM
     bcrypt_pbkdf (1.1.2-arm64-darwin)
     bcrypt_pbkdf (1.1.2-x86_64-darwin)
     benchmark (0.5.0)
-    bigdecimal (4.1.1)
+    bigdecimal (4.1.2)
     binding_of_caller (2.0.0)
       debug_inspector (>= 1.2.0)
     builder (3.3.0)
     byebug (13.0.0)
       reline (>= 0.6.0)
-    chef (19.2.12)
+    chef (19.3.14)
       addressable
       aws-sdk-s3 (~> 1.91)
       aws-sdk-secretsmanager (~> 1.46)
       bcrypt_pbkdf (~> 1.0)
-      chef-config (= 19.2.12)
+      chef-config (= 19.3.14)
       chef-licensing (~> 1.3)
-      chef-utils (= 19.2.12)
+      chef-utils (= 19.3.14)
       chef-vault
       chef-zero (~> 15.1.0)
       corefoundation (~> 0.3.4)
@@ -81,7 +81,7 @@ GEM
       erubis (~> 2.7)
       ffi (>= 1.15.5, < 1.18.0)
       ffi-libarchive (~> 1.0, >= 1.0.3)
-      ffi-yajl (~> 2.2)
+      ffi-yajl (>= 2.2, < 4.0)
       iniparse (~> 1.4)
       inspec-core (~> 7.0.107)
       license-acceptance (>= 1.0.5, < 3)
@@ -89,7 +89,7 @@ GEM
       mixlib-authentication (>= 2.1, < 4)
       mixlib-cli (>= 2.1.1, < 3.0)
       mixlib-log (>= 2.0.3, < 4.0)
-      mixlib-shellout (~> 3.3.8)
+      mixlib-shellout (>= 3.3.8, < 3.5.0)
       net-ftp
       net-sftp (>= 2.1.2, < 5.0)
       ohai (~> 19.0)
@@ -101,16 +101,16 @@ GEM
       train-rest (>= 0.4.1)
       train-winrm (>= 0.2.17)
       unf_ext (~> 0.0.9.1)
-      uri (~> 1.0.4)
-      vault (~> 0.18.2)
-    chef-config (19.2.12)
+      uri (>= 1.0.4, < 1.2.0)
+      vault (>= 0.18.2, < 0.21.0)
+    chef-config (19.3.14)
       addressable
-      chef-utils (= 19.2.12)
+      chef-utils (= 19.3.14)
       fuzzyurl
       mixlib-config (>= 2.2.12, < 4.0)
       mixlib-shellout (>= 2.0, < 4.0)
       racc
-      tomlrb (~> 1.2)
+      tomlrb (>= 1.2, < 3.0)
     chef-gyoku (1.5.0)
       builder (>= 2.1.2)
       rexml (~> 3.4)
@@ -126,7 +126,7 @@ GEM
     chef-telemetry (1.1.1)
       chef-config
       concurrent-ruby (~> 1.0)
-    chef-utils (19.2.12)
+    chef-utils (19.3.14)
       concurrent-ruby
     chef-vault (4.2.9)
       syslog (~> 0.3)
@@ -167,6 +167,7 @@ GEM
       net-ssh
     coderay (1.1.3)
     concurrent-ruby (1.3.6)
+    connection_pool (2.5.5)
     cookstyle (8.6.10)
       rubocop (= 1.84.2)
     corefoundation (0.3.13)
@@ -182,15 +183,15 @@ GEM
     ed25519 (1.4.0)
     erubi (1.13.1)
     erubis (2.7.0)
-    faraday (2.14.1)
+    faraday (2.14.2)
       faraday-net_http (>= 2.0, < 3.5)
       json
       logger
     faraday-follow_redirects (0.5.0)
       faraday (>= 1, < 3)
-    faraday-http-cache (2.6.1)
+    faraday-http-cache (2.5.1)
       faraday (>= 0.8)
-    faraday-net_http (3.4.2)
+    faraday-net_http (3.4.3)
       net-http (~> 0.5)
     ffi (1.17.4)
     ffi (1.17.4-aarch64-linux-gnu)
@@ -205,9 +206,8 @@ GEM
     ffi (1.17.4-x86_64-linux-musl)
     ffi-libarchive (1.1.14)
       ffi (~> 1.0)
-    ffi-yajl (2.7.7)
+    ffi-yajl (2.7.11)
       libyajl2 (>= 2.1)
-      yajl
     fuzzyurl (0.9.0)
     gssapi (1.3.1)
       ffi (>= 1.0.1)
@@ -217,7 +217,7 @@ GEM
     highline (3.1.2)
       reline
     http-accept (1.7.0)
-    http-cookie (1.1.3)
+    http-cookie (1.1.6)
       domain_name (~> 0.5)
     httpclient (2.9.0)
       mutex_m
@@ -253,7 +253,7 @@ GEM
     io-console (0.8.2)
     ipaddress (0.8.3)
     jmespath (1.6.2)
-    json (2.19.4)
+    json (2.19.5)
     language_server-protocol (3.17.0.5)
     libyajl2 (2.1.0)
     license-acceptance (2.1.13)
@@ -271,7 +271,7 @@ GEM
     mime-types (3.7.0)
       logger
       mime-types-data (~> 3.2025, >= 3.2025.0507)
-    mime-types-data (3.2026.0331)
+    mime-types-data (3.2026.0414)
     mixlib-archive (1.3.3)
       mixlib-log
     mixlib-authentication (3.0.10)
@@ -290,6 +290,8 @@ GEM
       time
     net-http (0.9.1)
       uri (>= 0.11.1)
+    net-http-persistent (4.0.8)
+      connection_pool (>= 2.2.4, < 4)
     net-protocol (0.2.2)
       timeout
     net-scp (4.1.0)
@@ -406,8 +408,8 @@ GEM
     time (0.4.2)
       date
     timeout (0.6.1)
-    tomlrb (1.3.0)
-    train-core (3.16.2)
+    tomlrb (2.0.4)
+    train-core (3.16.3)
       addressable (~> 2.5)
       ffi (>= 1.16.0, < 1.18)
       json (>= 2.19.2, < 3.0)
@@ -446,10 +448,12 @@ GEM
     unf_ext (0.0.9.1)
     unicode-display_width (2.6.0)
     unicode_utils (1.4.0)
-    uri (1.0.4)
+    uri (1.1.1)
     uuidtools (2.2.0)
-    vault (0.18.2)
+    vault (0.20.1)
       aws-sigv4
+      base64
+      net-http-persistent (~> 4.0, >= 4.0.2)
     webmock (3.26.2)
       addressable (>= 2.8.0)
       crack (>= 0.3.2)
@@ -457,7 +461,6 @@ GEM
     webrick (1.9.2)
     wisper (2.0.1)
     wmi-lite (1.0.7)
-    yajl (0.3.4)
 
 PLATFORMS
   aarch64-linux-gnu
