@@ -784,8 +784,10 @@ class Chef
       end
 
       # fail if the server_name is nil
+      # Validates that a target host was supplied.
+      # Exits with an error if server_name is nil or blank (empty string).
       def validate_name_args!
-        if server_name.nil?
+        if server_name.nil? || server_name.strip.empty?
           ui.error("Must pass an FQDN or ip to bootstrap")
           exit 1
         end

@@ -2257,6 +2257,39 @@ describe Chef::Knife::Bootstrap do
 
   end
 
+  # Contract tests for #validate_name_args! — Ex5 API hardening.
+  # Boundary: server_name must be a non-nil, non-empty FQDN/IP.
+  # Gap found: only nil was guarded; empty string "" passed through silently.
+  describe "#validate_name_args!" do
+    context "when no host is provided (nil server_name)" do
+      before { allow(knife).to receive(:server_name).and_return(nil) }
+
+      it "exits with an error message" do
+        expect(knife.ui).to receive(:error).with(/FQDN or ip/)
+        expect { knife.validate_name_args! }.to raise_error(SystemExit)
+      end
+    end
+
+    context "when an empty string is provided as server_name" do
+      before { allow(knife).to receive(:server_name).and_return("") }
+
+      # Rationale: empty string bypasses the nil guard but is equally invalid.
+      # This edge case was undocumented and untested before Ex5.
+      it "exits with an error message" do
+        expect(knife.ui).to receive(:error).with(/FQDN or ip/)
+        expect { knife.validate_name_args! }.to raise_error(SystemExit)
+      end
+    end
+
+    context "when a valid FQDN is provided" do
+      before { allow(knife).to receive(:server_name).and_return("node1.example.com") }
+
+      it "returns without error" do
+        expect { knife.validate_name_args! }.not_to raise_error
+      end
+    end
+  end
+
   describe "validate_winrm_transport_opts!" do
     before do
       allow(knife).to receive(:connection_protocol).and_return connection_protocol
