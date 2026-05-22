@@ -29,9 +29,9 @@ require "rspec/mocks"
 require "rexml/document"
 require "webmock/rspec"
 
-require "chef/knife"
+require_relative "support/coverage"
 
-# cwd is knife/
+require "chef/knife"
 Dir["lib/chef/knife/**/*.rb"]
   .map { |f| f.gsub("lib/", "") }
   .map { |f| f.gsub(/\.rb$/, "") }

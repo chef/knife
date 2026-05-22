@@ -1,0 +1,77 @@
+---
+name: Coverage Advisory
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: coverage-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  coverage-summary:
+    name: Post coverage summary (advisory)
+    runs-on: ubuntu-22.04
+    # Non-blocking: this job never fails the PR even if coverage drops.
+    continue-on-error: true
+    env:
+      CHEF_LICENSE: accept-no-persist
+      FORCE_FFI_YAJL: ext
+      COVERAGE: "true"
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install native deps
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y libssl-dev libarchive-dev libffi-dev libyaml-dev
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.4"
+          bundler-cache: false
+
+      - name: Create unit test node fixtures
+        run: mkdir -p spec/data/nodes && touch spec/data/nodes/test.rb spec/data/nodes/default.rb spec/data/nodes/test.example.com.rb
+
+      - run: bundle install
+
+      - name: Run specs with coverage
+        run: bundle exec rake spec 2>&1 | tee /tmp/spec_output.txt
+
+      - name: Post coverage to job summary
+        if: always()
+        run: |
+          ruby - <<'RUBY'
+          output = File.read("/tmp/spec_output.txt")
+
+          # Parse SimpleCov line from output: "Line Coverage: 46.54% (3501 / 7522)"
+          line_match   = output.match(/Line Coverage:\s+([\d.]+)%\s+\((\d+)\s*\/\s*(\d+)\)/)
+          branch_match = output.match(/Branch Coverage:\s+([\d.]+)%\s+\((\d+)\s*\/\s*(\d+)\)/)
+          examples     = output.match(/(\d+) examples?, (\d+) failures?/)
+
+          line_pct   = line_match   ? line_match[1].to_f   : nil
+          branch_pct = branch_match ? branch_match[1].to_f : nil
+          threshold  = 80.0
+          status     = (line_pct && line_pct >= threshold) ? "✅" : "⚠️"
+
+          summary = <<~MD
+            ## #{status} Coverage Advisory (non-blocking)
+
+            | Metric | Value |
+            |--------|-------|
+            | Line coverage   | #{line_pct   ? "#{line_pct}%"   : "n/a"} |
+            | Branch coverage | #{branch_pct ? "#{branch_pct}%" : "n/a"} |
+            | Examples        | #{examples ? "#{examples[1]} examples, #{examples[2]} failures" : "n/a"} |
+            | Threshold       | #{threshold}% line coverage (advisory only) |
+
+            > This check is **advisory only** — it never blocks a merge.
+            > Threshold breaches surface visibility, not enforcement.
+          MD
+
+          File.open(ENV["GITHUB_STEP_SUMMARY"], "a") { |f| f.write(summary) }
+          puts summary
+          RUBY
