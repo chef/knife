@@ -103,7 +103,7 @@ class Chef
                 color = :green
                 text = seconds_text
               end
-              line_parts << @ui.color(text, color) + " ago" << name
+              line_parts << "#{@ui.color(text, color)} ago" << name
             else
               line_parts << "Node #{name} has not yet converged"
             end
@@ -120,7 +120,7 @@ class Chef
               line_parts << platform
             end
 
-            summarized = summarized + line_parts.join(", ") + ".\n"
+            summarized = "#{summarized}#{line_parts.join(", ")}.\n"
           end
           summarized
         end

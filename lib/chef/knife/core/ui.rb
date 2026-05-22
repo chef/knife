@@ -241,11 +241,9 @@ class Chef
         end
 
         if parse_output
-          if object_class.nil?
-            raise ArgumentError, "Please pass in the object class to hydrate or use #edit_hash"
-          else
-            object_class.from_hash(Chef::JSONCompat.parse(output))
-          end
+          raise ArgumentError, "Please pass in the object class to hydrate or use #edit_hash" if object_class.nil?
+
+          object_class.from_hash(Chef::JSONCompat.parse(output))
         else
           output
         end

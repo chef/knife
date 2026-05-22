@@ -405,8 +405,7 @@ class Chef
           content = ""
           if chef_config[:trusted_certs_dir]
             Dir.glob(File.join(ChefConfig::PathHelper.escape_glob_dir(chef_config[:trusted_certs_dir]), "*.{crt,pem}")).each do |cert|
-              content << "> #{bootstrap_directory}/trusted_certs/#{File.basename(cert)} (\n" +
-                escape_and_echo(File.read(File.expand_path(cert))) + "\n)\n"
+              content << "> #{bootstrap_directory}/trusted_certs/#{File.basename(cert)} (\n#{escape_and_echo(File.read(File.expand_path(cert)))}\n)\n"
             end
           end
           content
@@ -423,8 +422,7 @@ class Chef
                 if f.directory?
                   content << "mkdir #{file_on_node}\n"
                 else
-                  content << "> #{file_on_node} (\n" +
-                    escape_and_echo(File.read(File.expand_path(f))) + "\n)\n"
+                  content << "> #{file_on_node} (\n#{escape_and_echo(File.read(File.expand_path(f)))}\n)\n"
                 end
               end
             end
@@ -435,7 +433,7 @@ class Chef
         def install_chef
           # The normal install command uses regular double quotes in
           # the install command, so request such a string from msi_install_command
-          msi_install_command('"') + "\n" + fallback_install_task_command
+          "#{msi_install_command('"')}\n#{fallback_install_task_command}"
         end
 
         def msi_install_command(executor_quote)

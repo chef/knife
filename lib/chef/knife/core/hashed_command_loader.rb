@@ -77,11 +77,9 @@ class Chef
             false
           else
             paths.each do |sc|
-              if File.exist?(sc)
-                Kernel.load sc
-              else
-                return false
-              end
+              return false unless File.exist?(sc)
+
+              Kernel.load sc
             end
             true
           end

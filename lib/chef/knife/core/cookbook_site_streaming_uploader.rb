@@ -80,7 +80,7 @@ class Chef
           end
 
           def make_request(http_verb, to_url, user_id, secret_key_filename, params = {}, headers = {})
-            boundary = "----RubyMultipartClient" + rand(1000000).to_s + "ZZZZZ"
+            boundary = "----RubyMultipartClient#{rand(1000000)}ZZZZZ"
             parts = []
             content_file = nil
 
@@ -92,18 +92,15 @@ class Chef
                   content_file = value
                   filepath = value.path
                   filename = File.basename(filepath)
-                  parts << StringPart.new( "--" + boundary + "\r\n" +
-                                          "Content-Disposition: form-data; name=\"" + key.to_s + "\"; filename=\"" + filename + "\"\r\n" +
-                                          "Content-Type: application/octet-stream\r\n\r\n")
+                  parts << StringPart.new( "--#{boundary}\r\nContent-Disposition: form-data; name=\"#{key}\"; filename=\"#{filename}\"\r\nContent-Type: application/octet-stream\r\n\r\n")
                   parts << StreamPart.new(value, File.size(filepath))
                   parts << StringPart.new("\r\n")
                 else
-                  parts << StringPart.new( "--" + boundary + "\r\n" +
-                                          "Content-Disposition: form-data; name=\"" + key.to_s + "\"\r\n\r\n")
-                  parts << StringPart.new(value.to_s + "\r\n")
+                  parts << StringPart.new( "--#{boundary}\r\nContent-Disposition: form-data; name=\"#{key}\"\r\n\r\n")
+                  parts << StringPart.new("#{value}\r\n")
                 end
               end
-              parts << StringPart.new("--" + boundary + "--\r\n")
+              parts << StringPart.new("--#{boundary}--\r\n")
             end
 
             body_stream = MultipartStream.new(parts)
@@ -144,7 +141,7 @@ class Chef
                     Net::HTTP::Post.new(url.path, headers)
                   end
             req.content_length = body_stream.size
-            req.content_type = "multipart/form-data; boundary=" + boundary unless parts.empty?
+            req.content_type = "multipart/form-data; boundary=#{boundary}" unless parts.empty?
             req.body_stream = body_stream
 
             http = Chef::HTTP::BasicClient.new(url).http_client

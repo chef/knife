@@ -28,3 +28,13 @@ Layout/TrailingWhitespace:
 Layout/TrailingEmptyLines:
   Exclude:
     - "spec/data/**/*"
+
+# Ex14: Tighten lib/chef/knife/core/ — prefer interpolation over concatenation
+Style/StringConcatenation:
+  Include:
+    - "lib/chef/knife/core/**/*.rb"
+
+# Ex14: Tighten lib/chef/knife/core/ — prefer guard clauses over conditional wrapping
+Style/GuardClause:
+  Include:
+    - "lib/chef/knife/core/**/*.rb"

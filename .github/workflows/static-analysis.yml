@@ -1,0 +1,35 @@
+name: Static Analysis
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: [main]
+
+jobs:
+  cookstyle:
+    name: Cookstyle (chefstyle)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.4"
+          bundler-cache: true
+      - name: Run cookstyle
+        run: bundle exec cookstyle --chefstyle -c .rubocop.yml
+
+  rubocop-core:
+    name: RuboCop (lib/chef/knife/core)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.4"
+          bundler-cache: true
+      - name: Run rubocop on core path
+        run: |
+          bundle exec rubocop \
+            --only Style/StringConcatenation,Style/GuardClause \
+            lib/chef/knife/core/
