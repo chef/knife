@@ -46,11 +46,15 @@ class Chef
         long: "--hide-by-mins MINS",
         description: "Hide nodes that have run #{ChefUtils::Dist::Infra::CLIENT} in the last MINS minutes"
 
+      # Appends a Lucene term to @query with AND separator.
+      # Skips the separator when @query is empty (first term).
       def append_to_query(term)
         @query << " AND " unless @query.empty?
         @query << term
       end
 
+      # Main entry point: queries Chef Search, sorts results by last check-in
+      # time, optionally reverses order, then outputs via StatusPresenter.
       def run
         ui.use_presenter Knife::Core::StatusPresenter
 
@@ -72,6 +76,10 @@ class Chef
 
       private
 
+      # Builds the Chef Server search opts hash.
+      # Returns a filter_result hash for partial search by default,
+      # or an empty hash when --long-output is set.
+      # @api private
       def build_search_opts
         if config[:long_output]
           {}
@@ -83,6 +91,9 @@ class Chef
         end
       end
 
+      # Assembles the Lucene query string from CLI args and config flags.
+      # Handles name_args, --environment, and --hide-by-mins.
+      # @api private
       def build_query
         @query ||= ""
         append_to_query(@name_args[0]) if @name_args[0]
