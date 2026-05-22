@@ -82,6 +82,15 @@ describe Chef::Knife::CookbookList do
           expect(@stdout.string).to match(/#{item}:\s+1\.0\.1\s+1\.0\.0/)
         end
       end
+
+      it "should query all versions scoped to the configured environment" do
+        @knife.config[:all_versions] = true
+        @knife.config[:environment] = "staging"
+        expect(@rest_mock).to receive(:get)
+          .with("/environments/staging/cookbooks?num_versions=all")
+          .and_return(@cookbook_data)
+        @knife.run
+      end
     end
 
   end

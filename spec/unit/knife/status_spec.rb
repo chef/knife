@@ -108,5 +108,31 @@ describe Chef::Knife::Status do
       expect(@stdout.string.match(/foobar/)).not_to be_nil
       expect(@stdout.string.match(/\e.*ago/)).to be_nil
     end
+
+    context "with --sort-reverse" do
+      before do
+        node2 = Chef::Node.new.tap do |n|
+          n.automatic_attrs["fqdn"] = "zoobar"
+          n.automatic_attrs["ohai_time"] = 1343845970
+        end
+        allow(@query).to receive(:search).and_yield(node2).and_yield(
+          Chef::Node.new.tap { |n| n.automatic_attrs["fqdn"] = "aabar"; n.automatic_attrs["ohai_time"] = 1343845960 }
+        )
+      end
+
+      it "reverses output order when sort_reverse is set" do
+        @knife.config[:sort_reverse] = true
+        expect(@query).to receive(:search).with(:node, "*:*", opts)
+        @knife.run
+        expect(@stdout.string.index("zoobar")).to be < @stdout.string.index("aabar")
+      end
+
+      it "reverses output order when sort_status_reverse is set" do
+        @knife.config[:sort_status_reverse] = true
+        expect(@query).to receive(:search).with(:node, "*:*", opts)
+        @knife.run
+        expect(@stdout.string.index("zoobar")).to be < @stdout.string.index("aabar")
+      end
+    end
   end
 end

@@ -50,6 +50,34 @@ Coverage is reported after `bundle exec rake spec`. Check the summary line:
 Coverage report generated … Coverage: 84.7 % (1,234 / 1,457 lines)
 ```
 
+## Example: Verified Test Run
+
+Running the unit spec for the chosen low-risk module:
+
+```bash
+bundle exec rspec spec/unit/knife/cookbook_list_spec.rb --format documentation
+```
+
+Expected output:
+
+```
+Chef::Knife::CookbookList
+  run
+    should display the latest version of the cookbooks
+    should query cookbooks for the configured environment
+    with -w or --with-uri
+      should display the cookbook uris
+    with -a or --all
+      should display all versions of the cookbooks
+      should query all versions scoped to the configured environment
+
+5 examples, 0 failures
+```
+
+The last example (`should query all versions scoped to the configured environment`)
+was added as part of Exercise 2 to cover the previously untested `--all` +
+`--environment` combination in `lib/chef/knife/cookbook_list.rb`.
+
 ## Building the Gem
 
 ```bash
