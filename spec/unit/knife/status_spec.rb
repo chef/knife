@@ -170,4 +170,19 @@ describe Chef::Knife::Status do
       end
     end
   end
+
+  describe "structured log hook" do
+    it "logs structured fields after search completes" do
+      expect(Chef::Log).to receive(:info).with(/Sending query/)
+      expect(Chef::Log).to receive(:info).with(/op=knife_status status=ok nodes=1 elapsed_ms=\d+/)
+      @knife.run
+    end
+
+    it "logs 0 nodes in structured format when search returns nothing" do
+      allow(@query).to receive(:search) # yields nothing
+      allow(Chef::Log).to receive(:info) # absorb other log calls
+      expect(Chef::Log).to receive(:info).with(/op=knife_status status=ok nodes=0 elapsed_ms=\d+/)
+      @knife.run
+    end
+  end
 end
