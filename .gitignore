@@ -17,6 +17,26 @@ spec/data/nodes
 spec/data/chef_guid
 /spec/reports/
 
+# Secret and credential files — never commit these
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+*.cert
+*.cer
+.env
+.env.*
+!.env.example
+secrets.yml
+credentials.yml
+*_rsa
+*_dsa
+*_ecdsa
+*_ed25519
+*.secret
+chef-server/chef-keys/*.pem
+
 ## Documentation cache and generated files:
 .yardoc/
 _yardoc/

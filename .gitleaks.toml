@@ -1,0 +1,22 @@
+# Gitleaks configuration for chef/knife
+# Docs: https://github.com/gitleaks/gitleaks#configuration
+
+title = "knife gitleaks config"
+
+[allowlist]
+  description = "Known-safe paths: test fixtures and development-only keys"
+
+  # spec/ uses placeholder credentials by design (fake passwords, API keys, PEM blobs).
+  # These are intentional test fixtures, not real secrets.
+  paths = [
+    '''spec/''',
+    '''chef-server/chef-keys/''',
+  ]
+
+  # Regex patterns that are safe in this codebase
+  regexes = [
+    # RSpec let blocks that assign literal placeholder strings to variables named 'password', 'key', etc.
+    '''let\(:(?:password|api_key|secret|token)\)\s*\{''',
+    # Validation key path references (filesystem paths, not actual key material)
+    '''validation_key''',
+  ]
