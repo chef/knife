@@ -1,0 +1,54 @@
+%%{init: {"theme": "base"}}%%
+graph TD
+    subgraph Workstation
+        BIN["bin/knife"]
+        APP["Chef::Application::Knife\nlib/chef/application/knife.rb"]
+        CORE["Chef::Knife (base)\nlib/chef/knife.rb"]
+        subgraph Subcommands["Subcommands  lib/chef/knife/*.rb"]
+            BS["bootstrap"]
+            NL["node list/show/edit/…"]
+            CB["cookbook upload/download/…"]
+            CL["client *"]
+            OTH["… (50+ commands)"]
+        end
+        subgraph CoreUtils["Core Utilities  lib/chef/knife/core/"]
+            UI["UI / Presenter"]
+            FMT["Formatters"]
+            BSH["Bootstrap Helpers"]
+        end
+        subgraph ChefFS["Chef-FS  lib/chef/chef_fs/"]
+            FS["File-system abstraction\n(local ↔ server sync)"]
+        end
+    end
+
+    subgraph Transport
+        TR["train-core"]
+        TRWIN["train-winrm"]
+    end
+
+    subgraph Remote
+        SRV["Chef Infra Server\n(REST API)"]
+        NODE["Managed Nodes\n(SSH / WinRM)"]
+    end
+
+    subgraph Testing["spec/"]
+        UNIT["unit/"]
+        FUNC["functional/"]
+        INTG["integration/"]
+    end
+
+    BIN --> APP
+    APP --> CORE
+    CORE --> Subcommands
+    CORE --> CoreUtils
+    CORE --> ChefFS
+    Subcommands --> TR
+    TR --> SRV
+    TR --> TRWIN
+    TRWIN --> NODE
+    TR --> NODE
+
+    CORE -.->|tested by| UNIT
+    Subcommands -.->|tested by| UNIT
+    Subcommands -.->|tested by| FUNC
+    SRV -.->|tested by| INTG

@@ -1293,6 +1293,8 @@
     "shellwords",
     "SHIFTJIS",
     "shiftwidth",
+    "TRWIN",
+    "INTG",
     "shopt",
     "shortname",
     "Shouldnotexist",
