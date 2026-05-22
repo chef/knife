@@ -199,4 +199,31 @@ describe Chef::Knife::Status do
       end
     end
   end
+
+  describe "resilience: error mapping" do
+    context "when the Chef Server returns an HTTP error" do
+      before do
+        response = double("Net::HTTPResponse", code: "500", message: "Internal Server Error")
+        allow(response).to receive(:body).and_return("")
+        error = Net::HTTPServerException.new("500 Internal Server Error", response)
+        allow(@query).to receive(:search).and_raise(error)
+      end
+
+      it "prints a fatal message and exits 1" do
+        expect(@knife.ui).to receive(:fatal).with(/Chef Server returned an error/)
+        expect { @knife.run }.to raise_error(SystemExit) { |e| expect(e.status).to eq(1) }
+      end
+    end
+
+    context "when the network is unreachable (SocketError)" do
+      before do
+        allow(@query).to receive(:search).and_raise(SocketError, "getaddrinfo: nodename nor servname provided")
+      end
+
+      it "prints a fatal message and exits 1" do
+        expect(@knife.ui).to receive(:fatal).with(/Cannot reach Chef Server/)
+        expect { @knife.run }.to raise_error(SystemExit) { |e| expect(e.status).to eq(1) }
+      end
+    end
+  end
 end

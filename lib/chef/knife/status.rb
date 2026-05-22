@@ -73,11 +73,19 @@ class Chef
         all_nodes = []
         q = Chef::Search::Query.new
 
-        search_start = Process.clock_gettime(Process::CLOCK_MONOTONIC)
-        q.search(:node, query, build_search_opts) do |node|
-          all_nodes << node
+        begin
+          search_start = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+          q.search(:node, query, build_search_opts) do |node|
+            all_nodes << node
+          end
+          search_elapsed = Process.clock_gettime(Process::CLOCK_MONOTONIC) - search_start
+        rescue Net::HTTPServerException => e
+          ui.fatal("Chef Server returned an error: #{e.message}")
+          exit 1
+        rescue SocketError => e
+          ui.fatal("Cannot reach Chef Server: #{e.message}")
+          exit 1
         end
-        search_elapsed = Process.clock_gettime(Process::CLOCK_MONOTONIC) - search_start
 
         if ENV["KNIFE_TIMING"]
           Chef::Log.info("op=knife_status status=ok nodes=#{all_nodes.size} elapsed_ms=#{(search_elapsed * 1000).round}")
