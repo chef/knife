@@ -109,6 +109,41 @@ describe Chef::Knife::Status do
       expect(@stdout.string.match(/\e.*ago/)).to be_nil
     end
 
+    describe "#build_search_opts" do
+      it "returns filter_result opts by default" do
+        opts = @knife.send(:build_search_opts)
+        expect(opts).to have_key(:filter_result)
+        expect(opts[:filter_result]).to include(:name, :ohai_time, :platform)
+      end
+
+      it "returns empty hash when long_output is set" do
+        @knife.config[:long_output] = true
+        expect(@knife.send(:build_search_opts)).to eq({})
+      end
+    end
+
+    describe "#build_query" do
+      it "returns '*:*' when no args or filters given" do
+        expect(@knife.send(:build_query)).to eq("*:*")
+      end
+
+      it "includes name_arg when provided" do
+        @knife.instance_variable_set(:@name_args, ["role:webserver"])
+        expect(@knife.send(:build_query)).to eq("role:webserver")
+      end
+
+      it "appends environment filter" do
+        @knife.config[:environment] = "staging"
+        expect(@knife.send(:build_query)).to eq("chef_environment:staging")
+      end
+
+      it "appends hide_by_mins filter" do
+        @knife.config[:hide_by_mins] = 30
+        result = @knife.send(:build_query)
+        expect(result).to match(/NOT ohai_time:\[\d+ TO \d+\]/)
+      end
+    end
+
     context "with --sort-reverse" do
       before do
         node2 = Chef::Node.new.tap do |n|

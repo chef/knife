@@ -54,33 +54,13 @@ class Chef
       def run
         ui.use_presenter Knife::Core::StatusPresenter
 
-        if config[:long_output]
-          opts = {}
-        else
-          opts = { filter_result:
-                 { name: ["name"], ipaddress: ["ipaddress"], ohai_time: ["ohai_time"],
-                   cloud: ["cloud"], run_list: ["run_list"], platform: ["platform"],
-                   platform_version: ["platform_version"], chef_environment: ["chef_environment"] } }
-        end
-
         @query ||= ""
-        append_to_query(@name_args[0]) if @name_args[0]
-        append_to_query("chef_environment:#{config[:environment]}") if config[:environment]
-
-        if config[:hide_by_mins]
-          hide_by_mins = config[:hide_by_mins].to_i
-          time = Time.now.to_i
-          # AND NOT is not valid lucene syntax, so don't use append_to_query
-          @query << " " unless @query.empty?
-          @query << "NOT ohai_time:[#{(time - hide_by_mins * 60)} TO #{time}]"
-        end
-
-        @query = @query.empty? ? "*:*" : @query
+        query = build_query
+        Chef::Log.info("Sending query: #{query}")
 
         all_nodes = []
         q = Chef::Search::Query.new
-        Chef::Log.info("Sending query: #{@query}")
-        q.search(:node, @query, opts) do |node|
+        q.search(:node, query, build_search_opts) do |node|
           all_nodes << node
         end
 
@@ -88,6 +68,35 @@ class Chef
         all_nodes.reverse! if config[:sort_reverse] || config[:sort_status_reverse]
 
         output(all_nodes)
+      end
+
+      private
+
+      def build_search_opts
+        if config[:long_output]
+          {}
+        else
+          { filter_result:
+              { name: ["name"], ipaddress: ["ipaddress"], ohai_time: ["ohai_time"],
+                cloud: ["cloud"], run_list: ["run_list"], platform: ["platform"],
+                platform_version: ["platform_version"], chef_environment: ["chef_environment"] } }
+        end
+      end
+
+      def build_query
+        @query ||= ""
+        append_to_query(@name_args[0]) if @name_args[0]
+        append_to_query("chef_environment:#{config[:environment]}") if config[:environment]
+
+        if config[:hide_by_mins]
+          hide_by_mins = config[:hide_by_mins].to_i
+          time = Time.now.to_i
+          # AND NOT is not valid Lucene syntax, so don't use append_to_query
+          @query << " " unless @query.empty?
+          @query << "NOT ohai_time:[#{(time - hide_by_mins * 60)} TO #{time}]"
+        end
+
+        @query.empty? ? "*:*" : @query
       end
 
     end

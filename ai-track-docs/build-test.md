@@ -91,6 +91,46 @@ rake install
 knife --version
 ```
 
+---
+
+## Exercise 3 — Patch Plan: status.rb Refactor
+
+### What changed
+
+Extracted two private helper methods from `Chef::Knife::Status#run` in
+`lib/chef/knife/status.rb`:
+
+| New method | Responsibility |
+|---|---|
+| `#build_search_opts` | Returns filter_result opts or `{}` for long output |
+| `#build_query` | Assembles the Lucene query string from config flags |
+
+### Files changed (all in one PR)
+
+| File | Change |
+|---|---|
+| `lib/chef/knife/status.rb` | Extracted 2 private methods; `#run` now ~8 lines |
+| `spec/unit/knife/status_spec.rb` | Added 6 direct unit tests for the two new helpers |
+| `ai-track-docs/build-test.md` | This patch plan + evidence |
+
+### Evidence
+
+```
+bundle exec rspec spec/unit/knife/status_spec.rb --format documentation
+18 examples, 0 failures
+Line Coverage:   97.73%
+Branch Coverage: 85.0%
+```
+
+### Rollback
+
+```bash
+git revert <commit-sha>
+# No API/schema changes — purely internal restructuring
+```
+
+
+
 ## Linting
 
 ```bash
