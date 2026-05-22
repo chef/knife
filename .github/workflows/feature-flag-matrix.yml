@@ -1,0 +1,81 @@
+---
+name: Feature Flag Matrix (KNIFE_TIMING)
+
+# Validates the KNIFE_TIMING feature flag in both ON and OFF states.
+# Advisory only — never blocks merges.
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: flag-matrix-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  flag-matrix:
+    name: "KNIFE_TIMING=${{ matrix.knife_timing || 'unset' }}"
+    runs-on: ubuntu-22.04
+    continue-on-error: true
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - knife_timing: "1"
+            label: "ON"
+          - knife_timing: ""
+            label: "OFF"
+    env:
+      CHEF_LICENSE: accept-no-persist
+      FORCE_FFI_YAJL: ext
+      KNIFE_TIMING: ${{ matrix.knife_timing }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install native deps
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y libssl-dev libarchive-dev libffi-dev libyaml-dev
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.4"
+          bundler-cache: false
+
+      - name: Create unit test node fixtures
+        run: mkdir -p spec/data/nodes && touch spec/data/nodes/test.rb spec/data/nodes/default.rb spec/data/nodes/test.example.com.rb
+
+      - run: bundle install
+
+      - name: Run status specs with KNIFE_TIMING ${{ matrix.label }}
+        run: bundle exec rspec spec/unit/knife/status_spec.rb --format documentation 2>&1 | tee /tmp/flag_output.txt
+
+      - name: Post flag validation to job summary
+        if: always()
+        run: |
+          ruby - <<'RUBY'
+          output  = File.read("/tmp/flag_output.txt")
+          flag    = ENV["KNIFE_TIMING"].to_s.empty? ? "OFF (unset)" : "ON (#{ENV["KNIFE_TIMING"]})"
+          examples = output.match(/(\d+) examples?, (\d+) failures?/)
+          timing_logged = output.include?("logs node count and elapsed time")
+
+          summary = <<~MD
+            ## KNIFE_TIMING=#{flag} — Flag Validation
+
+            | Check | Result |
+            |-------|--------|
+            | Flag state  | `KNIFE_TIMING=#{ENV["KNIFE_TIMING"].to_s.empty? ? "(unset)" : ENV["KNIFE_TIMING"]}` |
+            | Examples    | #{examples ? "#{examples[1]} examples, #{examples[2]} failures" : "n/a"} |
+
+            <details><summary>Full spec output</summary>
+
+            ```
+            #{output}
+            ```
+            </details>
+          MD
+
+          File.open(ENV["GITHUB_STEP_SUMMARY"], "a") { |f| f.write(summary) }
+          puts summary
+          RUBY

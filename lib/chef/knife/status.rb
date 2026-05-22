@@ -79,7 +79,9 @@ class Chef
         end
         search_elapsed = Process.clock_gettime(Process::CLOCK_MONOTONIC) - search_start
 
-        Chef::Log.info("op=knife_status status=ok nodes=#{all_nodes.size} elapsed_ms=#{(search_elapsed * 1000).round}")
+        if ENV["KNIFE_TIMING"]
+          Chef::Log.info("op=knife_status status=ok nodes=#{all_nodes.size} elapsed_ms=#{(search_elapsed * 1000).round}")
+        end
 
         all_nodes.sort_by! { |n| n["ohai_time"] || 0 }
         all_nodes.reverse! if config[:sort_reverse] || config[:sort_status_reverse]
