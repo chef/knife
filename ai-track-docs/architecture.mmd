@@ -1,53 +1,84 @@
 %%{init: {"theme": "base"}}%%
 graph TD
-    subgraph Workstation
-        BIN["bin/knife"]
-        APP["Chef::Application::Knife\nlib/chef/application/knife.rb"]
-        CORE["Chef::Knife (base)\nlib/chef/knife.rb"]
-        subgraph Subcommands["Subcommands  lib/chef/knife/*.rb"]
-            BS["bootstrap"]
-            NL["node list/show/edit/…"]
-            CB["cookbook upload/download/…"]
-            CL["client *"]
-            OTH["… (50+ commands)"]
+    subgraph Workstation["Workstation (local)"]
+        BIN["bin/knife\n<b>bin/knife</b>"]
+        APP["Chef::Application::Knife\n<b>lib/chef/application/knife.rb</b>"]
+        CORE["Chef::Knife base class\n<b>lib/chef/knife.rb</b>"]
+
+        subgraph Subcommands["Subcommands — lib/chef/knife/*.rb"]
+            BS["Chef::Knife::Bootstrap\n<b>lib/chef/knife/bootstrap.rb</b>"]
+            ST["Chef::Knife::Status\n<b>lib/chef/knife/status.rb</b>"]
+            CB["Chef::Knife::CookbookUpload\n<b>lib/chef/knife/cookbook_upload.rb</b>"]
+            NL["node_edit / node_list / …\n<b>lib/chef/knife/node_*.rb</b>"]
+            OTH["50+ other commands\n<b>lib/chef/knife/*.rb</b>"]
         end
-        subgraph CoreUtils["Core Utilities  lib/chef/knife/core/"]
-            UI["UI / Presenter"]
-            FMT["Formatters"]
-            BSH["Bootstrap Helpers"]
+
+        subgraph CoreUtils["Core Utilities — lib/chef/knife/core/"]
+            UI["UI output layer\n<b>core/ui.rb</b>"]
+            FMT["Text formatter\n<b>core/text_formatter.rb</b>"]
+            BSH["Bootstrap context\n<b>core/bootstrap_context.rb</b>"]
+            LOADER["Command loader\n<b>core/subcommand_loader.rb</b>"]
+            PRES["Status presenter\n<b>core/status_presenter.rb</b>"]
         end
-        subgraph ChefFS["Chef-FS  lib/chef/chef_fs/"]
-            FS["File-system abstraction\n(local ↔ server sync)"]
+
+        subgraph ChefFS["Chef-FS — lib/chef/chef_fs/"]
+            FS["Local/server sync\n<b>lib/chef/chef_fs/knife.rb</b>"]
+        end
+
+        subgraph Utils["Utilities — lib/chef/utils/"]
+            LIC["Licensing handler\n<b>utils/licensing_handler.rb</b>"]
         end
     end
 
-    subgraph Transport
-        TR["train-core"]
-        TRWIN["train-winrm"]
+    subgraph Transport["Transport Layer (gems)"]
+        TR["train-core\n~> 3.13"]
+        TRWIN["train-winrm\n>= 0.2.17"]
+        SSH["net-ssh\n>= 5.1"]
     end
 
-    subgraph Remote
-        SRV["Chef Infra Server\n(REST API)"]
-        NODE["Managed Nodes\n(SSH / WinRM)"]
+    subgraph Remote["Remote Systems"]
+        SRV["Chef Infra Server\nREST API /nodes /cookbooks …"]
+        NODE_LINUX["Linux Node\nSSH"]
+        NODE_WIN["Windows Node\nWinRM"]
     end
 
-    subgraph Testing["spec/"]
-        UNIT["unit/"]
-        FUNC["functional/"]
-        INTG["integration/"]
+    subgraph Testing["Test Suite — spec/"]
+        UNIT["spec/unit/\n2500+ examples"]
+        FUNC["spec/functional/"]
+        INTG["spec/integration/"]
     end
 
-    BIN --> APP
-    APP --> CORE
-    CORE --> Subcommands
+    %% Startup flow
+    BIN -->|"1 - require + run"| APP
+    APP -->|"2 - load subcommand"| LOADER
+    LOADER -->|"3 - instantiate"| CORE
+    CORE -->|"4 - dispatch"| Subcommands
+
+    %% Core wiring
     CORE --> CoreUtils
     CORE --> ChefFS
-    Subcommands --> TR
-    TR --> SRV
-    TR --> TRWIN
-    TRWIN --> NODE
-    TR --> NODE
+    CORE --> Utils
 
+    %% Data flow A — knife bootstrap
+    BS -->|"A1 - build context"| BSH
+    BSH -->|"A2 - render template"| TR
+    TR -->|"A3 - SSH connect"| SSH
+    TR -->|"A4 - WinRM connect"| TRWIN
+    SSH -->|"A5 - run install script"| NODE_LINUX
+    TRWIN -->|"A5 - run install script"| NODE_WIN
+
+    %% Data flow B — knife status
+    ST -->|"B1 - search query"| SRV
+    SRV -->|"B2 - node list JSON"| ST
+    ST -->|"B3 - format + print"| PRES
+    PRES -->|"B4 - render to stdout"| UI
+
+    %% Data flow C — cookbook upload via ChefFS
+    CB -->|"C1 - read local cookbook"| FS
+    FS -->|"C2 - diff local vs server"| SRV
+    SRV -->|"C3 - upload response"| CB
+
+    %% Test coverage
     CORE -.->|tested by| UNIT
     Subcommands -.->|tested by| UNIT
     Subcommands -.->|tested by| FUNC

@@ -1,0 +1,39 @@
+name: Mermaid diagram lint
+
+on:
+  pull_request:
+    paths:
+      - "**/*.mmd"
+      - ".github/workflows/mermaid-lint.yml"
+
+jobs:
+  mermaid-lint:
+    name: Validate Mermaid diagrams
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install Mermaid CLI
+        run: npm install -g @mermaid-js/mermaid-cli
+
+      - name: Create Puppeteer config (no-sandbox for CI)
+        run: |
+          echo '{"args": ["--no-sandbox", "--disable-setuid-sandbox"]}' > /tmp/puppeteer-config.json
+
+      - name: Validate architecture diagram
+        run: |
+          mmdc -i ai-track-docs/architecture.mmd -o /tmp/architecture.svg -p /tmp/puppeteer-config.json
+          echo "Diagram rendered successfully: $(wc -c < /tmp/architecture.svg) bytes"
+
+      - name: List all .mmd files and validate each
+        run: |
+          find . -name "*.mmd" -not -path "*/node_modules/*" | while read f; do
+            echo "Validating $f ..."
+            mmdc -i "$f" -o /tmp/check.svg -p /tmp/puppeteer-config.json
+            echo "  OK: $(wc -c < /tmp/check.svg) bytes"
+          done
