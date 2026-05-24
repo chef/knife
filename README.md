@@ -29,6 +29,9 @@ knife bootstrap HOST -U USER -i IDENTITY_FILE --node-name NODE_NAME
 - [Official Knife Documentation](https://docs.chef.io/workstation/knife/)
 - [Setting up Knife](https://docs.chef.io/workstation/knife_setup/)
 - [Developer's Guide](docs/dev/README.md)
+- [Architecture Map](docs/architecture.md)
+- [Contributing](CONTRIBUTING.md)
+- [AI-Assisted Walk Track Onboarding](docs/onboarding-walk.md)
 
 ## Contributing
 

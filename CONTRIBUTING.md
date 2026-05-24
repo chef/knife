@@ -54,3 +54,91 @@ Evidence
 - Branch coverage: 21.74%  (571 / 2626)
 - Command: COVERAGE=true bundle exec rake spec
 ```
+
+## AI-Assisted Walk Track
+
+This repo includes a structured AI-assisted learning track.  The notes below
+describe the conventions used so contributors can follow the same pattern.
+
+### Plan First
+
+Before touching any code, write a plan:
+- List the files to change and why
+- Identify the test strategy
+- Note any risks or rollback path
+
+Ask Copilot to produce the plan, review it, then approve before implementation
+begins.  This produces reviewable evidence that the work was intentional.
+
+### Branching Strategy
+
+Branches are chained so context and artifacts build naturally:
+
+```
+main
+ └── learn/crawl/nikhil-ex0-bootstrap
+      └── learn/crawl/nikhil-ex1-...
+           └── ...
+                └── learn/walk/nikhil-ex1-architecture-map
+                     └── learn/walk/nikhil-ex2-coverage-surfacing
+                          └── learn/walk/nikhil-ex<N>-<slug>
+```
+
+- Each exercise branches from the previous exercise branch
+- PR base = previous exercise branch (keeps diffs focused)
+- Branch naming: `learn/walk/<name>-ex<N>-<slug>`
+
+### PR Expectations
+
+Every PR must include these sections:
+
+```
+Title: GHCP -- Walk: <ex#> <name>
+
+Summary
+- What changed and why
+- Plan: <inline summary or link>
+- Files/paths touched
+
+Evidence
+- Tests/logs/metrics: <commands + output summary>
+- Coverage: <percentage or contract evidence>
+
+Risk & Rollback
+- Risk: low/medium/high
+- Rollback: revert <commit SHA> or toggle <flag>
+
+Review Focus
+- Key areas for reviewer attention
+- Verification steps the reviewer can run
+
+Track
+- Level: Walk
+- Exercise: <ex#>
+```
+
+### DCO Sign-off
+
+All commits require a Developer Certificate of Origin sign-off:
+
+```bash
+git commit --signoff -m "message"
+# or
+git commit -s -m "message"
+```
+
+Builds will fail without it.
+
+### Using Copilot
+
+Recommended workflow per exercise:
+
+1. Paste the exercise block into Copilot Chat
+2. Ask: *"Write a plan before touching any code"*
+3. Review and approve the plan
+4. Ask Copilot to generate diffs file-by-file; review each before accepting
+5. Run tests and capture output for the PR Evidence section
+6. Commit (single Copilot-authored DCO-signed commit) and open PR
+
+See [docs/onboarding-walk.md](docs/onboarding-walk.md) for a ready-to-paste
+Copilot orientation prompt.
