@@ -39,6 +39,19 @@ As `bootstrap` is a remote/distributed operation, there are several phases to it
 - Prepare the `bootstrap.bat` or `bootstrap.sh` script based on the bootstrap template.
 - Copy and execute the bootstrap script on the remote server.
 
+## Core Utilities
+
+All subcommand I/O, output formatting, and plugin loading is handled by the
+shared layer in `lib/chef/knife/core/`. Key files:
+
+- `core/ui.rb` — the `ui` object every subcommand uses for output (never write to `$stdout` directly)
+- `core/generic_presenter.rb` — formats output for `--format` flag (summary, JSON, YAML)
+- `core/subcommand_loader.rb` — discovers and loads plugin `.rb` files at startup
+- `core/retry_with_backoff.rb` — lightweight retry mixin for external HTTP calls
+
+A full inventory with public API examples and risk notes is in
+[`ai-track-docs/core-subsystem.md`](../../ai-track-docs/core-subsystem.md).
+
 ## Knife Plugins
 
 The choice of mapping subcommand action to `Chef::Knife` subclass makes it easy to author knife custom plugins. These can help with extending knife capabilities for specific cloud platforms or customize knife behavior for a subset of subcommands. Follow the instructions [here](https://docs.chef.io/workstation/plugin_knife_custom/) to develop your own knife plugin. Detailed documentation on writing knife cloud plugins is available [here](https://github.com/chef/knife-cloud/blob/main/README.md).

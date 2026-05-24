@@ -42,6 +42,15 @@ Developer workstation
 | Chef-FS | `lib/chef/chef_fs/` | Local ↔ server file-system abstraction |
 | Bootstrap | `lib/chef/knife/bootstrap/` | Node provisioning templates & logic |
 
+### Shared Helpers (added in Walk/Run track)
+
+| Helper | File | Used by |
+|--------|------|---------|
+| `RetryWithBackoff` | `lib/chef/knife/core/retry_with_backoff.rb` | `cookbook_list.rb`, `supermarket_show.rb` |
+| `NodeRunListBase` | `lib/chef/knife/node_run_list_base.rb` | `node_run_list_add.rb`, `node_run_list_remove.rb`, `node_run_list_set.rb` |
+
+See [`ai-track-docs/core-subsystem.md`](./core-subsystem.md) for full API reference and risk notes.
+
 ## Entry Points (concrete paths)
 
 ### 1. `bin/knife`

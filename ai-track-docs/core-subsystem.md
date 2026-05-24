@@ -1,7 +1,7 @@
 # Knife Core Subsystem — Documentation
 
 > **Scope:** `lib/chef/knife/core/`  
-> **Last audited:** 2026-05-20  
+> **Last audited:** 2026-05-24  
 > **Status of `docs/dev/README.md`:** covers execution flow at a high level but
 > does not reference individual files in `core/`, their public APIs, extension
 > points, or risks.
@@ -34,6 +34,7 @@ they always go through this layer.
 | `formatting_options.rb` | ~40 | Mixin: adds `--format` and `--attribute` options to commands |
 | `node_presenter.rb` | ~60 | Formats node objects for display |
 | `status_presenter.rb` | 147 | Formats node status for `knife status` |
+| `retry_with_backoff.rb` | 68 | Mixin: exponential-backoff retry wrapper for external HTTP calls |
 | `gem_glob_loader.rb` | 134 | Loads subcommands via gem path glob (legacy) |
 | `hashed_command_loader.rb` | ~80 | Loads subcommands via pre-built manifest hash |
 | `object_loader.rb` | ~50 | Loads Chef objects (nodes, roles, etc.) from JSON files |
@@ -124,6 +125,35 @@ include Knife::Core::FormattingOptions
 
 ---
 
+### `Chef::Knife::RetryWithBackoff` — `retry_with_backoff.rb`
+
+Lightweight exponential-backoff retry mixin. Include in any subcommand that
+makes external HTTP calls and wrap the call site with `with_retries`.
+
+```ruby
+include Chef::Knife::RetryWithBackoff
+
+def run
+  result = with_retries(retries: 3, base_delay: 1.0) do
+    rest.get("/some/endpoint")
+  end
+end
+```
+
+**Keyword arguments to `with_retries`:**
+
+| Param | Default | Description |
+|-------|---------|-------------|
+| `retries` | `3` | Additional attempts after first failure (total = retries + 1) |
+| `base_delay` | `1.0` | Seconds before first retry; doubles each attempt (1s → 2s → 4s) |
+| `retryable` | `RETRYABLE_ERRORS` | Exception classes that trigger retry (`Net::OpenTimeout`, `Net::ReadTimeout`, `Errno::ECONNRESET`, `Errno::ECONNREFUSED`) |
+
+**Real file path:** `lib/chef/knife/core/retry_with_backoff.rb`
+
+**Callers:** `lib/chef/knife/cookbook_list.rb`, `lib/chef/knife/supermarket_show.rb`
+
+---
+
 ## Extension Guide — Writing a New Subcommand
 
 A minimal subcommand uses two core files:
@@ -194,28 +224,26 @@ end
 | Bootstrap context renders ERB templates | `bootstrap_context.rb`, `windows_bootstrap_context.rb` | Template changes can silently produce invalid shell scripts; always test render output |
 | `cookbook_site_streaming_uploader.rb` uses raw HTTP | `cookbook_site_streaming_uploader.rb` | No retry logic; network failures are fatal — do not modify without functional tests |
 | `node_editor.rb` spawns `$EDITOR` subprocess | `node_editor.rb` | Difficult to unit test; relies on `Tempfile` and system env var |
+| `RetryWithBackoff` can mask persistent failures | `retry_with_backoff.rb` | If the upstream is down, retries add latency before failing; keep `retries ≤ 3` and set `base_delay ≤ 2.0` in interactive commands |
 
 ---
 
 ## Doc-with-Code Changes in This PR
 
-The following code changes were made to align implementation with docs:
-
 | File | Change | Reason |
 |------|--------|--------|
-| `lib/chef/knife/status.rb` | Added `# @api private` comment to `#build_query` and `#build_search_opts` | Docs describe these as private helpers; code now matches intent |
+| `lib/chef/knife/status.rb` | Added `# @api private` to `#build_query` and `#build_search_opts` | Walk Ex4: docs described these as private helpers; code now matches intent |
+| `lib/chef/knife/core/retry_with_backoff.rb` | YARD `@param`/`@raise`/`@return` on `with_retries` (added Walk Ex15) | Run Ex4: method is now documented inline; this doc file references those params |
 
 ---
 
-## Stale Docs Identified
+## Stale Docs — Resolved
 
-| Location | Gap |
-|----------|-----|
-| `docs/dev/README.md` | Does not mention `lib/chef/knife/core/` at all — developers have no map to the shared layer |
-| `docs/dev/README.md` | Extension guide links to external Chef docs, not this repo's patterns |
-| `lib/chef/knife/core/ui.rb` | No YARD doc on `#output` or `#use_presenter` describing the presenter swap contract |
-
-These gaps are addressed by this file (`ai-track-docs/core-subsystem.md`).
+| Location | Gap | Status |
+|----------|-----|--------|
+| `docs/dev/README.md` | Did not mention `lib/chef/knife/core/` — now has a "Core Utilities" paragraph | ✅ Fixed (Run Ex4) |
+| `lib/chef/knife/core/retry_with_backoff.rb` | No YARD doc on `with_retries` | ✅ Fixed (Walk Ex15) |
+| `ai-track-docs/core-subsystem.md` | Missing `retry_with_backoff.rb` inventory entry and API section | ✅ Fixed (Run Ex4) |
 
 ---
 
