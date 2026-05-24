@@ -60,13 +60,14 @@ class Chef::Knife::YamlConvert < Chef::Knife
     # Unfortunately, per the YAML spec, comments are stripped when we load, so we lose them on conversion
     yaml_hash = ::YAML.safe_load(yaml_contents, permitted_classes: [Symbol])
     unless yaml_hash.is_a?(Hash) && yaml_hash.key?("resources")
-      ui.fatal!("YAML recipe '#{source_file}' must contain a top-level 'resources' hash (YAML sequence), i.e. 'resources:'")
+      ui.fatal!("YAML recipe '#{yaml_file}' must contain a top-level 'resources' hash (YAML sequence), i.e. 'resources:'")
     end
 
-    ui.warn("No resources found in '#{yaml_file}'") if yaml_hash["resources"].size == 0
+    resources = Array(yaml_hash["resources"])
+    ui.warn("No resources found in '#{yaml_file}'") if resources.empty?
 
     ::File.open(ruby_file, "w") do |file|
-      file.write(resource_hash_to_string(yaml_hash["resources"], yaml_file))
+      file.write(resource_hash_to_string(resources, yaml_file))
     end
     ui.info("Converted '#{yaml_file}' to '#{ruby_file}'")
   end
