@@ -68,3 +68,60 @@ bundle install
 git checkout HEAD~1 -- Gemfile.lock
 bundle install
 ```
+
+---
+
+## Walk Ex7 — Minor Upgrade: faraday-http-cache 2.6.1 → 2.7.0
+
+### Upgrade Summary
+
+| | Before | After |
+|-|--------|-------|
+| Gem | `faraday-http-cache` | `faraday-http-cache` |
+| Version | 2.6.1 | 2.7.0 |
+| Type | indirect dependency (HTTP caching middleware for faraday) |  |
+| Code changes | none | none |
+
+### Rationale
+
+`faraday-http-cache` is an HTTP caching middleware layer. Knife does not call
+it directly — it is pulled in transitively. The 2.7.0 release maintains the
+same `faraday >= 0.8` runtime requirement already satisfied by `faraday 2.14.1`.
+
+Minor upgrade (2.6 → 2.7) is safe: no API surface knife code calls changed.
+
+### How the Upgrade Was Applied
+
+```bash
+bundle update faraday-http-cache --conservative
+```
+
+The `--conservative` flag ensures only `faraday-http-cache` moves in
+`Gemfile.lock`. All other gems remain pinned. The lock diff was exactly one
+line:
+
+```diff
+-    faraday-http-cache (2.6.1)
++    faraday-http-cache (2.7.0)
+```
+
+### Test Evidence
+
+```
+Command: bundle exec rake spec
+Result:  2264 examples, 0 failures, 7 pending
+```
+
+### Rollback
+
+```bash
+# Pin back to previous version in Gemfile.lock
+git checkout HEAD~1 -- Gemfile.lock
+bundle install
+```
+
+Or explicitly pin in Gemfile:
+
+```ruby
+gem "faraday-http-cache", "2.6.1"
+```
