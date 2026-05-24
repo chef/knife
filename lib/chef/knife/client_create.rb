@@ -94,7 +94,7 @@ class Chef
         # output private_key if one
         if final_client.private_key
           if config[:file]
-            File.open(config[:file], "w") do |f|
+            File.open(config[:file], "w", 0600) do |f|
               f.print(final_client.private_key)
             end
           else

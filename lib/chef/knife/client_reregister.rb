@@ -46,7 +46,7 @@ class Chef
         Chef::Log.trace("Updated client data: #{client.inspect}")
         key = client.private_key
         if config[:file]
-          File.open(config[:file], "w") do |f|
+          File.open(config[:file], "w", 0600) do |f|
             f.print(key)
           end
         else

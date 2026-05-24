@@ -62,3 +62,33 @@ The CI job scans full history (thorough). Together they provide:
 |-------|------|-------|
 | Pre-commit hook | `git commit` | Staged diff |
 | CI secret-scan job | PR / push to main | Full git history |
+
+## Secure File Creation
+
+Any code that writes private keys, PEM blobs, or other credential material to disk **must**
+use mode `0600` to restrict access to the file owner only:
+
+```ruby
+# Required pattern for credential files
+File.open(path, "w", 0600) do |f|
+  f.print(private_key_content)
+end
+```
+
+Using the default `"w"` mode (without an explicit octal) inherits the process umask, which
+on most Linux systems yields `0644` (world-readable). All knife commands that write key
+material have been updated to use `0600` explicitly (see `ai-track-docs/security-hygiene.md`).
+
+## Shell Command Safety
+
+Prefer the **array form** of `exec`, `system`, and `Open3.popen*` over string interpolation.
+String form invokes `/bin/sh -c`, making shell metacharacters significant:
+
+```ruby
+# Unsafe — shell processes the string
+exec("cssh #{user}@#{host}")
+
+# Safe — argv passed directly to OS, no shell involved
+exec("cssh", "#{user}@#{host}")
+exec(*["cssh", "#{user}@#{host}"])
+```

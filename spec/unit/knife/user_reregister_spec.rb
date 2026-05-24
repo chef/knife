@@ -49,7 +49,7 @@ describe Chef::Knife::UserReregister do
     expect(user_mock).to receive(:reregister).and_return(user_mock)
     knife.config[:file] = "/tmp/a_file"
     filehandle = StringIO.new
-    expect(File).to receive(:open).with("/tmp/a_file", "w").and_yield(filehandle)
+    expect(File).to receive(:open).with("/tmp/a_file", "w", 0600).and_yield(filehandle)
     knife.run
     expect(filehandle.string).to eq("private_key")
   end

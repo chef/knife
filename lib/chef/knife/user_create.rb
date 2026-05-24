@@ -153,7 +153,7 @@ class Chef
         ui.info("Created #{user.username}")
         if final_user["chef_key"] && final_user["chef_key"]["private_key"]
           if config[:file]
-            File.open(config[:file], "w") do |f|
+            File.open(config[:file], "w", 0600) do |f|
               f.print(final_user["chef_key"]["private_key"])
             end
           else

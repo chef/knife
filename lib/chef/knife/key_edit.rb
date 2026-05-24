@@ -66,7 +66,7 @@ class Chef
       end
 
       def output_private_key_to_file(private_key)
-        File.open(@config[:file], "w") do |f|
+        File.open(@config[:file], "w", 0600) do |f|
           f.print(private_key)
         end
       end

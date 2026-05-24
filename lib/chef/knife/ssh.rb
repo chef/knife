@@ -563,16 +563,21 @@ class Chef
         end
         raise Chef::Exceptions::Exec, "no command found for cssh" unless cssh_cmd
 
+        # Build command as an array to avoid shell metacharacter injection.
+        # exec(array) bypasses the shell entirely; each element is passed verbatim
+        # to the OS as a separate argv entry.
+        cssh_args = [cssh_cmd]
+
         # pass in the consolidated identity file option to cssh(X)
         if config[:ssh_identity_file]
-          cssh_cmd << " --ssh_args '-i #{File.expand_path(config[:ssh_identity_file])}'"
+          cssh_args += ["--ssh_args", "-i #{File.expand_path(config[:ssh_identity_file])}"]
         end
 
         session.servers_for.each do |server|
-          cssh_cmd << " #{server.user ? "#{server.user}@#{server.host}" : server.host}"
+          cssh_args << (server.user ? "#{server.user}@#{server.host}" : server.host)
         end
-        Chef::Log.debug("Starting cssh session with command: #{cssh_cmd}")
-        exec(cssh_cmd)
+        Chef::Log.debug("Starting cssh session with command: #{cssh_args.join(" ")}")
+        exec(*cssh_args)
       end
 
       def get_stripped_unfrozen_value(value)

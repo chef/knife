@@ -45,7 +45,7 @@ describe Chef::Knife::ConfigureClient do
         @validation_file = StringIO.new
         expect(File).to receive(:open).with("/home/bob/.chef/client.rb", "w")
           .and_yield(@client_file)
-        expect(File).to receive(:open).with("/home/bob/.chef/validation.pem", "w")
+        expect(File).to receive(:open).with("/home/bob/.chef/validation.pem", "w", 0600)
           .and_yield(@validation_file)
         expect(IO).to receive(:read).and_return("foo_bar_baz")
       end

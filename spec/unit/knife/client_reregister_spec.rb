@@ -53,7 +53,7 @@ describe Chef::Knife::ClientReregister do
 
       @knife.config[:file] = "/tmp/monkeypants"
       filehandle = StringIO.new
-      expect(File).to receive(:open).with("/tmp/monkeypants", "w").and_yield(filehandle)
+      expect(File).to receive(:open).with("/tmp/monkeypants", "w", 0600).and_yield(filehandle)
       @knife.run
       expect(filehandle.string).to eq("foo_key")
     end

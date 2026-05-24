@@ -50,7 +50,7 @@ class Chef
         org = Chef::Org.from_hash({ "name" => org_name,
                                     "full_name" => org_full_name }).create
         if config[:filename]
-          File.open(config[:filename], "w") do |f|
+          File.open(config[:filename], "w", 0600) do |f|
             f.print(org.private_key)
           end
         else

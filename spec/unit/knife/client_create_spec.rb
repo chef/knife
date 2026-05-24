@@ -138,7 +138,7 @@ describe Chef::Knife::ClientCreate do
         it "should write the private key to a file" do
           filehandle = double("Filehandle")
           expect(filehandle).to receive(:print).with("woot")
-          expect(File).to receive(:open).with(file_path, "w").and_yield(filehandle)
+          expect(File).to receive(:open).with(file_path, "w", 0600).and_yield(filehandle)
           knife.run
         end
 
