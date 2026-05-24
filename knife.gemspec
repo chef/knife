@@ -20,9 +20,9 @@ Gem::Specification.new do |s|
   s.add_dependency "license-acceptance", ">= 1.0.5", "< 3"
   s.add_dependency "mixlib-cli", ">= 2.1.1", "< 3.0"
   s.add_dependency "mixlib-archive", ">= 0.4", "< 2.0"
-  s.add_dependency "ffi", ">= 1.15", "< 1.18.0"
+  s.add_dependency "ffi", ">= 1.17", "< 1.18.0"
   s.add_dependency "ffi-yajl", "~> 2.2"
-  s.add_dependency "net-ssh", ">= 5.1", "< 8"
+  s.add_dependency "net-ssh", ">= 7.0", "< 8"
   s.add_dependency "net-ssh-multi", "~> 1.2", ">= 1.2.1"
   s.add_dependency "bcrypt_pbkdf", "~> 1.1" # ed25519 ssh key support
   s.add_dependency "ed25519", ">= 1.2", "< 2.0" # ed25519 ssh key support
