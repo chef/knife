@@ -69,7 +69,7 @@ Added a `Post PR comment (advisory)` step using `actions/github-script@v7`:
 - Only fires on `pull_request` events (skipped on `push` to `main`)
 - Has its own `continue-on-error: true` — a GitHub API failure never blocks CI
 
-### Non-Blocking Guarantee (defence-in-depth)
+### Non-Blocking Guarantee (defense-in-depth)
 
 | Layer | Mechanism |
 |-------|-----------|
