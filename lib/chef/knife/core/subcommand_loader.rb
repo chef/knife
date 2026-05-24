@@ -136,7 +136,7 @@ class Chef
 
       def guess_category(args)
         category_words = positional_arguments(args)
-        category_words.map! { |w| w.split("-") }.flatten!
+        category_words.replace(category_words.flat_map { |w| w.split("-") })
         find_longest_key(Chef::Knife.subcommands_by_category,
           category_words, " ")
       end

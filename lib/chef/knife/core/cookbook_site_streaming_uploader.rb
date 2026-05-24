@@ -118,7 +118,7 @@ class Chef
             # TODO: tim: 2009-12-28: It'd be nice to remove this special case, and
             # always hash the entire request body. In the file case it would just be
             # expanded multipart text - the entire body of the POST.
-            content_body = parts.inject("") { |result, part| result + part.read(0, part.size) }
+            content_body = parts.each_with_object(+"") { |part, acc| acc << part.read(0, part.size) }
             content_file.rewind if content_file # we consumed the file for the above operation, so rewind it.
 
             signing_options = {
