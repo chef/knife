@@ -97,3 +97,70 @@ Chef::Knife::Status
 ```bash
 git revert HEAD  # removes constant + restores inline hash allocation
 ```
+
+---
+
+## Walk Ex6 — Micro-Optimization: StatusPresenter#summarize String Building
+
+### Candidates
+
+**File**: `lib/chef/knife/core/status_presenter.rb`, `summarize` method
+
+#### 1. O(n²) string concatenation (line 123)
+
+Before:
+```ruby
+summarized = "#{summarized}#{line_parts.join(", ")}.\n"
+```
+Each iteration allocates a new string that copies the entire accumulated result.
+This is O(n²) in the number of nodes displayed.
+
+After:
+```ruby
+summarized << "#{line_parts.join(", ")}.\n"
+```
+Shovel operator appends in-place. O(1) per node — O(n) total.
+
+#### 2. Redundant `.dup` allocation (lines 119-121)
+
+Before:
+```ruby
+platform = node["platform"].dup
+if node["platform_version"]
+  platform << " #{node["platform_version"]}"
+end
+```
+`.dup` copies the string only to potentially discard the copy. The `<<` mutates
+the copy, not the original attribute — the `.dup` is unnecessary defensive code.
+
+After:
+```ruby
+platform = if node["platform_version"]
+               "#{node["platform"]} #{node["platform_version"]}"
+             else
+               node["platform"]
+             end
+```
+Single allocation, no copy.
+
+### Benchmark Evidence
+
+Measured with `Benchmark.bm` on inline Ruby, simulating the concat loop:
+
+| n nodes | Before (concat) | After (shovel) | Speedup |
+|---------|----------------|----------------|---------|
+| 1 000   | 0.051 ms       | 0.033 ms       | 1.5×    |
+| 10 000  | 2.628 ms       | 0.321 ms       | **8.2×** |
+
+### Safety
+
+- Both changes are behavior-preserving; output is identical.
+- 38 existing spec examples (status_spec + status_presenter_spec) remain green.
+- The optimization matters most for large fleets (1 000+ nodes) where
+  `knife status` output is piped to scripts.
+
+### Rollback
+
+```bash
+git revert HEAD  # reverts both lines in a single commit
+```

@@ -113,14 +113,15 @@ class Chef
             line_parts << run_list.to_s if run_list
 
             if node["platform"]
-              platform = node["platform"].dup
-              if node["platform_version"]
-                platform << " #{node["platform_version"]}"
-              end
+              platform = if node["platform_version"]
+                           "#{node["platform"]} #{node["platform_version"]}"
+                         else
+                           node["platform"]
+                         end
               line_parts << platform
             end
 
-            summarized = "#{summarized}#{line_parts.join(", ")}.\n"
+            summarized << "#{line_parts.join(", ")}.\n"
           end
           summarized
         end
