@@ -1,0 +1,72 @@
+# Contract Test: StatusPresenter JSON Output
+
+## Walk Ex5 — API/Contract Hardening
+
+### Contract Surface
+
+**Method**: `Chef::Knife::Core::StatusPresenter#summarize_json(list)`  
+**File**: `lib/chef/knife/core/status_presenter.rb`  
+**Consumer**: `knife status --format json`
+
+This method is the JSON API boundary between the knife status command and any
+consumer that parses its output (scripts, dashboards, CI checks).
+
+### Guaranteed Fields (always present)
+
+| Field | Type | Notes |
+|-------|------|-------|
+| `name` | String | Node name |
+| `chef_environment` | String / nil | Chef environment assignment |
+| `ohai_time` | Numeric | Unix timestamp of last check-in |
+
+### Optional Fields (present only when data exists)
+
+| Field | Present when | Key name (do not rename) |
+|-------|-------------|--------------------------|
+| `ip` | Node has `ipaddress` or cloud public IPv4 | `ip` (not `ipaddress`) |
+| `fqdn` | Node has `fqdn` or cloud public hostname | `fqdn` |
+| `platform` | Node has `platform` attribute | `platform` |
+| `platform_version` | Node has `platform_version` attribute | `platform_version` |
+| `run_list` | `--run-list` flag passed | `run_list` |
+| `default` / `override` / `automatic` | `--long-output` flag passed | attribute hashes |
+
+### Golden File
+
+`spec/data/status_presenter_contract.json` — snapshot of a fully-populated
+node with `run_list` and `long_output` disabled (default invocation). The
+`ohai_time` value is fixed to `0` to prevent timestamp drift.
+
+### Running the Contract Tests
+
+```bash
+bundle exec rspec spec/unit/knife/core/status_presenter_spec.rb
+```
+
+The contract tests live in the `describe "contract: summarize_json output schema"` block.
+
+### Updating the Contract Intentionally
+
+If `summarize_json` is modified in a way that changes the output shape (e.g., a
+field is renamed, added, or removed), follow these steps:
+
+1. Make the code change in `lib/chef/knife/core/status_presenter.rb`
+2. Run the specs — the golden file test will fail with a diff showing exactly what changed
+3. Review the diff: confirm the change is intentional and not a regression
+4. Regenerate the golden file:
+   ```bash
+   bundle exec rspec spec/unit/knife/core/status_presenter_spec.rb \
+     -e "matches the golden file snapshot" --format documentation
+   ```
+   Then update `spec/data/status_presenter_contract.json` to match the new output
+5. Update the **Guaranteed Fields** or **Optional Fields** tables above
+6. Call out the schema change explicitly in the PR description under a
+   "Contract Change" heading so reviewers know it is intentional
+
+### What Counts as a Breaking Change
+
+- Renaming a guaranteed field (e.g., `ohai_time` → `last_seen`)
+- Removing a guaranteed field
+- Changing the type of a guaranteed field (e.g., `ohai_time` from Numeric to String)
+- Renaming an optional field (e.g., `ip` → `ipaddress`)
+
+Breaking changes should be called out in the CHANGELOG and PR description.

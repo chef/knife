@@ -1,0 +1,11 @@
+[
+  {
+    "name": "contract-node",
+    "chef_environment": "production",
+    "ip": "10.0.0.1",
+    "fqdn": "contract-node.example.com",
+    "ohai_time": 0,
+    "platform": "ubuntu",
+    "platform_version": "22.04"
+  }
+]
