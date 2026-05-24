@@ -23,3 +23,33 @@ to specific code paths, with acceptance criteria and a dependency graph.
 
 ## Backlog Doc Path
 `docs/backlog.md`
+
+---
+
+## Walk Ex12 — Backlog Grooming
+
+### Epic Issue
+[#145 — Walk Track: Follow-up backlog](https://github.com/chef/knife/issues/145)
+
+### Child Issues Created
+
+| Issue | Title | Size |
+|-------|-------|------|
+| [#140](https://github.com/chef/knife/issues/140) | Extend `test_mandatory_field` to remaining commands | Medium |
+| [#141](https://github.com/chef/knife/issues/141) | Contract tests for NodePresenter JSON boundary | Small |
+| [#142](https://github.com/chef/knife/issues/142) | Extend debug timing to search, node_list, ssh | Small |
+| [#143](https://github.com/chef/knife/issues/143) | Add doc link-checker CI step | Small |
+| [#144](https://github.com/chef/knife/issues/144) | Add Brakeman SAST scan to CI | Small |
+
+### Source Exercises
+
+| Issue | Sourced from |
+|-------|-------------|
+| #140 | Walk Ex3 — identified 15+ remaining inline nil-guard blocks |
+| #141 | Walk Ex5 — contract tests only cover StatusPresenter |
+| #142 | Walk Ex9 — timing only covers status + node_show |
+| #143 | Walk Ex4/Ex11 — docs grew with no link validation |
+| #144 | Walk Ex8 — secret scan in place; SAST still missing |
+
+### Backlog Doc Path
+`docs/backlog-walk.md`
