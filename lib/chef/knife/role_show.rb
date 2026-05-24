@@ -33,11 +33,7 @@ class Chef
       def run
         @role_name = @name_args[0]
 
-        if @role_name.nil?
-          show_usage
-          ui.fatal("You must specify a role name.")
-          exit 1
-        end
+        test_mandatory_field(@role_name, "role name")
 
         role = Chef::Role.load(@role_name)
         output(format_for_display(config[:environment] ? role.environment(config[:environment]) : role))

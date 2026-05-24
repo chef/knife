@@ -33,11 +33,7 @@ class Chef
       def run
         @client_name = @name_args[0]
 
-        if @client_name.nil?
-          show_usage
-          ui.fatal("You must specify a client name")
-          exit 1
-        end
+        test_mandatory_field(@client_name, "client name")
 
         client = Chef::ApiClientV1.load(@client_name)
         output(format_for_display(client))

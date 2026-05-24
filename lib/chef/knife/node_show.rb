@@ -49,11 +49,7 @@ class Chef
         ui.use_presenter Knife::Core::NodePresenter
         @node_name = @name_args[0]
 
-        if @node_name.nil?
-          show_usage
-          ui.fatal("You must specify a node name")
-          exit 1
-        end
+        test_mandatory_field(@node_name, "node name")
 
         node = Chef::Node.load(@node_name)
         output(format_for_display(node))
