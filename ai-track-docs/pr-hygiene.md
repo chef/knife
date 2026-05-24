@@ -50,3 +50,63 @@ All six sections present. Template will auto-populate for every new PR.
 ```bash
 git revert HEAD  # removes PULL_REQUEST_TEMPLATE.md
 ```
+
+---
+
+## Walk Ex11 — PR Template Linter
+
+### Problem with Crawl Ex11
+
+The PR template added in Crawl Ex11 is a UI hint — GitHub pre-fills the PR body but cannot enforce that authors actually fill in the sections. A PR with all six sections left as blank `<!-- placeholder -->` comments passes CI silently.
+
+### Improvement: Advisory Template Linter
+
+`.github/workflows/pr-template-check.yml` adds a non-blocking CI job that:
+
+1. Reads the PR body from `context.payload.pull_request.body`
+2. Checks for all six required section headers:
+   - `## Summary`
+   - `## Evidence`
+   - `## Review Focus`
+   - `## Verification Steps`
+   - `## Risk`
+   - `## Rollback`
+3. Posts an idempotent PR comment via `actions/github-script@v7`:
+   - **✅ all present** — green confirmation comment
+   - **⚠️ missing sections** — lists exactly which headers are absent with a link to the template
+4. Updates the comment on re-runs (idempotent via `<!-- pr-template-check -->` marker)
+
+### Non-Blocking Guarantee
+
+| Layer | Mechanism |
+|-------|-----------|
+| Job | `continue-on-error: true` |
+| Step | `continue-on-error: true` |
+
+### Triggers
+
+Runs on `pull_request` events: `opened`, `edited`, `synchronize`, `reopened` — so the check re-evaluates every time the PR description is updated.
+
+### Verification
+
+Open or edit a PR. Within ~30 seconds, a comment from `github-actions[bot]` appears in the PR thread:
+
+**All sections present:**
+```
+✅ PR Template Check (advisory)
+All required sections are present: ...
+```
+
+**Missing sections:**
+```
+⚠️ PR Template Check (advisory)
+The following required sections appear to be missing:
+- `## Evidence`
+- `## Review Focus`
+```
+
+### Rollback
+
+```bash
+git revert HEAD  # removes pr-template-check.yml
+```
