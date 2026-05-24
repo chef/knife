@@ -1,0 +1,15 @@
+# Pre-commit hooks for chef/knife
+# Install: pip install pre-commit && pre-commit install
+# Run manually: pre-commit run --all-files
+# Docs: https://pre-commit.com
+
+repos:
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.30.1
+    hooks:
+      - id: gitleaks
+        name: Detect secrets with Gitleaks
+        description: Scans staged changes for secrets before commit.
+        # Uses .gitleaks.toml in repo root for allowlist rules.
+        # If this flags a false positive, add an exclusion to .gitleaks.toml
+        # and document the justification. See SECURITY.md for guidance.

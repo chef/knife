@@ -31,3 +31,34 @@ If Gitleaks flags a false positive:
 1. Verify the finding is genuinely safe (not an accidentally committed secret).
 2. Add a path or regex rule to `.gitleaks.toml` with a comment explaining the justification.
 3. Include the change in the same PR that introduces the allowlisted pattern.
+
+## Local Development (Pre-commit Hook)
+
+A [pre-commit](https://pre-commit.com) configuration (`.pre-commit-config.yaml`) is
+provided so developers can catch secrets **before pushing**, not just in CI.
+
+### Setup
+
+```bash
+# Install the pre-commit tool (once, system-wide)
+pip install pre-commit
+
+# Install the hooks into your local git clone (once per clone)
+pre-commit install
+
+# Run manually against all files at any time
+pre-commit run --all-files
+```
+
+The hook uses the same Gitleaks version and `.gitleaks.toml` allowlist as CI,
+so local and remote scans produce consistent results.
+
+### What the hook scans
+
+On every `git commit`, Gitleaks scans the **staged changes** only (fast).
+The CI job scans full history (thorough). Together they provide:
+
+| Layer | When | Scope |
+|-------|------|-------|
+| Pre-commit hook | `git commit` | Staged diff |
+| CI secret-scan job | PR / push to main | Full git history |

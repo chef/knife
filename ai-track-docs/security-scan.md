@@ -72,3 +72,55 @@ All exclusions are encoded in `.gitleaks.toml` with inline comments.
 ```bash
 git revert HEAD   # removes workflow, .gitleaks.toml, and SECURITY.md additions
 ```
+
+---
+
+## Walk Ex8 — Security Scan Improvement
+
+### Baseline (inherited from Crawl Ex8)
+
+| Component | State |
+|-----------|-------|
+| CI Gitleaks scan | Present — every PR + main push |
+| `.gitleaks.toml` allowlist | Present — `spec/` and `chef-server/chef-keys/` |
+| `SECURITY.md` | Present — process and justified ignores documented |
+| Pre-commit hook | **Missing** |
+| Gitleaks version | **v8.18.4** (March 2024) |
+
+### Improvement 1: Gitleaks CI upgrade (v8.18.4 → v8.30.1)
+
+Updated `.github/workflows/secret-scan.yml` download URL to v8.30.1 (March 2026).
+This pulls in 24 months of detection rule improvements and false-positive fixes
+without changing the scanning logic or allowlist.
+
+### Improvement 2: Pre-commit hook (`.pre-commit-config.yaml`)
+
+Added official gitleaks pre-commit hook pinned to v8.30.1 — same version as CI.
+
+Developers install once per clone:
+
+```bash
+pip install pre-commit
+pre-commit install
+```
+
+After installation, `git commit` automatically scans staged changes. This catches
+secrets **before push**, closing the gap between local development and CI.
+
+### Defense-in-depth layering
+
+| Layer | When | Scope | Speed |
+|-------|------|-------|-------|
+| Pre-commit hook | `git commit` | Staged diff | Fast (~1s) |
+| CI secret-scan job | PR / push to main | Full git history | Thorough |
+
+### Remediation / Justified Ignores
+
+No new findings introduced by this PR. Existing allowlist in `.gitleaks.toml`
+covers all known false positives from test fixtures.
+
+### Rollback
+
+```bash
+git revert HEAD   # removes CI version bump, pre-commit config, SECURITY.md additions
+```
