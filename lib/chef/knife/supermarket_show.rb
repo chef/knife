@@ -17,10 +17,12 @@
 #
 
 require_relative "../knife"
+require_relative "core/retry_with_backoff"
 
 class Chef
   class Knife
     class SupermarketShow < Knife
+      include RetryWithBackoff
 
       banner "knife supermarket show COOKBOOK [VERSION] (options)"
       category "supermarket"
@@ -42,9 +44,9 @@ class Chef
       def get_cookbook_data
         case @name_args.length
         when 1
-          noauth_rest.get("#{supermarket_uri}/cookbooks/#{@name_args[0]}")
+          with_retries { noauth_rest.get("#{supermarket_uri}/cookbooks/#{@name_args[0]}") }
         when 2
-          noauth_rest.get("#{supermarket_uri}/cookbooks/#{@name_args[0]}/versions/#{name_args[1].tr(".", "_")}")
+          with_retries { noauth_rest.get("#{supermarket_uri}/cookbooks/#{@name_args[0]}/versions/#{name_args[1].tr(".", "_")}") }
         end
       end
 

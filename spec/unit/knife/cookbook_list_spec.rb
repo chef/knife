@@ -93,5 +93,48 @@ describe Chef::Knife::CookbookList do
       end
     end
 
+    describe "resilience: retry-with-backoff" do
+      before { allow(@knife).to receive(:sleep) } # suppress delays
+
+      it "retries once on Net::OpenTimeout then succeeds" do
+        call_count = 0
+        allow(@rest_mock).to receive(:get) do
+          call_count += 1
+          raise Net::OpenTimeout if call_count < 2
+
+          @cookbook_data
+        end
+        @knife.run
+        expect(call_count).to eq(2)
+      end
+
+      it "retries on Errno::ECONNRESET then succeeds" do
+        call_count = 0
+        allow(@rest_mock).to receive(:get) do
+          call_count += 1
+          raise Errno::ECONNRESET if call_count < 3
+
+          @cookbook_data
+        end
+        @knife.run
+        expect(call_count).to eq(3)
+      end
+
+      it "re-raises after all retries are exhausted" do
+        allow(@rest_mock).to receive(:get).and_raise(Net::ReadTimeout)
+        expect { @knife.run }.to raise_error(Net::ReadTimeout)
+      end
+
+      it "does not retry on non-transient errors" do
+        call_count = 0
+        allow(@rest_mock).to receive(:get) do
+          call_count += 1
+          raise RuntimeError, "unexpected"
+        end
+        expect { @knife.run }.to raise_error(RuntimeError)
+        expect(call_count).to eq(1)
+      end
+    end
+
   end
 end

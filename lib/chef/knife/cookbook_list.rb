@@ -18,10 +18,12 @@
 #
 
 require_relative "../knife"
+require_relative "core/retry_with_backoff"
 
 class Chef
   class Knife
     class CookbookList < Knife
+      include RetryWithBackoff
 
       banner "knife cookbook list (options)"
 
@@ -39,7 +41,7 @@ class Chef
         env          = config[:environment]
         num_versions = config[:all_versions] ? "num_versions=all" : "num_versions=1"
         api_endpoint = env ? "/environments/#{env}/cookbooks?#{num_versions}" : "/cookbooks?#{num_versions}"
-        cookbook_versions = rest.get(api_endpoint)
+        cookbook_versions = with_retries { rest.get(api_endpoint) }
         ui.output(format_cookbook_list_for_display(cookbook_versions))
       end
     end
