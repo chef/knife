@@ -70,3 +70,70 @@ field is renamed, added, or removed), follow these steps:
 - Renaming an optional field (e.g., `ip` → `ipaddress`)
 
 Breaking changes should be called out in the CHANGELOG and PR description.
+
+---
+
+# Contract Test: GenericPresenter Output Boundaries
+
+## Run Ex5 — API/Contract Hardening
+
+### Contract Surface
+
+**File**: `lib/chef/knife/core/generic_presenter.rb`  
+**Consumers**: All 149 knife subcommands via `format_for_display` and `format_list_for_display`
+
+`GenericPresenter` is the highest-fan-out boundary in the codebase. Changing any
+public method here affects every `knife * show` and `knife * list` command.
+
+---
+
+### Boundary A — `format_list_for_display(list)`
+
+| Config | Return shape | Notes |
+|--------|-------------|-------|
+| Default (no flags) | `Array<String>` — keys sorted A–Z | Stable alphabetical order required by scripts |
+| `config[:with_uri] = true` | Original `Hash` unchanged | Scripts use URI values directly |
+| Empty input | `[]` (not nil) | Callers do not guard against nil |
+
+**Spec location**: `spec/unit/knife/core/generic_presenter_spec.rb` — `contract: format_list_for_display`
+
+---
+
+### Boundary B — `format_for_display(data)`
+
+| Config flag | Return shape | Rationale |
+|-------------|-------------|-----------|
+| None | `data` unchanged (passthrough) | Zero-cost default; ui.output formats it |
+| `config[:id_only]` | Bare String (name or id) | Scripted enumeration — not a Hash |
+| `config[:environment]` | `{"chef_environment" => String}` | Key name is stable; scripts parse it |
+| `config[:attribute]` | `{name => {attr => value}}` | Subset extraction; stable nesting shape |
+| `config[:run_list]` | `{name => {"run_list" => Array}}` | Key name `"run_list"` must not change |
+
+**Spec location**: `spec/unit/knife/core/generic_presenter_spec.rb` — `contract: format_for_display`
+
+---
+
+### Boundary C — `format_data_subset_for_display` / `extract_nested_value`
+
+- Calling `format_for_display` with `config[:attribute]` or `config[:run_list]` set (but nil values) raises `ArgumentError` — **this is intentional**: silent nil would produce empty output with no diagnostic.
+- Dot-separated attribute paths (e.g. `"automatic.platform"`) return nil on missing intermediate keys — no exception raised.
+- Array elements are accessed via numeric string index (e.g. `"arr.0"`).
+
+---
+
+### Updating the GenericPresenter Contract
+
+1. Make the code change in `lib/chef/knife/core/generic_presenter.rb`
+2. Run: `bundle exec rspec spec/unit/knife/core/generic_presenter_spec.rb`
+3. If a contract test fails, confirm the change is intentional
+4. Update the failing example to match the new behaviour
+5. Update the relevant table above (Boundary A, B, or C)
+6. Add a **"Contract Change"** section to the PR description
+
+### What Counts as a Breaking Change
+
+- Changing the return type of any method in Boundaries A or B
+- Renaming a hash key in the return value (e.g., `"run_list"` → `"runList"`)
+- Changing `extract_nested_value` to raise instead of returning nil on missing paths
+
+Breaking changes must be called out in the PR description and CHANGELOG.
