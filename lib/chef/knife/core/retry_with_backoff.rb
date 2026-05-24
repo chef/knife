@@ -30,7 +30,7 @@ class Chef
     #   base_delay: initial sleep in seconds; doubles each attempt (default 1.0)
     #   retryable:  array of exception classes to retry (default: transient network errors)
     #
-    # Rollback: set retries: 0 to disable retry behaviour without removing the wrapper,
+    # Rollback: set retries: 0 to disable retry behavior without removing the wrapper,
     # or remove the include + with_retries call to revert entirely.
     module RetryWithBackoff
       RETRYABLE_ERRORS = [
@@ -54,14 +54,12 @@ class Chef
           attempt += 1
           yield
         rescue *retryable => e
-          if attempt <= retries
-            delay = base_delay * (2**(attempt - 1))
-            Chef::Log.warn("#{self.class}##{__method__}: attempt #{attempt}/#{retries + 1} failed (#{e.class}: #{e.message}); retrying in #{delay}s")
-            sleep(delay)
-            retry
-          else
-            raise
-          end
+          raise unless attempt <= retries
+
+          delay = base_delay * (2**(attempt - 1))
+          Chef::Log.warn("#{self.class}##{__method__}: attempt #{attempt}/#{retries + 1} failed (#{e.class}: #{e.message}); retrying in #{delay}s")
+          sleep(delay)
+          retry
         end
       end
     end

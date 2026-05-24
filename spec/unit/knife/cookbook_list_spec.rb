@@ -129,7 +129,7 @@ describe Chef::Knife::CookbookList do
         call_count = 0
         allow(@rest_mock).to receive(:get) do
           call_count += 1
-          raise RuntimeError, "unexpected"
+          raise "unexpected"
         end
         expect { @knife.run }.to raise_error(RuntimeError)
         expect(call_count).to eq(1)
