@@ -24,7 +24,7 @@ class Chef
 
       private
 
-      # Normalises an array of run-list arguments into a flat list of entries.
+      # Normalizes an array of run-list arguments into a flat list of entries.
       # Handles both space-separated arguments and comma-separated values within
       # a single argument, stripping surrounding whitespace from each entry.
       #
