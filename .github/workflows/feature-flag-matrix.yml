@@ -48,8 +48,8 @@ jobs:
 
       - run: bundle install
 
-      - name: Run status specs with KNIFE_TIMING ${{ matrix.label }}
-        run: bundle exec rspec spec/unit/knife/status_spec.rb --format documentation 2>&1 | tee /tmp/flag_output.txt
+      - name: Run status and node_show specs with KNIFE_TIMING ${{ matrix.label }}
+        run: bundle exec rspec spec/unit/knife/status_spec.rb spec/unit/knife/node_show_spec.rb --format documentation 2>&1 | tee /tmp/flag_output.txt
 
       - name: Post flag validation to job summary
         if: always()
@@ -58,15 +58,20 @@ jobs:
           output  = File.read("/tmp/flag_output.txt")
           flag    = ENV["KNIFE_TIMING"].to_s.empty? ? "OFF (unset)" : "ON (#{ENV["KNIFE_TIMING"]})"
           examples = output.match(/(\d+) examples?, (\d+) failures?/)
-          timing_logged = output.include?("logs node count and elapsed time")
+          debug_present = output.include?("always logs timing at debug level") ||
+                          output.include?("logs load-time duration at debug level")
+          info_present  = output.include?("logs structured fields after search completes") ||
+                          output.include?("logs 0 nodes in structured format")
 
           summary = <<~MD
             ## KNIFE_TIMING=#{flag} — Flag Validation
 
             | Check | Result |
             |-------|--------|
-            | Flag state  | `KNIFE_TIMING=#{ENV["KNIFE_TIMING"].to_s.empty? ? "(unset)" : ENV["KNIFE_TIMING"]}` |
-            | Examples    | #{examples ? "#{examples[1]} examples, #{examples[2]} failures" : "n/a"} |
+            | Flag state             | `KNIFE_TIMING=#{ENV["KNIFE_TIMING"].to_s.empty? ? "(unset)" : ENV["KNIFE_TIMING"]}` |
+            | debug timing (always)  | #{debug_present ? "✅ present" : "⚠️ not detected"} |
+            | info timing (flag only)| #{ENV["KNIFE_TIMING"].to_s.empty? ? "➖ off (expected)" : (info_present ? "✅ present" : "⚠️ not detected")} |
+            | Examples               | #{examples ? "#{examples[1]} examples, #{examples[2]} failures" : "n/a"} |
 
             <details><summary>Full spec output</summary>
 
