@@ -51,7 +51,10 @@ class Chef
 
         test_mandatory_field(@node_name, "node name")
 
+        load_start = Process.clock_gettime(Process::CLOCK_MONOTONIC)
         node = Chef::Node.load(@node_name)
+        load_elapsed = Process.clock_gettime(Process::CLOCK_MONOTONIC) - load_start
+        Chef::Log.debug("op=knife_node_show status=ok node=#{@node_name} elapsed_ms=#{(load_elapsed * 1000).round}")
         output(format_for_display(node))
       end
     end

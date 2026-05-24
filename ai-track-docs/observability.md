@@ -90,3 +90,65 @@ bundle exec rspec spec/unit/knife/status_spec.rb --format documentation
 ```bash
 git revert HEAD  # removes timing instrumentation and tests
 ```
+
+---
+
+## Walk Ex9 — Observability Enhancement
+
+### Changes
+
+**Improvement 1: Promote `knife status` timing to unconditional `debug` level**
+
+Before (Crawl Ex9): the structured log line only emitted when `KNIFE_TIMING=1` was set.
+After (Walk Ex9): always emitted at `Chef::Log.debug` so standard `--log-level debug` works.
+`KNIFE_TIMING` still triggers an additional `info`-level line for CI/scripting compatibility.
+
+```ruby
+# Always visible at debug level:
+Chef::Log.debug("op=knife_status status=ok nodes=N elapsed_ms=T")
+# Also at info when KNIFE_TIMING=1:
+Chef::Log.info("op=knife_status status=ok nodes=N elapsed_ms=T") if ENV["KNIFE_TIMING"]
+```
+
+**Improvement 2: Add load-time timing to `knife node show`**
+
+`lib/chef/knife/node_show.rb` now wraps `Chef::Node.load` with a monotonic clock and emits:
+
+```ruby
+Chef::Log.debug("op=knife_node_show status=ok node=NAME elapsed_ms=T")
+```
+
+### Verification
+
+```bash
+# knife status — always visible at debug level (no env var needed)
+knife status --log-level debug 2>&1 | grep op=knife_status
+
+# Expected output on stderr:
+# DEBUG: op=knife_status status=ok nodes=42 elapsed_ms=123
+
+# knife node show — new hook
+knife node show mynode --log-level debug 2>&1 | grep op=knife_node_show
+
+# Expected output on stderr:
+# DEBUG: op=knife_node_show status=ok node=mynode elapsed_ms=45
+```
+
+### Risk Notes
+
+| Risk | Mitigation |
+|------|-----------|
+| `debug` verbosity | `debug` level is off by default; only visible when explicitly requested |
+| `KNIFE_TIMING` behavior change | Still triggers `info`-level log — backward compatible |
+| `node_show` timing overhead | Sub-microsecond monotonic clock read — no measurable impact |
+
+### Test Coverage
+
+- `spec/unit/knife/status_spec.rb`: updated to assert `Chef::Log.debug` called unconditionally; `info` only when `KNIFE_TIMING` set
+- `spec/unit/knife/node_show_spec.rb`: new example asserts `Chef::Log.debug` called with `op=knife_node_show` pattern
+
+### Rollback
+
+```bash
+git revert HEAD
+```

@@ -44,6 +44,13 @@ describe Chef::Knife::NodeShow do
       knife.run
     end
 
+    it "logs load-time duration at debug level" do
+      allow(Chef::Node).to receive(:load).with("adam").and_return(node)
+      allow(knife).to receive(:output)
+      expect(Chef::Log).to receive(:debug).with(/op=knife_node_show status=ok node=adam elapsed_ms=\d+/)
+      knife.run
+    end
+
     it "should pretty print the node, formatted for display" do
       knife.config[:format] = nil
       stdout = StringIO.new

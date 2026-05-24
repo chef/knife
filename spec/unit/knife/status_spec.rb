@@ -171,12 +171,13 @@ describe Chef::Knife::Status do
     end
   end
 
-  describe "structured log hook (KNIFE_TIMING flag)" do
+  describe "structured log hook" do
     context "when KNIFE_TIMING is set" do
       around { |ex| ENV["KNIFE_TIMING"] = "1"; ex.run; ENV.delete("KNIFE_TIMING") }
 
       it "logs structured fields after search completes" do
         expect(Chef::Log).to receive(:info).with(/Sending query/)
+        expect(Chef::Log).to receive(:debug).with(/op=knife_status status=ok nodes=1 elapsed_ms=\d+/)
         expect(Chef::Log).to receive(:info).with(/op=knife_status status=ok nodes=1 elapsed_ms=\d+/)
         @knife.run
       end
@@ -184,16 +185,19 @@ describe Chef::Knife::Status do
       it "logs 0 nodes in structured format when search returns nothing" do
         allow(@query).to receive(:search) # yields nothing
         allow(Chef::Log).to receive(:info) # absorb other log calls
+        allow(Chef::Log).to receive(:debug) # absorb other debug calls
+        expect(Chef::Log).to receive(:debug).with(/op=knife_status status=ok nodes=0 elapsed_ms=\d+/)
         expect(Chef::Log).to receive(:info).with(/op=knife_status status=ok nodes=0 elapsed_ms=\d+/)
         @knife.run
       end
     end
 
-    context "when KNIFE_TIMING is not set (default OFF)" do
+    context "when KNIFE_TIMING is not set (default)" do
       around { |ex| ENV.delete("KNIFE_TIMING"); ex.run }
 
-      it "does not log timing information" do
+      it "always logs timing at debug level" do
         allow(Chef::Log).to receive(:info).with(/Sending query/)
+        expect(Chef::Log).to receive(:debug).with(/op=knife_status status=ok nodes=\d+ elapsed_ms=\d+/)
         expect(Chef::Log).not_to receive(:info).with(/op=knife_status/)
         @knife.run
       end

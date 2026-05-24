@@ -87,6 +87,7 @@ class Chef
           exit 1
         end
 
+        Chef::Log.debug("op=knife_status status=ok nodes=#{all_nodes.size} elapsed_ms=#{(search_elapsed * 1000).round}")
         if ENV["KNIFE_TIMING"]
           Chef::Log.info("op=knife_status status=ok nodes=#{all_nodes.size} elapsed_ms=#{(search_elapsed * 1000).round}")
         end
