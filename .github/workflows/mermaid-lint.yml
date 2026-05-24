@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - "**/*.mmd"
+      - "scripts/gen-architecture.sh"
       - ".github/workflows/mermaid-lint.yml"
 
 jobs:
@@ -37,3 +38,12 @@ jobs:
             mmdc -i "$f" -o /tmp/check.svg -p /tmp/puppeteer-config.json
             echo "  OK: $(wc -c < /tmp/check.svg) bytes"
           done
+
+      - name: Architecture change summary
+        if: always()
+        run: |
+          bash scripts/gen-architecture.sh | tee /tmp/arch-summary.txt
+          echo "## Architecture Change Summary" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          cat /tmp/arch-summary.txt >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"

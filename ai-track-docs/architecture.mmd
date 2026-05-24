@@ -19,6 +19,7 @@ graph TD
             BSH["Bootstrap context\n<b>core/bootstrap_context.rb</b>"]
             LOADER["Command loader\n<b>core/subcommand_loader.rb</b>"]
             PRES["Status presenter\n<b>core/status_presenter.rb</b>"]
+            RB["RetryWithBackoff\n<b>core/retry_with_backoff.rb</b>"]
         end
 
         subgraph ChefFS["Chef-FS — lib/chef/chef_fs/"]
@@ -77,6 +78,10 @@ graph TD
     CB -->|"C1 - read local cookbook"| FS
     FS -->|"C2 - diff local vs server"| SRV
     SRV -->|"C3 - upload response"| CB
+
+    %% Data flow D — resilience wrapper (Walk Ex15)
+    OTH -->|"D1 - wrap external GET"| RB
+    RB -->|"D2 - retry on transient error"| SRV
 
     %% Test coverage
     CORE -.->|tested by| UNIT
