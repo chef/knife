@@ -49,15 +49,16 @@ jobs:
         if: always()
         run: |
           ruby - <<'RUBY'
-          output = File.read("/tmp/spec_output.txt")
+          require "json"
+          output = File.read("/tmp/spec_output.txt") rescue ""
 
-          # Parse SimpleCov line from output: "Line Coverage: 46.54% (3501 / 7522)"
-          line_match   = output.match(/Line Coverage:\s+([\d.]+)%\s+\((\d+)\s*\/\s*(\d+)\)/)
-          branch_match = output.match(/Branch Coverage:\s+([\d.]+)%\s+\((\d+)\s*\/\s*(\d+)\)/)
-          examples     = output.match(/(\d+) examples?, (\d+) failures?/)
+          # Read coverage percentages from SimpleCov's JSON artifact (reliable across all CI environments)
+          last_run = JSON.parse(File.read("coverage/.last_run.json")) rescue {}
+          result   = last_run["result"] || {}
+          line_pct   = result["line"]&.to_f
+          branch_pct = result["branch"]&.to_f
 
-          line_pct   = line_match   ? line_match[1].to_f   : nil
-          branch_pct = branch_match ? branch_match[1].to_f : nil
+          examples = output.match(/(\d+) examples?, (\d+) failures?/)
           threshold  = 80.0
           status     = (line_pct && line_pct >= threshold) ? "✅" : "⚠️"
 
