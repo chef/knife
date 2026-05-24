@@ -27,20 +27,14 @@ class Chef
         require "chef/json_compat" unless defined?(Chef::JSONCompat)
       end
 
+      require_relative "node_run_list_base"
+      include Chef::Knife::NodeRunListBase
+
       banner "knife node run_list remove [NODE] [ENTRY [ENTRY]] (options)"
 
       def run
         node = Chef::Node.load(@name_args[0])
-
-        if @name_args.size > 2
-          # Check for nested lists and create a single plain one
-          entries = @name_args[1..].map do |entry|
-            entry.split(",").map(&:strip)
-          end.flatten
-        else
-          # Convert to array and remove the extra spaces
-          entries = @name_args[1].split(",").map(&:strip)
-        end
+        entries = parse_run_list_entries(@name_args[1..])
 
         # iterate over the list of things to remove,
         # warning if one of them was not found
