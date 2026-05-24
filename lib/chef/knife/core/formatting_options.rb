@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 #
 # Author:: Nicolas DUPEUX (<nicolas.dupeux@arkea.com>)
 # Copyright:: Copyright (c) 2009-2026 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.

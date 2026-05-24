@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 #
 # Author:: Daniel DeLeo (<dan@chef.io>)
 # Author:: Jordan Running (<jr@chef.io>)

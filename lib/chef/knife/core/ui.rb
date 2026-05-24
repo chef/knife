@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 #
 # Author:: Adam Jacob (<adam@chef.io>)
 # Author:: Christopher Brown (<cb@chef.io>)

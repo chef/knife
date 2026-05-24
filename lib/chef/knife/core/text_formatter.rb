@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 #
 # Author:: Daniel DeLeo (<dan@chef.io>)
 # Copyright:: Copyright (c) 2009-2026 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
@@ -42,7 +43,7 @@ class Chef
         end
 
         def text_format(data)
-          buffer = ""
+          buffer = +""
 
           if data.respond_to?(:keys)
             justify_width = data.keys.map { |k| k.to_s.size }.max.to_i + 1

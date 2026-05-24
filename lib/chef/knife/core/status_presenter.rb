@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 #
 # Author:: Nicolas DUPEUX (<nicolas.dupeux@arkea.com>)
 # Copyright:: Copyright (c) 2009-2026 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
@@ -67,7 +68,7 @@ class Chef
         # the volume of output is adjusted accordingly. Uses colors if enabled
         # in the ui object.
         def summarize(list)
-          summarized = ""
+          summarized = +""
           list.each do |data|
             node = data
             # special case clouds with their split horizon thing.

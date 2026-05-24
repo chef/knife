@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 #
 # Author:: Seth Chisamore (<schisamo@chef.io>)
 # Copyright:: Copyright (c) 2009-2026 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
@@ -68,7 +69,7 @@ class Chef
           #
           # Which is mildly odd, but should be entirely correct as far as ruby cares.
           #
-          client_rb = <<~CONFIG
+          client_rb = +<<~CONFIG
             chef_server_url  "#{chef_config[:chef_server_url]}"
             validation_client_name "#{chef_config[:validation_client_name]}"
             file_cache_path   "#{ChefConfig::PathHelper.escapepath(chef_config[:windows_bootstrap_file_cache_path] || "")}"
@@ -402,7 +403,7 @@ class Chef
         # Returns a string for copying the trusted certificates on the workstation to the system being bootstrapped
         # This string should contain both the commands necessary to both create the files, as well as their content
         def trusted_certs_content
-          content = ""
+          content = +""
           if chef_config[:trusted_certs_dir]
             Dir.glob(File.join(ChefConfig::PathHelper.escape_glob_dir(chef_config[:trusted_certs_dir]), "*.{crt,pem}")).each do |cert|
               content << "> #{bootstrap_directory}/trusted_certs/#{File.basename(cert)} (\n#{escape_and_echo(File.read(File.expand_path(cert)))}\n)\n"
@@ -412,7 +413,7 @@ class Chef
         end
 
         def client_d_content
-          content = ""
+          content = +""
           if chef_config[:client_d_dir] && File.exist?(chef_config[:client_d_dir])
             root = Pathname(chef_config[:client_d_dir])
             root.find do |f|

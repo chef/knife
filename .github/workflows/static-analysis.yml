@@ -31,5 +31,5 @@ jobs:
       - name: Run rubocop on core path
         run: |
           bundle exec rubocop \
-            --only Style/StringConcatenation,Style/GuardClause \
+            --only Style/StringConcatenation,Style/GuardClause,Style/FrozenStringLiteralComment \
             lib/chef/knife/core/

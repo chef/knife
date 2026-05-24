@@ -38,3 +38,8 @@ Style/StringConcatenation:
 Style/GuardClause:
   Include:
     - "lib/chef/knife/core/**/*.rb"
+
+# Walk Ex14: Require frozen string literal comment in core/
+Style/FrozenStringLiteralComment:
+  Include:
+    - "lib/chef/knife/core/**/*.rb"

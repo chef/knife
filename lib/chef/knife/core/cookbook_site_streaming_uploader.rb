@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 #
 # Author:: Stanislav Vitvitskiy
 # Author:: Nuo Yan (nuo@chef.io)
