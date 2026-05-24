@@ -21,7 +21,7 @@ puts "Benchmark 1: flat_map vs map! + flatten!"
 puts "Input: array of hyphenated command words, #{ITERATIONS} iterations"
 puts "=" * 60
 
-SAMPLE_WORDS = %w[node-run-list-add knife-bootstrap ssh-key-generate].freeze
+SAMPLE_WORDS = %w{node-run-list-add knife-bootstrap ssh-key-generate}.freeze
 
 Benchmark.bmbm(30) do |x|
   x.report("map! + flatten! (before):") do
