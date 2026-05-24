@@ -78,8 +78,7 @@ describe Chef::Knife::Core::GenericPresenter do
       double("node",
         name: "test-node",
         chef_environment: "production",
-        run_list: double("run_list", run_list: ["role[web]"])
-      )
+        run_list: double("run_list", run_list: ["role[web]"]))
     end
 
     context "no flags set (passthrough)" do
@@ -118,19 +117,15 @@ describe Chef::Knife::Core::GenericPresenter do
 
     context "config[:attribute] set (subset extraction)" do
       let(:node_with_attrs) do
-        double("node",
-          name: "attr-node",
-          respond_to?: true,
-          public_send: nil
-        ).tap do |n|
-          allow(n).to receive(:respond_to?).with(:name).and_return(true)
-          allow(n).to receive(:name).and_return("attr-node")
-          allow(n).to receive(:respond_to?).with(:[], false).and_return(true)
-          allow(n).to receive(:respond_to?).with(:key?).and_return(true)
-          allow(n).to receive(:key?).with("platform").and_return(true)
-          allow(n).to receive(:[]).with("platform").and_return("ubuntu")
-          allow(n).to receive(:respond_to?).with(:to_hash).and_return(false)
-        end
+        n = double("node")
+        allow(n).to receive(:respond_to?).with(:name).and_return(true)
+        allow(n).to receive(:name).and_return("attr-node")
+        allow(n).to receive(:respond_to?).with(:[], false).and_return(true)
+        allow(n).to receive(:respond_to?).with(:key?).and_return(true)
+        allow(n).to receive(:key?).with("platform").and_return(true)
+        allow(n).to receive(:[]).with("platform").and_return("ubuntu")
+        allow(n).to receive(:respond_to?).with(:to_hash).and_return(false)
+        n
       end
 
       it "returns {name => {attr => value}} subset" do
@@ -182,7 +177,7 @@ describe Chef::Knife::Core::GenericPresenter do
   # intermediate value must return nil (not raise NoMethodError).
   # =========================================================================
   describe "contract: extract_nested_value" do
-    let(:data) { { "a" => { "b" => "deep" }, "arr" => ["zero", "one"] } }
+    let(:data) { { "a" => { "b" => "deep" }, "arr" => %w{zero one} } }
 
     it "returns a deeply nested value for a dot-separated path" do
       expect(presenter.send(:extract_nested_value, data, "a.b")).to eq("deep")

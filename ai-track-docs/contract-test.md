@@ -126,7 +126,7 @@ public method here affects every `knife * show` and `knife * list` command.
 1. Make the code change in `lib/chef/knife/core/generic_presenter.rb`
 2. Run: `bundle exec rspec spec/unit/knife/core/generic_presenter_spec.rb`
 3. If a contract test fails, confirm the change is intentional
-4. Update the failing example to match the new behaviour
+4. Update the failing example to match the new behavior
 5. Update the relevant table above (Boundary A, B, or C)
 6. Add a **"Contract Change"** section to the PR description
 
