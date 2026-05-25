@@ -20,11 +20,16 @@
 class Chef
   class Knife
     module Core
+      # Formats structured data (Hash, Array, or scalar) as human-readable
+      # indented text for knife command output.
       class TextFormatter
 
         attr_reader :data
         attr_reader :ui
 
+        # @param data [Hash, Array, Object] the data to format; accepts any
+        #   object responding to +display_hash+, +to_hash+, or +to_s+
+        # @param ui [Chef::Knife::UI] the UI object used for colorized output
         def initialize(data, ui)
           @ui = ui
           @data = if data.respond_to?(:display_hash)
@@ -38,10 +43,22 @@ class Chef
                   end
         end
 
+        # Returns the lazily-computed formatted string representation of {#data}.
+        #
+        # @return [String]
+        # @api public
         def formatted_data
           @formatted_data ||= text_format(data)
         end
 
+        # Recursively formats +data+ as an indented text string.
+        # Hashes are sorted and printed as aligned +key: value+ pairs.
+        # Arrays are printed one element per line, separated by blank lines
+        # when elements are themselves complex (Hash or Array).
+        #
+        # @param data [Hash, Array, Object]
+        # @return [String]
+        # @api public
         def text_format(data)
           buffer = +""
 
@@ -49,10 +66,10 @@ class Chef
             justify_width = data.keys.map { |k| k.to_s.size }.max.to_i + 1
             data.sort.each do |key, value|
               # key: ['value'] should be printed as key: value
-              if value.is_a?(Array) && value.size == 1 && is_singleton(value[0])
+              if value.is_a?(Array) && value.size == 1 && scalar?(value[0])
                 value = value[0]
               end
-              if is_singleton(value)
+              if scalar?(value)
                 # Strings are printed as key: value.
                 justified_key = ui.color("#{key}:".ljust(justify_width), :cyan)
                 buffer << "#{justified_key} #{value}\n"
@@ -68,7 +85,7 @@ class Chef
               buffer << text_format(data[index])
               # Separate items with newlines if it's an array of hashes or an
               # array of arrays
-              buffer << "\n" if !is_singleton(data[index]) && index != data.size - 1
+              buffer << "\n" if !scalar?(data[index]) && index != data.size - 1
             end
           else
             buffer << "#{data}\n"
@@ -76,9 +93,17 @@ class Chef
           buffer
         end
 
-        def is_singleton(value)
+        # Returns +true+ if +value+ is a scalar (not a Hash or Array).
+        #
+        # @param value [Object]
+        # @return [Boolean]
+        # @api public
+        def scalar?(value)
           !(value.is_a?(Array) || value.respond_to?(:keys))
         end
+
+        # @deprecated Use {#scalar?} instead.
+        alias_method :is_singleton, :scalar?
       end
     end
   end
