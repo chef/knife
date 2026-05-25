@@ -64,7 +64,7 @@ do_build() {
   build_line "Building the Knife gem from the gemspec with GEM_HOME=$GEM_HOME and GEM_PATH=$GEM_PATH"
   pushd "$HAB_CACHE_SRC_PATH/$pkg_dirname"
     bundle config set --local path "$GEM_HOME"
-    bundle config --local without integration deploy maintenance
+    bundle config --local without integration deploy maintenance development omnibus_package test
     bundle config --local jobs 4
     bundle config --local retry 5
     bundle config --local silence_root_warning 1
