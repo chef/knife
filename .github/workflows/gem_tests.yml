@@ -33,8 +33,6 @@ jobs:
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: "3.4.8"
-          bundler-cache: false
-      - name: Bundle install Knife
-        run: bundle install --jobs=3 --retry=3
+          bundler-cache: true
       - name: Run knife-windows tests
         run: bundle exec tasks/bin/run_external_test chef/knife-windows main rake spec

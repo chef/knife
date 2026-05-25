@@ -49,11 +49,10 @@ jobs:
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
-          bundler-cache: false
+          bundler-cache: true
       - name: Create unit test node fixtures
         run: mkdir -p spec/data/nodes && touch spec/data/nodes/test.rb spec/data/nodes/default.rb spec/data/nodes/test.example.com.rb
         shell: bash
-      - run: bundle install
       - name: Set RUBY_DLL_PATH for chef-powershell (Windows)
         if: runner.os == 'Windows'
         shell: pwsh
@@ -95,5 +94,5 @@ jobs:
           echo "$HOME/.rbenv/shims" >> $GITHUB_PATH
       - name: Create unit test node fixtures
         run: mkdir -p spec/data/nodes && touch spec/data/nodes/test.rb spec/data/nodes/default.rb spec/data/nodes/test.example.com.rb
-      - run: bundle install
+      - run: bundle install --retry=3 --jobs=4
       - run: bundle exec rake spec

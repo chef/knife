@@ -10,6 +10,7 @@ jobs:
   cookstyle:
     name: Cookstyle (chefstyle)
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: ruby/setup-ruby@v1
@@ -22,6 +23,7 @@ jobs:
   rubocop-core:
     name: RuboCop (lib/chef/knife/core)
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: ruby/setup-ruby@v1

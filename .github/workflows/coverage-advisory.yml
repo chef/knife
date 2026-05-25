@@ -15,6 +15,7 @@ jobs:
   coverage-summary:
     name: Post coverage summary (advisory)
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     # Non-blocking: this job never fails the PR even if coverage drops.
     continue-on-error: true
     permissions:
@@ -35,12 +36,10 @@ jobs:
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: "3.4"
-          bundler-cache: false
+          bundler-cache: true
 
       - name: Create unit test node fixtures
         run: mkdir -p spec/data/nodes && touch spec/data/nodes/test.rb spec/data/nodes/default.rb spec/data/nodes/test.example.com.rb
-
-      - run: bundle install
 
       - name: Run specs with coverage
         run: bundle exec rake spec 2>&1 | tee /tmp/spec_output.txt

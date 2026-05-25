@@ -14,6 +14,7 @@ concurrency:
 jobs:
   cookstyle:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     env:
       BUNDLE_WITHOUT: ruby_shadow:packaging
     steps:
@@ -21,14 +22,13 @@ jobs:
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: 3.4
-          bundler-cache: false
+          bundler-cache: true
       - uses: r7kamura/rubocop-problem-matchers-action@v1  # this shows the failures in the PR
-      - run: |
-          bundle install
-          bundle exec rake style
+      - run: bundle exec rake style
 
   spellcheck:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v6
       - run: |
@@ -37,6 +37,7 @@ jobs:
 
   linelint:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     name: Check if all files end in newline
     steps:
       - name: Checkout

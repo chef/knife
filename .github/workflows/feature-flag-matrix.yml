@@ -17,6 +17,7 @@ jobs:
   flag-matrix:
     name: "KNIFE_TIMING=${{ matrix.knife_timing || 'unset' }}"
     runs-on: ubuntu-22.04
+    timeout-minutes: 20
     continue-on-error: true
     strategy:
       fail-fast: false
@@ -41,12 +42,10 @@ jobs:
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: "3.4"
-          bundler-cache: false
+          bundler-cache: true
 
       - name: Create unit test node fixtures
         run: mkdir -p spec/data/nodes && touch spec/data/nodes/test.rb spec/data/nodes/default.rb spec/data/nodes/test.example.com.rb
-
-      - run: bundle install
 
       - name: Run status and node_show specs with KNIFE_TIMING ${{ matrix.label }}
         run: bundle exec rspec spec/unit/knife/status_spec.rb spec/unit/knife/node_show_spec.rb --format documentation 2>&1 | tee /tmp/flag_output.txt
