@@ -17,10 +17,13 @@
 #
 
 require_relative "../knife"
+require_relative "core/retry_with_backoff"
 
 class Chef
   class Knife
     class CookbookShow < Knife
+
+      include RetryWithBackoff
 
       deps do
         require "chef/json_compat" unless defined?(Chef::JSONCompat)
@@ -86,7 +89,7 @@ class Chef
         when 1 # We are showing the cookbook versions (all of them)
           env           = config[:environment]
           api_endpoint  = env ? "environments/#{env}/cookbooks/#{cookbook_name}" : "cookbooks/#{cookbook_name}"
-          output(format_cookbook_list_for_display(rest.get(api_endpoint)))
+          output(format_cookbook_list_for_display(with_retries { rest.get(api_endpoint) }))
         when 0
           show_usage
           ui.fatal("You must specify a cookbook name")

@@ -17,10 +17,13 @@
 #
 
 require_relative "../knife"
+require_relative "core/retry_with_backoff"
 
 class Chef
   class Knife
     class CookbookDelete < Knife
+
+      include RetryWithBackoff
 
       attr_accessor :cookbook_name, :version
 
@@ -85,7 +88,7 @@ class Chef
       end
 
       def available_versions
-        @available_versions ||= rest.get("cookbooks/#{@cookbook_name}").map do |name, url_and_version|
+        @available_versions ||= with_retries { rest.get("cookbooks/#{@cookbook_name}") }.map do |name, url_and_version|
           url_and_version["versions"].map { |url_by_version| url_by_version["version"] }
         end.flatten
       rescue Net::HTTPClientException => e
@@ -143,7 +146,7 @@ class Chef
 
       def delete_request(path)
         path += "?purge=true" if config[:purge]
-        rest.delete(path)
+        with_retries { rest.delete(path) }
       end
 
     end

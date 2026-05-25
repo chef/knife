@@ -250,4 +250,48 @@ describe Chef::Knife::CookbookShow do
 
     end
   end
+
+  describe "resilience: RetryWithBackoff" do
+    let(:knife_show) do
+      k = Chef::Knife::CookbookShow.new
+      k.config = {}
+      k.name_args = ["cookbook_name"]
+      allow(k).to receive(:rest).and_return(rest)
+      allow(k).to receive(:sleep)
+      k
+    end
+
+    let(:rest) { double(Chef::ServerAPI) }
+
+    context "when rest.get raises Net::OpenTimeout then succeeds" do
+      it "retries and returns the result" do
+        calls = 0
+        allow(rest).to receive(:get) do
+          calls += 1
+          raise Net::OpenTimeout if calls < 2
+
+          { "cookbook_name" => { "versions" => [] } }
+        end
+        allow(knife_show).to receive(:format_cookbook_list_for_display).and_return({})
+        allow(knife_show).to receive(:output)
+        expect { knife_show.run }.not_to raise_error
+        expect(calls).to eq(2)
+      end
+    end
+
+    context "when rest.get exhausts all retries" do
+      it "re-raises the last Net::OpenTimeout" do
+        allow(rest).to receive(:get).and_raise(Net::OpenTimeout)
+        expect { knife_show.run }.to raise_error(Net::OpenTimeout)
+      end
+    end
+
+    context "when rest.get raises a non-retryable error" do
+      it "re-raises immediately without sleeping" do
+        allow(rest).to receive(:get).and_raise(ArgumentError, "unexpected")
+        expect(knife_show).not_to receive(:sleep)
+        expect { knife_show.run }.to raise_error(ArgumentError, "unexpected")
+      end
+    end
+  end
 end

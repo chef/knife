@@ -172,4 +172,53 @@ describe Chef::Knife::DataBagCreate do
       end
     end
   end
+
+  describe "resilience: RetryWithBackoff" do
+    let(:retrying_knife) do
+      k = Chef::Knife::DataBagCreate.new
+      allow(k).to receive(:rest).and_return(rest)
+      allow(k.ui).to receive(:stdout).and_return(stdout)
+      allow(k.ui).to receive(:info)
+      allow(k).to receive(:sleep)
+      k.name_args = [bag_name]
+      k
+    end
+
+    context "when rest.get raises Errno::ECONNRESET then succeeds" do
+      it "retries and continues without error" do
+        calls = 0
+        allow(rest).to receive(:get) do
+          calls += 1
+          raise Errno::ECONNRESET if calls < 2
+
+          {}
+        end
+        expect { retrying_knife.run }.not_to raise_error
+        expect(calls).to eq(2)
+      end
+    end
+
+    context "when rest.get exhausts all retries" do
+      it "re-raises Errno::ECONNREFUSED" do
+        allow(rest).to receive(:get).and_raise(Errno::ECONNREFUSED)
+        expect { retrying_knife.run }.to raise_error(Errno::ECONNREFUSED)
+      end
+    end
+
+    context "when rest.post raises Net::ReadTimeout then succeeds" do
+      it "retries the create call" do
+        not_found = Net::HTTPClientException.new("404 Not Found", Net::HTTPNotFound.new("1.1", "404", "Not Found"))
+        allow(rest).to receive(:get).and_raise(not_found)
+        calls = 0
+        allow(rest).to receive(:post).with("data", { "name" => bag_name }) do
+          calls += 1
+          raise Net::ReadTimeout if calls < 2
+
+          {}
+        end
+        expect { retrying_knife.run }.not_to raise_error
+        expect(calls).to eq(2)
+      end
+    end
+  end
 end

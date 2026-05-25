@@ -236,4 +236,50 @@ describe Chef::Knife::CookbookDelete do
     end
   end
 
+  describe "resilience: RetryWithBackoff" do
+    let(:rest) { double("Chef::ServerAPI") }
+
+    before do
+      allow(@knife).to receive(:rest).and_return(rest)
+      allow(@knife).to receive(:sleep)
+    end
+
+    context "when rest.get raises Net::OpenTimeout then succeeds" do
+      it "retries and returns the version list" do
+        calls = 0
+        allow(rest).to receive(:get) do
+          calls += 1
+          raise Net::OpenTimeout if calls < 2
+
+          { "foobar" => { "versions" => [{ "version" => "1.0.0" }] } }
+        end
+        expect(@knife.available_versions).to eq(["1.0.0"])
+        expect(calls).to eq(2)
+      end
+    end
+
+    context "when rest.get exhausts all retries" do
+      it "re-raises Net::OpenTimeout" do
+        allow(rest).to receive(:get).and_raise(Net::OpenTimeout)
+        @knife.instance_variable_set(:@available_versions, nil)
+        expect { @knife.available_versions }.to raise_error(Net::OpenTimeout)
+      end
+    end
+
+    context "when rest.delete raises Errno::ECONNRESET then succeeds" do
+      it "retries and completes the delete" do
+        calls = 0
+        allow(rest).to receive(:delete) do
+          calls += 1
+          raise Errno::ECONNRESET if calls < 2
+
+          {}
+        end
+        allow(@knife).to receive(:output)
+        expect { @knife.delete_version_without_confirmation("1.0.0") }.not_to raise_error
+        expect(calls).to eq(2)
+      end
+    end
+  end
+
 end

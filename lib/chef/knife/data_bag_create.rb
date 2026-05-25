@@ -19,11 +19,13 @@
 
 require_relative "../knife"
 require_relative "data_bag_secret_options"
+require_relative "core/retry_with_backoff"
 
 class Chef
   class Knife
     class DataBagCreate < Knife
       include DataBagSecretOptions
+      include RetryWithBackoff
 
       deps do
         require "chef/data_bag" unless defined?(Chef::DataBag)
@@ -51,13 +53,13 @@ class Chef
 
         # Verify if the data bag exists
         begin
-          rest.get("data/#{@data_bag_name}")
+          with_retries { rest.get("data/#{@data_bag_name}") }
           ui.info("Data bag #{@data_bag_name} already exists")
         rescue Net::HTTPClientException => e
           raise unless /^404/.match?(e.to_s)
 
           # if it doesn't exists, try to create it
-          rest.post("data", { "name" => @data_bag_name })
+          with_retries { rest.post("data", { "name" => @data_bag_name }) }
           ui.info("Created data_bag[#{@data_bag_name}]")
         end
 
@@ -72,7 +74,7 @@ class Chef
               end
             )
             item.data_bag(@data_bag_name)
-            rest.post("data/#{@data_bag_name}", item)
+            with_retries { rest.post("data/#{@data_bag_name}", item) }
           end
         end
       end
