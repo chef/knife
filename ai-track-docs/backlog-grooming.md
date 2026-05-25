@@ -34,7 +34,7 @@ and maintainability gaps.
 | Field | Detail |
 |-------|--------|
 | **File** | `lib/chef/knife/core/cookbook_site_streaming_uploader.rb:118` and `:152` |
-| **Problem** | Two `TODO` comments left since 2009 describe known workarounds. Line 118 asks for unified body hashing (a design improvement). Line 152 annotates a response class monkey-patch with `# TODO: stop the following madness!` — neither has been actioned in 15 years. |
+| **Problem** | Two `TODO` comments left since 2009 describe known workarounds. Line 118 asks for unified body hashing (a design improvement). Line 152 annotates a response class monkey-patch with `# TODO: stop the following madness!` — neither has been addressed in 15 years. |
 | **Acceptance criteria** | 1. For line 118: replace `TODO:` with `NOTE:` explaining that body hashing uses expanded multipart text intentionally, linking to any relevant RFC/doc. 2. For line 152: replace `TODO:` with `NOTE:` explaining the monkey-patch is intentional for test compatibility, or extract to a named class/module. 3. No `TODO:` or `FIXME:` comments remain in this file. |
 | **Code link** | `lib/chef/knife/core/cookbook_site_streaming_uploader.rb:118`, `:152` |
 
