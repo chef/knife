@@ -20,6 +20,7 @@
 autoload :FFI_Yajl, "ffi_yajl"
 require "chef-config/path_helper" unless defined?(ChefConfig::PathHelper)
 require "chef/data_bag_item" unless defined?(Chef::DataBagItem)
+require "chef/log" unless defined?(Chef::Log)
 
 class Chef
   class Knife
@@ -40,7 +41,9 @@ class Chef
         end
 
         def load_from(repo_location, *components)
+          Chef::Log.trace("ObjectLoader: loading #{klass} from repo_location=#{repo_location} components=#{components.inspect}")
           unless (object_file = find_file(repo_location, *components))
+            Chef::Log.trace("ObjectLoader: could not resolve '#{components.last}' under #{repo_location}")
             ui.error "Could not find or open file '#{components.last}' in current directory or in '#{repo_location}/#{components.join("/")}'"
             exit 1
           end
@@ -49,11 +52,14 @@ class Chef
 
         # When someone makes this awesome, please update the above error message.
         def find_file(repo_location, *components)
-          if file_exists_and_is_readable?(File.expand_path( components.last ))
-            File.expand_path( components.last )
+          absolute = File.expand_path(components.last)
+          if file_exists_and_is_readable?(absolute)
+            Chef::Log.trace("ObjectLoader: resolved '#{components.last}' as absolute path #{absolute}")
+            absolute
           else
             relative_path = File.join(Dir.pwd, repo_location, *components)
             if file_exists_and_is_readable?(relative_path)
+              Chef::Log.trace("ObjectLoader: resolved '#{components.last}' as relative path #{relative_path}")
               relative_path
             else
               nil
@@ -86,8 +92,10 @@ class Chef
         end
 
         def object_from_file(filename)
+          Chef::Log.trace("ObjectLoader: parsing #{filename}")
           case filename
           when /\.(js|json)$/
+            Chef::Log.trace("ObjectLoader: using JSON parser for #{filename}")
             r = FFI_Yajl::Parser.parse(File.read(filename))
 
             # Chef::DataBagItem doesn't work well with the json_create method
@@ -97,6 +105,7 @@ class Chef
               @klass.from_hash(r)
             end
           when /\.rb$/
+            Chef::Log.trace("ObjectLoader: using Ruby eval for #{filename}")
             r = klass.new
             r.from_file(filename)
             r

@@ -78,6 +78,7 @@ class Chef
       end
 
       def self.generate_hash
+        Chef::Log.trace("SubcommandLoader: generating plugin manifest hash")
         output = if plugin_manifest?
                    plugin_manifest
                  else
@@ -91,6 +92,7 @@ class Chef
       def self.write_hash(data)
         plugin_manifest_dir = File.expand_path("..", plugin_manifest_path)
         FileUtils.mkdir_p(plugin_manifest_dir) unless File.directory?(plugin_manifest_dir)
+        Chef::Log.trace("SubcommandLoader: writing plugin manifest to #{plugin_manifest_path}")
         File.open(plugin_manifest_path, "w") do |f|
           f.write(Chef::JSONCompat.to_json_pretty(data))
         end

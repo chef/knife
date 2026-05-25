@@ -19,6 +19,7 @@
 
 require_relative "../version"
 require "chef-config/path_helper" unless defined?(ChefConfig::PathHelper)
+require "chef/log" unless defined?(Chef::Log)
 class Chef
   class Knife
     class SubcommandLoader
@@ -41,13 +42,16 @@ class Chef
         # with the absolute path.
         def gem_and_builtin_subcommands
           require "rubygems" unless defined?(Gem)
+          Chef::Log.trace("GemGlobLoader: discovering subcommands via RubyGems")
           find_subcommands_via_rubygems
         rescue LoadError
+          Chef::Log.trace("GemGlobLoader: RubyGems unavailable, falling back to dirglob")
           find_subcommands_via_dirglob
         end
 
         def find_subcommands_via_rubygems
           files = find_files_latest_gems "chef/knife/*.rb"
+          Chef::Log.trace("GemGlobLoader: found #{files.size} candidate subcommand file(s) via RubyGems")
           version_file_match = /#{Regexp.escape(File.join("chef", "knife", "version"))}$/
           subcommand_files = {}
           files.each do |file|
@@ -59,7 +63,10 @@ class Chef
             # include some files from the 'other' Chef install. If this contains
             # a knife command that doesn't exist in this version of Chef, we will
             # get a LoadError later when we try to require it.
-            next if from_different_chef_version?(file)
+            if from_different_chef_version?(file)
+              Chef::Log.trace("GemGlobLoader: skipping #{file} (different Chef version)")
+              next
+            end
 
             # Exclude knife/chef/version. It's not a knife command, and  force-loading
             # when we load all of these files will emit constant-already-defined warnings
