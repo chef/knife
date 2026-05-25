@@ -78,9 +78,9 @@ class Chef
 
             if config[:run_list]
               run_list = if config[:long_output]
-                node.run_list.map { |rl| "#{rl.type}[#{rl.name}]" }
-              else
-                node["run_list"]
+                           node.run_list.map { |rl| "#{rl.type}[#{rl.name}]" }
+                         else
+                           node["run_list"]
                          end
             end
 

@@ -32,7 +32,7 @@ if [[ "${1:-}" == "--dry-run" ]]; then
   echo "=== Dry run: showing offenses only (no changes applied) ==="
   bundle exec rubocop "$TARGET" --only "$COPS" --format progress
 else
-  echo "=== Applying autocorrections to $TARGET ==="
+  echo "=== Applying auto-corrections to $TARGET ==="
   bundle exec rubocop "$TARGET" --only "$COPS" --autocorrect
   echo ""
   echo "=== Post-fix verification ==="

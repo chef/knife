@@ -106,9 +106,9 @@ class Chef
           client_rb << "log_location   #{get_log_location}\n"
 
           client_rb << if config[:chef_node_name]
-            %Q{node_name "#{config[:chef_node_name]}"\n}
-          else
-            "# Using default node name (fqdn)\n"
+                         %Q{node_name "#{config[:chef_node_name]}"\n}
+                       else
+                         "# Using default node name (fqdn)\n"
                        end
 
           # We configure :verify_api_cert only when it's overridden on the CLI
@@ -287,9 +287,9 @@ class Chef
               if f != root
                 file_on_node = "/etc/chef/client.d/#{relative}"
                 content << if f.directory?
-                  "mkdir #{file_on_node}\n"
-                else
-                  "cat > #{file_on_node} <<'EOP'\n#{f.read.gsub("'", "'\\\\''")}\nEOP\n"
+                             "mkdir #{file_on_node}\n"
+                           else
+                             "cat > #{file_on_node} <<'EOP'\n#{f.read.gsub("'", "'\\\\''")}\nEOP\n"
                            end
               end
             end

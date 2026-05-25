@@ -78,14 +78,14 @@ class Chef
             SUMMARY
             show_policy = !(node.policy_name.nil? && node.policy_group.nil?)
             summarized << if show_policy
-              <<~POLICY
-                #{key("Policy Name:")}  #{node.policy_name}
-                #{key("Policy Group:")} #{node.policy_group}
-              POLICY
-            else
-              <<~ENV
-                #{key("Environment:")} #{node.chef_environment}
-              ENV
+                            <<~POLICY
+                              #{key("Policy Name:")}  #{node.policy_name}
+                              #{key("Policy Group:")} #{node.policy_group}
+                            POLICY
+                          else
+                            <<~ENV
+                              #{key("Environment:")} #{node.chef_environment}
+                            ENV
                           end
             summarized << <<~SUMMARY
               #{key("FQDN:")}        #{node[:fqdn]}

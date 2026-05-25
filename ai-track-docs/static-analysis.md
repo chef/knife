@@ -21,7 +21,7 @@ The folder was already clean under base ChefStyle rules.
 **After enabling `Style/ConditionalAssignment`:**
 
 ```
-16 files inspected, 8 offenses detected, 8 offenses autocorrectable
+16 files inspected, 8 offenses detected, 8 offenses auto-correctable
 ```
 
 | File | Line | Cop |

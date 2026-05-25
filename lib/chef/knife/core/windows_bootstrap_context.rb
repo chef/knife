@@ -82,15 +82,15 @@ class Chef
           end
 
           client_rb << if config[:chef_node_name]
-            %Q{node_name "#{config[:chef_node_name]}"\n}
-          else
-            "# Using default node name (fqdn)\n"
+                         %Q{node_name "#{config[:chef_node_name]}"\n}
+                       else
+                         "# Using default node name (fqdn)\n"
                        end
 
           client_rb << if chef_config[:config_log_level]
-            %Q{log_level :#{chef_config[:config_log_level]}\n}
-          else
-            "log_level        :auto\n"
+                         %Q{log_level :#{chef_config[:config_log_level]}\n}
+                       else
+                         "log_level        :auto\n"
                        end
 
           client_rb << "log_location       #{get_log_location}"
@@ -421,9 +421,9 @@ class Chef
               if f != root
                 file_on_node = "#{bootstrap_directory}/client.d/#{relative}".tr("/", "\\")
                 content << if f.directory?
-                  "mkdir #{file_on_node}\n"
-                else
-                  "> #{file_on_node} (\n#{escape_and_echo(File.read(File.expand_path(f)))}\n)\n"
+                             "mkdir #{file_on_node}\n"
+                           else
+                             "> #{file_on_node} (\n#{escape_and_echo(File.read(File.expand_path(f)))}\n)\n"
                            end
               end
             end
