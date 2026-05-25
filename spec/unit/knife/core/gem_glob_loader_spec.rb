@@ -239,4 +239,55 @@ describe Chef::Knife::SubcommandLoader::GemGlobLoader do
       end
     end
   end
+
+  describe "KNIFE_LOADER_SUMMARY feature flag" do
+    before do
+      allow(Chef::Log).to receive(:info)
+      allow(Chef::Log).to receive(:trace)
+    end
+
+    context "when KNIFE_LOADER_SUMMARY is unset (default OFF)" do
+      around { |ex| ENV.delete("KNIFE_LOADER_SUMMARY"); ex.run }
+
+      it "does not emit an INFO summary log" do
+        loader.find_subcommands_via_rubygems
+        expect(Chef::Log).not_to have_received(:info).with(/op=knife_loader_summary/)
+      end
+
+      it "still traces the flag state" do
+        loader.find_subcommands_via_rubygems
+        expect(Chef::Log).to have_received(:trace).with(/KNIFE_LOADER_SUMMARY/)
+      end
+    end
+
+    context "when KNIFE_LOADER_SUMMARY=1 (ON)" do
+      around { |ex| ENV["KNIFE_LOADER_SUMMARY"] = "1"; ex.run; ENV.delete("KNIFE_LOADER_SUMMARY") }
+
+      it "emits a structured INFO summary with source and subcommand count" do
+        loader.find_subcommands_via_rubygems
+        expect(Chef::Log).to have_received(:info).with(
+          /op=knife_loader_summary source=rubygems subcommands=\d+ skipped=\d+/
+        )
+      end
+    end
+
+    context "loader_summary_enabled?" do
+      it "returns false when KNIFE_LOADER_SUMMARY is unset" do
+        ENV.delete("KNIFE_LOADER_SUMMARY")
+        expect(loader.send(:loader_summary_enabled?)).to be false
+      end
+
+      it "returns true when KNIFE_LOADER_SUMMARY=1" do
+        ENV["KNIFE_LOADER_SUMMARY"] = "1"
+        expect(loader.send(:loader_summary_enabled?)).to be true
+        ENV.delete("KNIFE_LOADER_SUMMARY")
+      end
+
+      it "returns true for any non-empty value" do
+        ENV["KNIFE_LOADER_SUMMARY"] = "true"
+        expect(loader.send(:loader_summary_enabled?)).to be true
+        ENV.delete("KNIFE_LOADER_SUMMARY")
+      end
+    end
+  end
 end

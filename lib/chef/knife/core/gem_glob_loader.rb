@@ -46,14 +46,20 @@ class Chef
           find_subcommands_via_rubygems
         rescue LoadError
           Chef::Log.trace("GemGlobLoader: RubyGems unavailable, falling back to dirglob")
-          find_subcommands_via_dirglob
+          result = find_subcommands_via_dirglob
+          if loader_summary_enabled?
+            Chef::Log.info("op=knife_loader_summary source=dirglob subcommands=#{result.size}")
+          end
+          result
         end
 
         def find_subcommands_via_rubygems
           files = find_files_latest_gems "chef/knife/*.rb"
           Chef::Log.trace("GemGlobLoader: found #{files.size} candidate subcommand file(s) via RubyGems")
+          Chef::Log.trace("GemGlobLoader: KNIFE_LOADER_SUMMARY=#{ENV["KNIFE_LOADER_SUMMARY"].inspect}")
           version_file_match = /#{Regexp.escape(File.join("chef", "knife", "version"))}$/
           subcommand_files = {}
+          skipped_count = 0
           files.each do |file|
 
             rel_path = file[/(.*)(#{Regexp.escape File.join("chef", "knife", "")}.*)\.rb/, 2]
@@ -65,6 +71,7 @@ class Chef
             # get a LoadError later when we try to require it.
             if from_different_chef_version?(file)
               Chef::Log.trace("GemGlobLoader: skipping #{file} (different Chef version)")
+              skipped_count += 1
               next
             end
 
@@ -75,10 +82,24 @@ class Chef
             subcommand_files[rel_path] = file
           end
 
-          subcommand_files.merge(find_subcommands_via_dirglob)
+          result = subcommand_files.merge(find_subcommands_via_dirglob)
+          if loader_summary_enabled?
+            Chef::Log.info("op=knife_loader_summary source=rubygems subcommands=#{result.size} skipped=#{skipped_count}")
+          end
+          result
         end
 
         private
+
+        # Returns true when the KNIFE_LOADER_SUMMARY environment variable is set
+        # to any non-empty value. When enabled, a structured Chef::Log.info line
+        # is emitted after subcommand discovery with source, count, and skipped totals.
+        #
+        # Toggle: export KNIFE_LOADER_SUMMARY=1
+        # Default: OFF (unset) — silent, current behavior preserved.
+        def loader_summary_enabled?
+          ENV["KNIFE_LOADER_SUMMARY"].to_s != ""
+        end
 
         def find_files_latest_gems(glob, check_load_path = true)
           files = []
