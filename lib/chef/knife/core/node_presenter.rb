@@ -77,16 +77,16 @@ class Chef
               #{ui.color("Node Name:", :bold)}   #{ui.color(node.name, :bold)}
             SUMMARY
             show_policy = !(node.policy_name.nil? && node.policy_group.nil?)
-            if show_policy
-              summarized << <<~POLICY
+            summarized << if show_policy
+              <<~POLICY
                 #{key("Policy Name:")}  #{node.policy_name}
                 #{key("Policy Group:")} #{node.policy_group}
               POLICY
             else
-              summarized << <<~ENV
+              <<~ENV
                 #{key("Environment:")} #{node.chef_environment}
               ENV
-            end
+                          end
             summarized << <<~SUMMARY
               #{key("FQDN:")}        #{node[:fqdn]}
               #{key("IP:")}          #{ip}

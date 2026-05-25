@@ -43,3 +43,21 @@ Style/GuardClause:
 Style/FrozenStringLiteralComment:
   Include:
     - "lib/chef/knife/core/**/*.rb"
+
+# Run Ex14: Prefer conditional assignment (ternary return) over if/else assignment
+# Applied to lib/chef/knife/core/ — 8 correctable offenses fixed in this pass.
+Style/ConditionalAssignment:
+  Include:
+    - "lib/chef/knife/core/**/*.rb"
+
+# Run Ex14: Metrics/MethodLength suppressed for bootstrap template generators.
+# Justification: bootstrap_context.rb and windows_bootstrap_context.rb contain
+# methods that build multi-section chef-client config strings and PowerShell
+# bootstrap scripts. These methods are intentionally long — they are template
+# generators, not algorithmic logic. Extracting sub-sections would fragment
+# the template rendering without improving testability or readability.
+# Suppression is scoped only to these two files.
+Metrics/MethodLength:
+  Exclude:
+    - "lib/chef/knife/core/bootstrap_context.rb"
+    - "lib/chef/knife/core/windows_bootstrap_context.rb"

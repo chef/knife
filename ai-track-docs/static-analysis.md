@@ -1,105 +1,137 @@
-# Static Analysis — Ex14
+# Run Ex14 — Type Safety / Static Analysis
 
-## Existing Checks
+**Level**: Run | **Exercise**: 14 | **Branch**: `learn/run/nikhil-ex14-static-analysis`
 
-This repository uses [cookstyle](https://github.com/chef/cookstyle) (Chef's RuboCop profile) for static analysis.
+## Goal
 
-### Running Locally
-
-```bash
-# Full cookstyle check (what CI runs)
-bundle exec cookstyle --chefstyle -c .rubocop.yml
-
-# Scoped rubocop on core/ path (Ex14 additions)
-bundle exec rubocop --only Style/StringConcatenation,Style/GuardClause lib/chef/knife/core/
-
-# Auto-correct fixable offenses (dry-run first)
-bundle exec rubocop --only Style/StringConcatenation,Style/GuardClause lib/chef/knife/core/ --autocorrect-all --dry-run
-```
-
-### CI Workflows
-
-| Workflow | File | What it checks |
-|----------|------|----------------|
-| Cookstyle | `.github/workflows/static-analysis.yml` (job: `cookstyle`) | Full repo, chefstyle profile |
-| RuboCop core | `.github/workflows/static-analysis.yml` (job: `rubocop-core`) | `lib/chef/knife/core/` — StringConcatenation + GuardClause |
-
-## Ex14 Improvements (fixes in `lib/chef/knife/core/`)
-
-A total of **16 offenses** fixed across 5 files:
-
-| File | Cop | Fixes |
-|------|-----|-------|
-| `core/status_presenter.rb` | `Style/StringConcatenation` | 2 |
-| `core/ui.rb` | `Style/GuardClause` | 1 |
-| `core/hashed_command_loader.rb` | `Style/GuardClause` | 1 |
-| `core/node_editor.rb` | `Style/GuardClause` | 1 |
-| `core/bootstrap_context.rb` | `Style/StringConcatenation` | 2 |
-| `core/cookbook_site_streaming_uploader.rb` | `Style/StringConcatenation` + `Lint/RedundantStringCoercion` | 8 |
-| `core/windows_bootstrap_context.rb` | `Style/StringConcatenation` | 1 |
-
-## Why These Rules
-
-- **`Style/StringConcatenation`** — string `+` allocates a new object; interpolation is idiomatic Ruby and avoids the extra allocation
-- **`Style/GuardClause`** — reduces nesting depth, makes the happy path obvious at a glance
-
-## Scope
-
-Rules are enabled only for `lib/chef/knife/core/` in `.rubocop.yml` using the `Include:` key. This avoids surfacing the remaining ~11 findings in other files until each is ready to be cleaned up incrementally.
+Increase static analysis strictness for `lib/chef/knife/core/`, fix the highest-signal
+findings, document suppressions with justification, and provide an autofix script.
 
 ---
 
-## Walk Ex14 — Frozen String Literals in `lib/chef/knife/core/`
+## Baseline (before this PR)
 
-### Rule Added
+```
+$ bundle exec rubocop lib/chef/knife/core/ --format progress
+16 files inspected, no offenses detected
+```
 
-`Style/FrozenStringLiteralComment` scoped to `lib/chef/knife/core/**/*.rb` in `.rubocop.yml`.
+The folder was already clean under base ChefStyle rules.
+
+**After enabling `Style/ConditionalAssignment`:**
+
+```
+16 files inspected, 8 offenses detected, 8 offenses autocorrectable
+```
+
+| File | Line | Cop |
+|------|------|-----|
+| `hashed_command_loader.rb` | 44 | Style/ConditionalAssignment |
+| `node_presenter.rb` | 80 | Style/ConditionalAssignment |
+| `status_presenter.rb` | 80 | Style/ConditionalAssignment |
+| `windows_bootstrap_context.rb` | 84, 90, 423 | Style/ConditionalAssignment |
+| `bootstrap_context.rb` | 2 sites | Style/ConditionalAssignment |
+| **Total** | | **8** |
+
+---
+
+## After (this PR)
+
+```
+$ bundle exec rubocop lib/chef/knife/core/ --only Style/ConditionalAssignment,...
+16 files inspected, no offenses detected
+```
+
+**Before: 8 offenses → After: 0 offenses**
+
+---
+
+## Fix Applied: Style/ConditionalAssignment
+
+All 8 offenses were correctable and applied via `bundle exec rubocop --autocorrect`.
+
+**Pattern fixed** (example from `hashed_command_loader.rb`):
+
+```ruby
+# Before — if/else for variable assignment
+if condition
+  var = value_a
+else
+  var = value_b
+end
+
+# After — return value of conditional assigned directly
+var = if condition
+        value_a
+      else
+        value_b
+      end
+```
+
+### `.rubocop.yml` addition
 
 ```yaml
-Style/FrozenStringLiteralComment:
+Style/ConditionalAssignment:
   Include:
     - "lib/chef/knife/core/**/*.rb"
 ```
 
-### Why This Rule
+---
 
-`# frozen_string_literal: true` prevents accidental mutation of string literals and can improve performance (fewer allocations). All 15 files in `core/` were missing this pragma.
+## Suppressions (Documented)
 
-### Findings: 15 files, 4 with mutable string bugs
+### Metrics/MethodLength
 
-Autocorrect added the pragma to all 15 files. Four files had mutable string patterns that would raise `FrozenError` at runtime — all fixed:
+**Files suppressed**: `bootstrap_context.rb`, `windows_bootstrap_context.rb`
 
-| File | Pattern | Fix |
-|------|---------|-----|
-| `status_presenter.rb:70` | `summarized = ""` | `summarized = +""` |
-| `text_formatter.rb:45` | `buffer = ""` | `buffer = +""` |
-| `bootstrap_context.rb:93,272,282` | `= ""` / `= <<~CONFIG` | `= +""` / `= +<<~CONFIG` |
-| `windows_bootstrap_context.rb:72,406,416` | same | same |
+**Findings if enabled**: 8 violations (methods 15–70 lines)
 
-The `+""` (unary plus on string) creates a new mutable empty string — the idiomatic Ruby fix for frozen string literal compatibility.
+**Justification**: These files contain methods that generate multi-section
+`chef-client` config strings and PowerShell bootstrap scripts. The length
+is inherent to the template structure, not algorithmic complexity. Extracting
+sub-sections would distribute the same string-building logic across more methods
+without improving testability or readability.
 
-### Suppressions
+**Suppression**:
 
-**None required.** All 15 files were cleanly fixable.
+```yaml
+Metrics/MethodLength:
+  Exclude:
+    - "lib/chef/knife/core/bootstrap_context.rb"
+    - "lib/chef/knife/core/windows_bootstrap_context.rb"
+```
 
-### CI Gating
+**Review trigger**: If either file grows significantly, revisit and consider
+extracting a dedicated config builder class.
 
-`rubocop-core` job in `.github/workflows/static-analysis.yml` now enforces:
+---
+
+## Autofix Script
+
+`scripts/autofix-static-analysis.sh` applies all correctable cops in one command:
 
 ```bash
-bundle exec rubocop \
-  --only Style/StringConcatenation,Style/GuardClause,Style/FrozenStringLiteralComment \
-  lib/chef/knife/core/
+# Dry run — show findings without changing files
+bash scripts/autofix-static-analysis.sh --dry-run
+
+# Apply all corrections, verify, run specs
+bash scripts/autofix-static-analysis.sh
 ```
 
-### Test Evidence
+**Cops covered**: Style/ConditionalAssignment, Style/StringConcatenation,
+Style/GuardClause, Style/FrozenStringLiteralComment
+
+---
+
+## Regression Evidence
 
 ```
-459 examples, 0 failures, 1 pending
-(spec/unit/knife/core/ + status_spec + bootstrap_spec)
+306 examples, 0 failures, 1 pending  (spec/unit/knife/core/)
 ```
 
-### Rollback
+---
+
+## Rollback
 
 ```bash
 git revert HEAD

@@ -41,11 +41,11 @@ class Chef
         end
 
         def list_commands(pref_category = nil)
-          if pref_category || manifest[KEY]["plugins_by_category"].key?(pref_category)
-            commands = { pref_category => manifest[KEY]["plugins_by_category"][pref_category] }
+          commands = if pref_category || manifest[KEY]["plugins_by_category"].key?(pref_category)
+            { pref_category => manifest[KEY]["plugins_by_category"][pref_category] }
           else
-            commands = manifest[KEY]["plugins_by_category"]
-          end
+            manifest[KEY]["plugins_by_category"]
+                     end
           # If any of the specified plugins in the manifest don't have a valid path we will
           # eventually get an error and the user will need to rehash - instead, lets just
           # print out 1 error here telling them to rehash

@@ -105,11 +105,11 @@ class Chef
 
           client_rb << "log_location   #{get_log_location}\n"
 
-          if config[:chef_node_name]
-            client_rb << %Q{node_name "#{config[:chef_node_name]}"\n}
+          client_rb << if config[:chef_node_name]
+            %Q{node_name "#{config[:chef_node_name]}"\n}
           else
-            client_rb << "# Using default node name (fqdn)\n"
-          end
+            "# Using default node name (fqdn)\n"
+                       end
 
           # We configure :verify_api_cert only when it's overridden on the CLI
           # or when specified in the knife config.
@@ -286,11 +286,11 @@ class Chef
               relative = f.relative_path_from(root)
               if f != root
                 file_on_node = "/etc/chef/client.d/#{relative}"
-                if f.directory?
-                  content << "mkdir #{file_on_node}\n"
+                content << if f.directory?
+                  "mkdir #{file_on_node}\n"
                 else
-                  content << "cat > #{file_on_node} <<'EOP'\n#{f.read.gsub("'", "'\\\\''")}\nEOP\n"
-                end
+                  "cat > #{file_on_node} <<'EOP'\n#{f.read.gsub("'", "'\\\\''")}\nEOP\n"
+                           end
               end
             end
           end

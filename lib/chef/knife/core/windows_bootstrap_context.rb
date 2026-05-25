@@ -81,17 +81,17 @@ class Chef
             client_rb << "chef_license \"#{chef_config[:chef_license]}\"\n"
           end
 
-          if config[:chef_node_name]
-            client_rb << %Q{node_name "#{config[:chef_node_name]}"\n}
+          client_rb << if config[:chef_node_name]
+            %Q{node_name "#{config[:chef_node_name]}"\n}
           else
-            client_rb << "# Using default node name (fqdn)\n"
-          end
+            "# Using default node name (fqdn)\n"
+                       end
 
-          if chef_config[:config_log_level]
-            client_rb << %Q{log_level :#{chef_config[:config_log_level]}\n}
+          client_rb << if chef_config[:config_log_level]
+            %Q{log_level :#{chef_config[:config_log_level]}\n}
           else
-            client_rb << "log_level        :auto\n"
-          end
+            "log_level        :auto\n"
+                       end
 
           client_rb << "log_location       #{get_log_location}"
 
@@ -420,11 +420,11 @@ class Chef
               relative = f.relative_path_from(root)
               if f != root
                 file_on_node = "#{bootstrap_directory}/client.d/#{relative}".tr("/", "\\")
-                if f.directory?
-                  content << "mkdir #{file_on_node}\n"
+                content << if f.directory?
+                  "mkdir #{file_on_node}\n"
                 else
-                  content << "> #{file_on_node} (\n#{escape_and_echo(File.read(File.expand_path(f)))}\n)\n"
-                end
+                  "> #{file_on_node} (\n#{escape_and_echo(File.read(File.expand_path(f)))}\n)\n"
+                           end
               end
             end
           end
