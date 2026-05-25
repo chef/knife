@@ -1661,7 +1661,8 @@
     "stackprof",
     "rubyprof",
     "metacharacter",
-    "metacharacters"
+    "metacharacters",
+    "linelint"
   ],
   // flagWords - list of words to be always considered incorrect
   // This is useful for offensive words and common spelling errors.
