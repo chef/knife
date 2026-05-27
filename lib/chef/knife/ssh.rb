@@ -17,6 +17,7 @@
 #
 
 require_relative "../knife"
+require_relative "ssh_progress_bar"
 
 class Chef
   class Knife
@@ -146,13 +147,20 @@ class Chef
         boolean: true,
         default: false
 
+      option :progress,
+        long: "--[no-]progress",
+        description: "Show progress bar during execution. Enabled by default when stderr is a TTY.",
+        boolean: true,
+        default: nil
+
       def session
         ssh_error_handler = Proc.new do |server|
           if config[:on_error]
-            # Net::SSH::Multi magic to force exception to be re-raised.
             throw :go, :raise
           else
+            @progress&.clear_bar
             ui.warn "Failed to connect to #{server.host} -- #{$!.class.name}: #{$!.message}"
+            @progress&.render
             $!.backtrace.each { |l| Chef::Log.debug(l) }
           end
         end
@@ -362,7 +370,9 @@ class Chef
       def print_line(host, data)
         padding = @longest - host.length
         str = ui.color(host, :cyan) + (" " * (padding + 1)) + data
+        @progress&.clear_bar
         ui.msg(str)
+        @progress&.render
       end
 
       # @param command [String] the command to run
@@ -373,6 +383,8 @@ class Chef
         exit_status = 0
         command = fixup_sudo(command)
         command.force_encoding("binary") if command.respond_to?(:force_encoding)
+        total_nodes = session_list.servers_for.size
+        @progress = progress_bar(total_nodes)
         session_list.open_channel do |chan|
           if config[:on_error] && exit_status != 0
             chan.close
@@ -402,11 +414,13 @@ class Chef
               end
               ch.on_request "exit-status" do |ichannel, data|
                 exit_status = [exit_status, data.read_long].max
+                @progress&.increment
               end
             end
           end
         end
         session.loop
+        @progress&.finish
         exit_status
       ensure
         session_list.close
@@ -602,6 +616,13 @@ class Chef
 
       def configure_ssh_gateway_identity
         config[:ssh_gateway_identity] = get_stripped_unfrozen_value(config[:ssh_gateway_identity])
+      end
+
+      def progress_bar(total)
+        show = config[:progress].nil? ? $stderr.tty? : config[:progress]
+        return nil unless show && total > 1
+
+        SshProgressBar.new(total)
       end
 
       def run
