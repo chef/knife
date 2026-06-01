@@ -28,6 +28,7 @@ pkg_build_deps=(
   core/gcc
   core/make
   core/git
+  core/sed
 )
 
 pkg_version() {
@@ -44,11 +45,19 @@ pkg_svc_user=root
 
 # Setup environment variables required for building the package
 do_setup_environment() {
-  build_line 'Setting GEM_HOME="$pkg_prefix/vendor"'
-  export GEM_HOME="$pkg_prefix/vendor"
+  # vendor/ is where gem install places gems; vendor/ruby/$VERSION/ is where bundler places them
+  push_runtime_env GEM_PATH "${pkg_prefix}/vendor"
+  push_runtime_env GEM_PATH "${pkg_prefix}/vendor/ruby/${ruby_gem_version}"
 
-  build_line "Setting GEM_PATH=$GEM_HOME"
-  export GEM_PATH="$GEM_HOME"
+  set_runtime_env APPBUNDLER_ALLOW_RVM "true" # prevent appbundler from clearing out the carefully constructed runtime GEM_PATH
+  set_runtime_env LANG "en_US.UTF-8"
+  set_runtime_env LC_CTYPE "en_US.UTF-8"
+}
+
+do_prepare() {
+  if [[ ! -f /usr/bin/env ]]; then
+    ln -s "$(pkg_interpreter_for core/coreutils bin/env)" /usr/bin/env
+  fi
 }
 
 # Unpack the source code into the Habitat cache path
@@ -83,7 +92,7 @@ do_build() {
 # Install the built gem into the package directory
 do_install() {
 
-  # Copy NOTICE.TXT to the package directory
+  # Copy NOTICE to the package directory
   if [[ -f "$PLAN_CONTEXT/../NOTICE" ]]; then
     build_line "Copying NOTICE to package directory"
     cp "$PLAN_CONTEXT/../NOTICE" "$pkg_prefix/"
@@ -91,48 +100,64 @@ do_install() {
     build_line "Warning: NOTICE not found at $PLAN_CONTEXT/../NOTICE"
   fi
 
-   export GEM_HOME="$pkg_prefix/vendor"
+  export GEM_HOME="$pkg_prefix/vendor"
 
-  build_line " do_install Setting GEM_PATH=$GEM_HOME"
+  build_line "Setting GEM_PATH=$GEM_HOME"
   export GEM_PATH="$GEM_HOME"
-   build_line "Installing the Knife gem"
-    pushd "$HAB_CACHE_SRC_PATH/$pkg_dirname"
+
+  build_line "Installing the Knife gem"
+  pushd "$HAB_CACHE_SRC_PATH/$pkg_dirname"
     # Install the specific knife gem version that was just built to avoid conflicts
     # Use the VERSION file from the source directory since pkg_version() uses relative path
     local knife_version=$(cat VERSION)
-    gem install "knife-${knife_version}.gem" --no-document
+    # Use --ignore-dependencies: bundler already installed all runtime deps to
+    # vendor/ruby/${ruby_gem_version}/ at Gemfile.lock-pinned versions. Installing
+    # deps again here would create a second gem store with potentially different
+    # versions, causing appbundler's "ambiguous specs" warning.
+    gem install "knife-${knife_version}.gem" --no-document --ignore-dependencies
+
+    make_pkg_official_distrib
+
+    build_line "** installing appbundler"
+    gem install appbundler --no-document
+
+    build_line "** generating binstubs for knife with precise version pins"
+    # Expose both gem stores to appbundler: knife lives in vendor/ (gem install),
+    # all its deps live in vendor/ruby/${ruby_gem_version}/ (bundler Gemfile.lock).
+    # Each gem appears in exactly ONE store, so no version ambiguity.
+    GEM_HOME="$pkg_prefix/vendor" \
+    GEM_PATH="$pkg_prefix/vendor:$pkg_prefix/vendor/ruby/${ruby_gem_version}" \
+    "${pkg_prefix}/vendor/bin/appbundler" . "$pkg_prefix/bin" knife
   popd
 
-  make_pkg_official_distrib
-  wrap_ruby_knife
-  set_runtime_env "GEM_PATH" "${pkg_prefix}/vendor"
-}
+  build_line "** patching binstubs to allow running directly"
+  for binstub in ${pkg_prefix}/bin/*; do
+    sed -i "/require \"rubygems\"/r ${PLAN_CONTEXT}/../binstub_patch.rb" "$binstub"
+  done
 
-wrap_ruby_knife() {
-  local bin="$pkg_prefix/bin/$pkg_name"
-  local real_bin="$GEM_HOME/gems/knife-${pkg_version}/bin/knife"
-  wrap_bin_with_ruby "$bin" "$real_bin"
-}
-
-wrap_bin_with_ruby() {
-  local bin="$1"
-  local real_bin="$2"
-  build_line "Adding wrapper $bin to $real_bin"
-  cat <<EOF > "$bin"
+  build_line "** creating wrapper for runtime environment"
+  mkdir -p "$pkg_prefix/libexec"
+  mv "$pkg_prefix/bin/knife" "$pkg_prefix/libexec/knife"
+  cat <<EOF > "$pkg_prefix/bin/knife"
 #!$(pkg_path_for core/bash)/bin/bash
 set -e
-# Set binary path that allows knife and chef to find correct binaries
-export PATH="/sbin:/usr/sbin:/usr/local/sbin:/usr/local/bin:/usr/bin:/bin:$pkg_prefix/vendor/bin:\$PATH"
-
-# Set Ruby paths defined from 'do_setup_environment()'
+# GEM_HOME points to the bundler-managed gem tree (where 'chef' and Gemfile deps live)
 export GEM_HOME="$pkg_prefix/vendor/ruby/${ruby_gem_version}"
+# GEM_PATH also includes the flat vendor tree (where gem install puts knife runtime deps)
 export GEM_PATH="$pkg_prefix/vendor"
-
-export GEM_PATH="\$HOME/.hab/knife/ruby/${ruby_gem_version}:$GEM_PATH"
-
-exec $(pkg_path_for ${ruby_pkg})/bin/ruby $real_bin \$@
+exec $(pkg_path_for ${ruby_pkg})/bin/ruby $pkg_prefix/libexec/knife "\$@"
 EOF
-  chmod -v 755 "$bin"
+  chmod -v 755 "$pkg_prefix/bin/knife"
+
+  build_line "** fixing binstub shebangs"
+  fix_interpreter "${pkg_prefix}/libexec/*" "$ruby_pkg" bin/ruby
+
+  rm -rf $GEM_PATH/cache/
+  rm -rf $GEM_PATH/bundler
+  rm -rf $GEM_PATH/doc
+  # Also clean the bundler-managed gem tree
+  rm -rf "$pkg_prefix/vendor/ruby/${ruby_gem_version}/cache/"
+  rm -rf "$pkg_prefix/vendor/ruby/${ruby_gem_version}/bundler/"
 }
 
 make_pkg_official_distrib() {
@@ -154,5 +179,23 @@ make_pkg_official_distrib() {
     fi
   else
     build_line "Artifactory is not reachable, skipping chef-official-distribution installation"
+  fi
+}
+
+do_after() {
+  build_line "Removing .github directories from vendored gems..."
+  # Search both gem stores: vendor/gems/ (gem install) and vendor/ruby/$VERSION/gems/ (bundler)
+  find "$pkg_prefix/vendor" -type d -name ".github" \
+    | while read github_dir; do rm -rf "$github_dir"; done
+}
+
+do_strip() {
+  return 0
+}
+
+do_end() {
+  if [[ "$(readlink /usr/bin/env)" = "$(pkg_interpreter_for core/coreutils bin/env)" ]]; then
+    build_line "Removing the symlink we created for '/usr/bin/env'"
+    rm /usr/bin/env
   fi
 }
