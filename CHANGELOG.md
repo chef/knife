@@ -1,16 +1,17 @@
 # Changelog
 
-<!-- latest_release 19.0.119 -->
-## [v19.0.119](https://github.com/chef/knife/tree/v19.0.119) (2026-06-03)
+<!-- latest_release 19.0.120 -->
+## [v19.0.120](https://github.com/chef/knife/tree/v19.0.120) (2026-06-03)
 
 #### Merged Pull Requests
-- CHEF-35167 Bump faraday to 2.14.2  [#169](https://github.com/chef/knife/pull/169) ([sanjain-progress](https://github.com/sanjain-progress))
+- Bump train-core from 3.16.2 to 3.16.3 [#94](https://github.com/chef/knife/pull/94) ([dependabot[bot]](https://github.com/dependabot[bot]))
 <!-- latest_release -->
 
 <!-- release_rollup since=19.0.105 -->
 ### Changes not yet released to rubygems.org
 
 #### Merged Pull Requests
+- Bump train-core from 3.16.2 to 3.16.3 [#94](https://github.com/chef/knife/pull/94) ([dependabot[bot]](https://github.com/dependabot[bot])) <!-- 19.0.120 -->
 - CHEF-35167 Bump faraday to 2.14.2  [#169](https://github.com/chef/knife/pull/169) ([sanjain-progress](https://github.com/sanjain-progress)) <!-- 19.0.119 -->
 - Added Appbundler support in linux hab pkg [#168](https://github.com/chef/knife/pull/168) ([sanghinitin](https://github.com/sanghinitin)) <!-- 19.0.118 -->
 - Removed extra gem group getting installed during hab build [#165](https://github.com/chef/knife/pull/165) ([sanghinitin](https://github.com/sanghinitin)) <!-- 19.0.117 -->
