@@ -1,16 +1,17 @@
 # Changelog
 
-<!-- latest_release 19.0.118 -->
-## [v19.0.118](https://github.com/chef/knife/tree/v19.0.118) (2026-06-03)
+<!-- latest_release 19.0.119 -->
+## [v19.0.119](https://github.com/chef/knife/tree/v19.0.119) (2026-06-03)
 
 #### Merged Pull Requests
-- Added Appbundler support in linux hab pkg [#168](https://github.com/chef/knife/pull/168) ([sanghinitin](https://github.com/sanghinitin))
+- CHEF-35167 Bump faraday to 2.14.2  [#169](https://github.com/chef/knife/pull/169) ([sanjain-progress](https://github.com/sanjain-progress))
 <!-- latest_release -->
 
 <!-- release_rollup since=19.0.105 -->
 ### Changes not yet released to rubygems.org
 
 #### Merged Pull Requests
+- CHEF-35167 Bump faraday to 2.14.2  [#169](https://github.com/chef/knife/pull/169) ([sanjain-progress](https://github.com/sanjain-progress)) <!-- 19.0.119 -->
 - Added Appbundler support in linux hab pkg [#168](https://github.com/chef/knife/pull/168) ([sanghinitin](https://github.com/sanghinitin)) <!-- 19.0.118 -->
 - Removed extra gem group getting installed during hab build [#165](https://github.com/chef/knife/pull/165) ([sanghinitin](https://github.com/sanghinitin)) <!-- 19.0.117 -->
 - Bump pry-stack_explorer from 0.6.2 to 0.6.3 [#85](https://github.com/chef/knife/pull/85) ([dependabot[bot]](https://github.com/dependabot[bot])) <!-- 19.0.116 -->
