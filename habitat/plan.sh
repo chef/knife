@@ -28,7 +28,6 @@ pkg_build_deps=(
   core/gcc
   core/make
   core/git
-  core/sed
 )
 
 pkg_version() {
