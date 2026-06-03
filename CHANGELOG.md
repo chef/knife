@@ -1,16 +1,17 @@
 # Changelog
 
-<!-- latest_release 19.0.122 -->
-## [v19.0.122](https://github.com/chef/knife/tree/v19.0.122) (2026-06-03)
+<!-- latest_release 19.0.123 -->
+## [v19.0.123](https://github.com/chef/knife/tree/v19.0.123) (2026-06-03)
 
 #### Merged Pull Requests
-- Update ffi-yajl requirement from ~&gt; 2.2 to &gt;= 2.2, &lt; 4.0 [#97](https://github.com/chef/knife/pull/97) ([dependabot[bot]](https://github.com/dependabot[bot]))
+- Bump actions/checkout from 4 to 6 [#95](https://github.com/chef/knife/pull/95) ([dependabot[bot]](https://github.com/dependabot[bot]))
 <!-- latest_release -->
 
 <!-- release_rollup since=19.0.105 -->
 ### Changes not yet released to rubygems.org
 
 #### Merged Pull Requests
+- Bump actions/checkout from 4 to 6 [#95](https://github.com/chef/knife/pull/95) ([dependabot[bot]](https://github.com/dependabot[bot])) <!-- 19.0.123 -->
 - Update ffi-yajl requirement from ~&gt; 2.2 to &gt;= 2.2, &lt; 4.0 [#97](https://github.com/chef/knife/pull/97) ([dependabot[bot]](https://github.com/dependabot[bot])) <!-- 19.0.122 -->
 - Bump actions/labeler from 6.0.1 to 6.1.0 [#96](https://github.com/chef/knife/pull/96) ([dependabot[bot]](https://github.com/dependabot[bot])) <!-- 19.0.121 -->
 - Bump train-core from 3.16.2 to 3.16.3 [#94](https://github.com/chef/knife/pull/94) ([dependabot[bot]](https://github.com/dependabot[bot])) <!-- 19.0.120 -->
