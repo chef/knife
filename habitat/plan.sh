@@ -183,8 +183,9 @@ make_pkg_official_distrib() {
 
 do_after() {
   build_line "Removing .github directories from vendored gems..."
-  find "$pkg_prefix/vendor/gems" -type d -name ".github" \
-    | while read github_dir; do rm -rf "$github_dir"; done
+  # Search the full vendor tree: bundler places gems under vendor/ruby/$VERSION/gems/
+  # (not vendor/gems/ which was the pre-Appbundler layout)
+  find "$pkg_prefix/vendor" -type d -name ".github" -exec rm -rf {} + 2>/dev/null || true
 }
 
 do_strip() {
