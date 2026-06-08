@@ -1,16 +1,17 @@
 # Changelog
 
-<!-- latest_release 19.0.124 -->
-## [v19.0.124](https://github.com/chef/knife/tree/v19.0.124) (2026-06-03)
+<!-- latest_release 19.0.125 -->
+## [v19.0.125](https://github.com/chef/knife/tree/v19.0.125) (2026-06-08)
 
 #### Merged Pull Requests
-- Bump chef-utils from 19.2.12 to 19.3.15 [#127](https://github.com/chef/knife/pull/127) ([dependabot[bot]](https://github.com/dependabot[bot]))
+- Remove vendored .github dirs in habitat plans [#170](https://github.com/chef/knife/pull/170) ([nikhil2611](https://github.com/nikhil2611))
 <!-- latest_release -->
 
 <!-- release_rollup since=19.0.105 -->
 ### Changes not yet released to rubygems.org
 
 #### Merged Pull Requests
+- Remove vendored .github dirs in habitat plans [#170](https://github.com/chef/knife/pull/170) ([nikhil2611](https://github.com/nikhil2611)) <!-- 19.0.125 -->
 - Bump chef-utils from 19.2.12 to 19.3.15 [#127](https://github.com/chef/knife/pull/127) ([dependabot[bot]](https://github.com/dependabot[bot])) <!-- 19.0.124 -->
 - Bump actions/checkout from 4 to 6 [#95](https://github.com/chef/knife/pull/95) ([dependabot[bot]](https://github.com/dependabot[bot])) <!-- 19.0.123 -->
 - Update ffi-yajl requirement from ~&gt; 2.2 to &gt;= 2.2, &lt; 4.0 [#97](https://github.com/chef/knife/pull/97) ([dependabot[bot]](https://github.com/dependabot[bot])) <!-- 19.0.122 -->
