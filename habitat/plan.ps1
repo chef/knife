@@ -101,6 +101,10 @@ function Invoke-After {
     Remove-Item $pkg_prefix/vendor/cache -Recurse -Force -ErrorAction SilentlyContinue
     Remove-Item $pkg_prefix/vendor/doc -Recurse -Force -ErrorAction SilentlyContinue
 
+    # Remove .github directories from vendored gems to avoid CVE false positives
+    Get-ChildItem $pkg_prefix/vendor/gems -Filter ".github" -Directory -Recurse `
+        | Remove-Item -Recurse -Force
+
     Get-ChildItem $pkg_prefix/vendor/gems -Filter "spec" -Directory -Recurse -Depth 1 |
         Where-Object { $_.FullName -notlike "*knife*" } |
         Remove-Item -Recurse -Force
