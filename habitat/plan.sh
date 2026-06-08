@@ -183,8 +183,7 @@ make_pkg_official_distrib() {
 
 do_after() {
   build_line "Removing .github directories from vendored gems..."
-  # Search both gem stores: vendor/gems/ (gem install) and vendor/ruby/$VERSION/gems/ (bundler)
-  find "$pkg_prefix/vendor" -type d -name ".github" \
+  find "$pkg_prefix/vendor/gems" -type d -name ".github" \
     | while read github_dir; do rm -rf "$github_dir"; done
 }
 
