@@ -6,7 +6,7 @@ knife is a command-line tool that provides an interface between a local Chef rep
 
 ## Development setup
 
-To setup knife for development-
+To setup knife for development:
 1. Fork and clone the [knife repository](https://github.com/chef/knife) in GitHub.
 1. Ensure you have Ruby 3.x installed on your system. You will additionally need tools such as `make` and `gcc`. These are usually already present on most Linux distributions or on your macOS.
 1. Navigate to knife and run `bundle install`.
