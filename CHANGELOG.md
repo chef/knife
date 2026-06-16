@@ -1,16 +1,17 @@
 # Changelog
 
-<!-- latest_release 19.0.126 -->
-## [v19.0.126](https://github.com/chef/knife/tree/v19.0.126) (2026-06-08)
+<!-- latest_release 19.0.127 -->
+## [v19.0.127](https://github.com/chef/knife/tree/v19.0.127) (2026-06-16)
 
 #### Merged Pull Requests
-- Fix do_after cleanup path for Appbundler gem layout in Linux Habitat plan [#171](https://github.com/chef/knife/pull/171) ([nikhil2611](https://github.com/nikhil2611))
+- Minor documentation fix to trigger version bump for knife release. [#173](https://github.com/chef/knife/pull/173) ([nikhil2611](https://github.com/nikhil2611))
 <!-- latest_release -->
 
 <!-- release_rollup since=19.0.105 -->
 ### Changes not yet released to rubygems.org
 
 #### Merged Pull Requests
+- Minor documentation fix to trigger version bump for knife release. [#173](https://github.com/chef/knife/pull/173) ([nikhil2611](https://github.com/nikhil2611)) <!-- 19.0.127 -->
 - Fix do_after cleanup path for Appbundler gem layout in Linux Habitat plan [#171](https://github.com/chef/knife/pull/171) ([nikhil2611](https://github.com/nikhil2611)) <!-- 19.0.126 -->
 - Remove vendored .github dirs in habitat plans [#170](https://github.com/chef/knife/pull/170) ([nikhil2611](https://github.com/nikhil2611)) <!-- 19.0.125 -->
 - Bump chef-utils from 19.2.12 to 19.3.15 [#127](https://github.com/chef/knife/pull/127) ([dependabot[bot]](https://github.com/dependabot[bot])) <!-- 19.0.124 -->
