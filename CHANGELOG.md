@@ -1,49 +1,46 @@
 # Changelog
 
-<!-- latest_release 19.0.128 -->
-## [v19.0.128](https://github.com/chef/knife/tree/v19.0.128) (2026-06-17)
-
-#### Merged Pull Requests
-- Updated NOTICE for upcoming knife release [#174](https://github.com/chef/knife/pull/174) ([nikhil2611](https://github.com/nikhil2611))
+<!-- latest_release -->
 <!-- latest_release -->
 
-<!-- release_rollup since=19.0.105 -->
-### Changes not yet released to rubygems.org
-
-#### Merged Pull Requests
-- Updated NOTICE for upcoming knife release [#174](https://github.com/chef/knife/pull/174) ([nikhil2611](https://github.com/nikhil2611)) <!-- 19.0.128 -->
-- Minor documentation fix to trigger version bump for knife release. [#173](https://github.com/chef/knife/pull/173) ([nikhil2611](https://github.com/nikhil2611)) <!-- 19.0.127 -->
-- Fix do_after cleanup path for Appbundler gem layout in Linux Habitat plan [#171](https://github.com/chef/knife/pull/171) ([nikhil2611](https://github.com/nikhil2611)) <!-- 19.0.126 -->
-- Remove vendored .github dirs in habitat plans [#170](https://github.com/chef/knife/pull/170) ([nikhil2611](https://github.com/nikhil2611)) <!-- 19.0.125 -->
-- Bump chef-utils from 19.2.12 to 19.3.15 [#127](https://github.com/chef/knife/pull/127) ([dependabot[bot]](https://github.com/dependabot[bot])) <!-- 19.0.124 -->
-- Bump actions/checkout from 4 to 6 [#95](https://github.com/chef/knife/pull/95) ([dependabot[bot]](https://github.com/dependabot[bot])) <!-- 19.0.123 -->
-- Update ffi-yajl requirement from ~&gt; 2.2 to &gt;= 2.2, &lt; 4.0 [#97](https://github.com/chef/knife/pull/97) ([dependabot[bot]](https://github.com/dependabot[bot])) <!-- 19.0.122 -->
-- Bump actions/labeler from 6.0.1 to 6.1.0 [#96](https://github.com/chef/knife/pull/96) ([dependabot[bot]](https://github.com/dependabot[bot])) <!-- 19.0.121 -->
-- Bump train-core from 3.16.2 to 3.16.3 [#94](https://github.com/chef/knife/pull/94) ([dependabot[bot]](https://github.com/dependabot[bot])) <!-- 19.0.120 -->
-- CHEF-35167 Bump faraday to 2.14.2  [#169](https://github.com/chef/knife/pull/169) ([sanjain-progress](https://github.com/sanjain-progress)) <!-- 19.0.119 -->
-- Added Appbundler support in linux hab pkg [#168](https://github.com/chef/knife/pull/168) ([sanghinitin](https://github.com/sanghinitin)) <!-- 19.0.118 -->
-- Removed extra gem group getting installed during hab build [#165](https://github.com/chef/knife/pull/165) ([sanghinitin](https://github.com/sanghinitin)) <!-- 19.0.117 -->
-- Bump pry-stack_explorer from 0.6.2 to 0.6.3 [#85](https://github.com/chef/knife/pull/85) ([dependabot[bot]](https://github.com/dependabot[bot])) <!-- 19.0.116 -->
-- Knife link changes [#89](https://github.com/chef/knife/pull/89) ([Chef-Pradyumn](https://github.com/Chef-Pradyumn)) <!-- 19.0.115 -->
-- Fixed the issue with knife -h command showing invalid subcommands [#88](https://github.com/chef/knife/pull/88) ([ashiqueps](https://github.com/ashiqueps)) <!-- 19.0.114 -->
-- Bump train-core from 3.16.1 to 3.16.2 [#93](https://github.com/chef/knife/pull/93) ([dependabot[bot]](https://github.com/dependabot[bot])) <!-- 19.0.113 -->
-- Bump rake from 13.3.1 to 13.4.2 [#90](https://github.com/chef/knife/pull/90) ([dependabot[bot]](https://github.com/dependabot[bot])) <!-- 19.0.112 -->
-- Dependabot: disable autorebase [#92](https://github.com/chef/knife/pull/92) ([jaymzh](https://github.com/jaymzh)) <!-- 19.0.111 -->
-- Setup &#39;external&#39; tests, add knife-windows [#91](https://github.com/chef/knife/pull/91) ([jaymzh](https://github.com/jaymzh)) <!-- 19.0.110 -->
-- Move habitat-test to public [#84](https://github.com/chef/knife/pull/84) ([tpowell-progress](https://github.com/tpowell-progress)) <!-- 19.0.109 -->
-- Bump crack from 0.4.5 to 1.0.1 [#80](https://github.com/chef/knife/pull/80) ([dependabot[bot]](https://github.com/dependabot[bot])) <!-- 19.0.108 -->
-- Update highline requirement from &gt;= 1.6.9, &lt; 3 to &gt;= 1.6.9, &lt; 4 [#79](https://github.com/chef/knife/pull/79) ([dependabot[bot]](https://github.com/dependabot[bot])) <!-- 19.0.107 -->
-- Bump streetsidesoftware/cspell-action from 8.3.0 to 8.4.0 [#78](https://github.com/chef/knife/pull/78) ([dependabot[bot]](https://github.com/dependabot[bot])) <!-- 19.0.106 -->
+<!-- release_rollup -->
 <!-- release_rollup -->
 
 <!-- latest_stable_release -->
+## [v19.0.128](https://github.com/chef/knife/tree/v19.0.128) (2026-06-18)
+
+#### Merged Pull Requests
+- Bump streetsidesoftware/cspell-action from 8.3.0 to 8.4.0 [#78](https://github.com/chef/knife/pull/78) ([dependabot[bot]](https://github.com/dependabot[bot]))
+- Update highline requirement from &gt;= 1.6.9, &lt; 3 to &gt;= 1.6.9, &lt; 4 [#79](https://github.com/chef/knife/pull/79) ([dependabot[bot]](https://github.com/dependabot[bot]))
+- Bump crack from 0.4.5 to 1.0.1 [#80](https://github.com/chef/knife/pull/80) ([dependabot[bot]](https://github.com/dependabot[bot]))
+- Move habitat-test to public [#84](https://github.com/chef/knife/pull/84) ([tpowell-progress](https://github.com/tpowell-progress))
+- Setup &#39;external&#39; tests, add knife-windows [#91](https://github.com/chef/knife/pull/91) ([jaymzh](https://github.com/jaymzh))
+- Dependabot: disable autorebase [#92](https://github.com/chef/knife/pull/92) ([jaymzh](https://github.com/jaymzh))
+- Bump rake from 13.3.1 to 13.4.2 [#90](https://github.com/chef/knife/pull/90) ([dependabot[bot]](https://github.com/dependabot[bot]))
+- Bump train-core from 3.16.1 to 3.16.2 [#93](https://github.com/chef/knife/pull/93) ([dependabot[bot]](https://github.com/dependabot[bot]))
+- Fixed the issue with knife -h command showing invalid subcommands [#88](https://github.com/chef/knife/pull/88) ([ashiqueps](https://github.com/ashiqueps))
+- Knife link changes [#89](https://github.com/chef/knife/pull/89) ([Chef-Pradyumn](https://github.com/Chef-Pradyumn))
+- Bump pry-stack_explorer from 0.6.2 to 0.6.3 [#85](https://github.com/chef/knife/pull/85) ([dependabot[bot]](https://github.com/dependabot[bot]))
+- Removed extra gem group getting installed during hab build [#165](https://github.com/chef/knife/pull/165) ([sanghinitin](https://github.com/sanghinitin))
+- Added Appbundler support in linux hab pkg [#168](https://github.com/chef/knife/pull/168) ([sanghinitin](https://github.com/sanghinitin))
+- CHEF-35167 Bump faraday to 2.14.2  [#169](https://github.com/chef/knife/pull/169) ([sanjain-progress](https://github.com/sanjain-progress))
+- Bump train-core from 3.16.2 to 3.16.3 [#94](https://github.com/chef/knife/pull/94) ([dependabot[bot]](https://github.com/dependabot[bot]))
+- Bump actions/labeler from 6.0.1 to 6.1.0 [#96](https://github.com/chef/knife/pull/96) ([dependabot[bot]](https://github.com/dependabot[bot]))
+- Update ffi-yajl requirement from ~&gt; 2.2 to &gt;= 2.2, &lt; 4.0 [#97](https://github.com/chef/knife/pull/97) ([dependabot[bot]](https://github.com/dependabot[bot]))
+- Bump actions/checkout from 4 to 6 [#95](https://github.com/chef/knife/pull/95) ([dependabot[bot]](https://github.com/dependabot[bot]))
+- Bump chef-utils from 19.2.12 to 19.3.15 [#127](https://github.com/chef/knife/pull/127) ([dependabot[bot]](https://github.com/dependabot[bot]))
+- Remove vendored .github dirs in habitat plans [#170](https://github.com/chef/knife/pull/170) ([nikhil2611](https://github.com/nikhil2611))
+- Fix do_after cleanup path for Appbundler gem layout in Linux Habitat plan [#171](https://github.com/chef/knife/pull/171) ([nikhil2611](https://github.com/nikhil2611))
+- Minor documentation fix to trigger version bump for knife release. [#173](https://github.com/chef/knife/pull/173) ([nikhil2611](https://github.com/nikhil2611))
+- Updated NOTICE for upcoming knife release [#174](https://github.com/chef/knife/pull/174) ([nikhil2611](https://github.com/nikhil2611))
+<!-- latest_stable_release -->
+
 ## [v19.0.105](https://github.com/chef/knife/tree/v19.0.105) (2026-04-08)
 
 #### Merged Pull Requests
 - Tweaking docs [#72](https://github.com/chef/knife/pull/72) ([johnmccrae](https://github.com/johnmccrae))
 - First pass at making this repo work [#74](https://github.com/chef/knife/pull/74) ([jaymzh](https://github.com/jaymzh))
 - Updated Repo urls in gemspec and Added Copyright [#76](https://github.com/chef/knife/pull/76) ([ashiqueps](https://github.com/ashiqueps))
-<!-- latest_stable_release -->
 
 ## [v19.0.102](https://github.com/chef/knife/tree/v19.0.102) (2026-04-07)
 
