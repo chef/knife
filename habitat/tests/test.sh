@@ -41,7 +41,7 @@ for plugin_check in "${plugin_checks[@]}"; do
 
   output=$(hab pkg exec "${pkg_ident}" bash -c "knife ${plugin_name} 2>&1" || true)
   if echo "${output}" | grep -q "${expected_output}"; then
-    echo "✓ Plugin '${plugin_name}' is available"
+    echo "Plugin '${plugin_name}' is available"
   else
     echo -e "\nERROR: knife plugin '${plugin_name}' is not available in package '${pkg_ident}'\n" >&2
     exit 1

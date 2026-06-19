@@ -37,7 +37,7 @@ $plugin_checks = @(
 foreach ($check in $plugin_checks) {
     $output = & hab pkg exec $pkg_ident powershell -Command "knife $($check.name) 2>&1" 2>&1 | Out-String
     if ($output -match $check.pattern) {
-        Write-Output "✓ Plugin '$($check.name)' is available"
+        Write-Output "Plugin '$($check.name)' is available"
     } else {
         Write-Error "knife plugin '$($check.name)' is not available in package '$pkg_ident'"
         exit 1
