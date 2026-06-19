@@ -32,7 +32,7 @@ echo "Verifying bundled knife plugins are available"
 plugin_commands=(
   "ec2 server list"
   "google server list"
-  "winrm"
+  "windows bootstrap"
 )
 
 for plugin_command in "${plugin_commands[@]}"; do
@@ -40,3 +40,4 @@ for plugin_command in "${plugin_commands[@]}"; do
     error "knife plugin command '${plugin_command}' is not available in package '${pkg_ident}'"
   fi
 done
+echo "All bundled plugins verified successfully"
