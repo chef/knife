@@ -28,16 +28,18 @@ if ($actual_version -notlike "*$package_version*") {
 }
 
 Write-Output "Verifying bundled knife plugins are available"
-$plugin_commands = @(
-    "ec2 server list",
-    "google server list",
-    "windows bootstrap"
+$plugin_checks = @(
+    @{name = "ec2"; pattern = "Available ec2 subcommands"},
+    @{name = "google"; pattern = "Available google subcommands"},
+    @{name = "windows"; pattern = "Available windows subcommands"}
 )
 
-foreach ($plugin_command in $plugin_commands) {
-    & hab pkg exec $pkg_ident powershell -Command "knife $plugin_command --help" *> $null
-    if ($LASTEXITCODE -ne 0) {
-        Write-Error "knife plugin command '$plugin_command' is not available in package '$pkg_ident'"
+foreach ($check in $plugin_checks) {
+    $output = & hab pkg exec $pkg_ident powershell -Command "knife $($check.name) 2>&1" 2>&1 | Out-String
+    if ($output -match $check.pattern) {
+        Write-Output "✓ Plugin '$($check.name)' is available"
+    } else {
+        Write-Error "knife plugin '$($check.name)' is not available in package '$pkg_ident'"
         exit 1
     }
 }
