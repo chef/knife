@@ -35,9 +35,10 @@ $plugin_commands = @(
 )
 
 foreach ($plugin_command in $plugin_commands) {
-    & hab pkg exec $pkg_ident knife $plugin_command --help *> $null
+    & hab pkg exec $pkg_ident powershell -Command "knife $plugin_command --help" *> $null
     if ($LASTEXITCODE -ne 0) {
-        Error "knife plugin command '$plugin_command' is not available in package '$pkg_ident'"
+        Write-Error "knife plugin command '$plugin_command' is not available in package '$pkg_ident'"
+        exit 1
     }
 }
 Write-Output "All bundled plugins verified successfully"

@@ -36,8 +36,9 @@ plugin_commands=(
 )
 
 for plugin_command in "${plugin_commands[@]}"; do
-  if ! hab pkg exec "${pkg_ident}" knife ${plugin_command} --help >/dev/null 2>&1; then
-    error "knife plugin command '${plugin_command}' is not available in package '${pkg_ident}'"
+  if ! hab pkg exec "${pkg_ident}" bash -c "knife ${plugin_command} --help" >/dev/null 2>&1; then
+    echo -e "\nERROR: knife plugin command '${plugin_command}' is not available in package '${pkg_ident}'\n" >&2
+    exit 1
   fi
 done
 echo "All bundled plugins verified successfully"
