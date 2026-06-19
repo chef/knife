@@ -29,8 +29,14 @@ if [[ "$actual_version" != *"$package_version"* ]]; then
 fi
 
 echo "Verifying bundled knife plugins are available"
-for plugin in "ec2" "google" "windows"; do
-  if ! hab pkg exec "${pkg_ident}" knife "${plugin}" --help >/dev/null 2>&1; then
-    error "knife plugin '${plugin}' is not available in package '${pkg_ident}'"
+plugin_commands=(
+  "ec2 server list"
+  "google server list"
+  "winrm"
+)
+
+for plugin_command in "${plugin_commands[@]}"; do
+  if ! hab pkg exec "${pkg_ident}" knife ${plugin_command} --help >/dev/null 2>&1; then
+    error "knife plugin command '${plugin_command}' is not available in package '${pkg_ident}'"
   fi
 done

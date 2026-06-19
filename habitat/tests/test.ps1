@@ -28,9 +28,13 @@ if ($actual_version -notlike "*$package_version*") {
 }
 
 Write-Output "Verifying bundled knife plugins are available"
-foreach ($plugin in @("ec2", "google", "windows")) {
-    & hab pkg exec $pkg_ident knife $plugin --help *> $null
+foreach ($pluginCommand in @(
+    @("ec2", "server", "list"),
+    @("google", "server", "list"),
+    @("winrm")
+)) {
+    & hab pkg exec $pkg_ident knife @pluginCommand --help *> $null
     if ($LASTEXITCODE -ne 0) {
-        Error "knife plugin '$plugin' is not available in package '$pkg_ident'"
+        Error "knife plugin command '$($pluginCommand -join ' ')' is not available in package '$pkg_ident'"
     }
 }
