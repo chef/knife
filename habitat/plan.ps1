@@ -43,6 +43,7 @@ function Invoke-Build {
 
         Write-BuildLine " ** Configuring bundler for this build environment"
         bundle config --local without integration deploy maintenance development omnibus_package test
+        bundle config --local with habitat
         bundle config --local jobs 4
         bundle config --local retry 5
         bundle config --local silence_root_warning 1

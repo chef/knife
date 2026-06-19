@@ -27,3 +27,10 @@ echo $actual_version
 if [[ "$actual_version" != *"$package_version"* ]]; then
   error "knife version is not the expected version. Expected '$package_version', got '$actual_version'"
 fi
+
+echo "Verifying bundled knife plugins are available"
+for plugin in "ec2" "google" "windows"; do
+  if ! hab pkg exec "${pkg_ident}" knife "${plugin}" --help >/dev/null 2>&1; then
+    error "knife plugin '${plugin}' is not available in package '${pkg_ident}'"
+  fi
+done

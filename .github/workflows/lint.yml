@@ -15,7 +15,7 @@ jobs:
   cookstyle:
     runs-on: ubuntu-latest
     env:
-      BUNDLE_WITHOUT: ruby_shadow:packaging
+      BUNDLE_WITHOUT: ruby_shadow:packaging:habitat
     steps:
       - uses: actions/checkout@v6
       - uses: ruby/setup-ruby@v1

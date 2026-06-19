@@ -17,6 +17,7 @@ concurrency:
 env:
   CHEF_LICENSE: accept-no-persist
   FORCE_FFI_YAJL: ext
+  BUNDLE_WITHOUT: habitat
 
 jobs:
   unit:

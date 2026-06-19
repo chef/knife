@@ -26,3 +26,11 @@ Write-Output $actual_version
 if ($actual_version -notlike "*$package_version*") {
     Error "knife version is not the expected version. Expected '$package_version', got '$actual_version'"
 }
+
+Write-Output "Verifying bundled knife plugins are available"
+foreach ($plugin in @("ec2", "google", "windows")) {
+    & hab pkg exec $pkg_ident knife $plugin --help *> $null
+    if ($LASTEXITCODE -ne 0) {
+        Error "knife plugin '$plugin' is not available in package '$pkg_ident'"
+    }
+}
