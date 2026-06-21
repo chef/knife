@@ -1,16 +1,17 @@
 # Changelog
 
-<!-- latest_release 19.0.129 -->
-## [v19.0.129](https://github.com/chef/knife/tree/v19.0.129) (2026-06-21)
+<!-- latest_release 19.0.130 -->
+## [v19.0.130](https://github.com/chef/knife/tree/v19.0.130) (2026-06-21)
 
 #### Merged Pull Requests
-- Bump chef-vault from 4.2.9 to 4.2.12 [#176](https://github.com/chef/knife/pull/176) ([dependabot[bot]](https://github.com/dependabot[bot]))
+- Bump actions/checkout from 6 to 7 [#175](https://github.com/chef/knife/pull/175) ([dependabot[bot]](https://github.com/dependabot[bot]))
 <!-- latest_release -->
 
 <!-- release_rollup since=19.0.128 -->
 ### Changes not yet released to rubygems.org
 
 #### Merged Pull Requests
+- Bump actions/checkout from 6 to 7 [#175](https://github.com/chef/knife/pull/175) ([dependabot[bot]](https://github.com/dependabot[bot])) <!-- 19.0.130 -->
 - Bump chef-vault from 4.2.9 to 4.2.12 [#176](https://github.com/chef/knife/pull/176) ([dependabot[bot]](https://github.com/dependabot[bot])) <!-- 19.0.129 -->
 <!-- release_rollup -->
 
