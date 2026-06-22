@@ -1,9 +1,19 @@
 # Changelog
 
-<!-- latest_release -->
+<!-- latest_release 19.0.131 -->
+## [v19.0.131](https://github.com/chef/knife/tree/v19.0.131) (2026-06-22)
+
+#### Merged Pull Requests
+- Update faraday and ffi-yajl dependency constraints [#180](https://github.com/chef/knife/pull/180) ([nikhil2611](https://github.com/nikhil2611))
 <!-- latest_release -->
 
-<!-- release_rollup -->
+<!-- release_rollup since=19.0.128 -->
+### Changes not yet released to rubygems.org
+
+#### Merged Pull Requests
+- Update faraday and ffi-yajl dependency constraints [#180](https://github.com/chef/knife/pull/180) ([nikhil2611](https://github.com/nikhil2611)) <!-- 19.0.131 -->
+- Bump actions/checkout from 6 to 7 [#175](https://github.com/chef/knife/pull/175) ([dependabot[bot]](https://github.com/dependabot[bot])) <!-- 19.0.130 -->
+- Bump chef-vault from 4.2.9 to 4.2.12 [#176](https://github.com/chef/knife/pull/176) ([dependabot[bot]](https://github.com/dependabot[bot])) <!-- 19.0.129 -->
 <!-- release_rollup -->
 
 <!-- latest_stable_release -->
