@@ -42,3 +42,9 @@ group :omnibus_package, :pry do
   gem "pry-byebug"
   gem "pry-stack_explorer"
 end
+
+group :habitat do
+  gem 'knife-ec2', '~> 2.2.0'
+  gem 'knife-google', '~> 5.0.15'
+  gem 'knife-windows', '~> 5.0.7'
+end
