@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    knife (19.0.117)
+    knife (19.0.130)
       abbrev
       bcrypt_pbkdf (~> 1.1)
       chef-licensing (~> 1.2)
@@ -9,7 +9,7 @@ PATH
       ed25519 (>= 1.2, < 2.0)
       erubis (~> 2.7)
       ffi (>= 1.15, < 1.18.0)
-      ffi-yajl (>= 2.2, < 4.0)
+      ffi-yajl (>= 2.2, < 3.0)
       highline (>= 1.6.9, < 4)
       license-acceptance (>= 1.0.5, < 3)
       mixlib-archive (>= 0.4, < 2.0)
@@ -182,7 +182,7 @@ GEM
     ed25519 (1.4.0)
     erubi (1.13.1)
     erubis (2.7.0)
-    faraday (2.14.2)
+    faraday (2.14.3)
       faraday-net_http (>= 2.0, < 3.5)
       json
       logger
@@ -479,6 +479,7 @@ DEPENDENCIES
   cheffish (>= 14)
   crack (< 1.0.2)
   csv
+  faraday (>= 2.14.3)
   knife!
   libyajl2 (>= 2.1)
   mixlib-authentication (= 3.0.10)
