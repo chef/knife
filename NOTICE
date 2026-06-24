@@ -1,5 +1,5 @@
 
- Progress Chef Knife 19.0                                                                          Updated June 2026
+ Progress Chef Knife 19.0                                                                         Updated June 2026
 
  ----------------------------------------------------------------------------------------------------------------------------
  NOTICES REPORT
@@ -94,12 +94,13 @@ Components:
 | Addressable URI parser 2.9.0           | http://addressable.rubyforge.org/     | Apache License 2.0                       |
 | antw's iniparse 1.5.0                  | http://github.com/antw/iniparse       | MIT License                              |
 | ast 2.4.3                              | http://github.com/whitequark/ast      | MIT License                              |
-| aws-sdk-core-ruby 3.244.0              | http://aws.amazon.com/ruby            | Apache License 2.0                       |
+| aws-sdk-core-ruby 3.252.0              | http://aws.amazon.com/ruby            | Apache License 2.0                       |
 | AWS SDK for Ruby 1.12.1                | http://aws.amazon.com/sdkforruby      | Apache License 2.0                       |
 | AWS SDK for Ruby 1.123.0               | http://aws.amazon.com/sdkforruby      | Apache License 2.0                       |
 | AWS SDK for Ruby 1.1235.0              | http://aws.amazon.com/sdkforruby      | Apache License 2.0                       |
 | AWS SDK for Ruby 1.218.0               | http://aws.amazon.com/sdkforruby      | Apache License 2.0                       |
 | AWS SDK for Ruby 1.4.0                 | http://aws.amazon.com/sdkforruby      | Apache License 2.0                       |
+| AWS SDK for Ruby 1.624.0               | http://aws.amazon.com/sdkforruby      | Apache License 2.0                       |
 | base64 0.3.0                           | https://github.com/ruby/base64        | BSD 2-clause "Simplified" License        |
 | bcrypt_pbkdf-ruby 1.1.2                | https://github.com/net-ssh/bcrypt_pbk | MIT License                              |
 |                                        |   df-ruby                             |                                          |
@@ -111,19 +112,21 @@ Components:
 | chef-licensing 1.4.1                   | https://github.com/chef/chef-licensin | Apache License 2.0                       |
 |                                        |   g                                   |                                          |
 | chef-telemetry 1.1.1                   | https://www.chef.io                   | PSC Product License                      |
+| chef-vault 4.2.12                      | https://github.com/Nordstrom/chef-vau | Apache License 2.0                       |
+|                                        |   lt                                  |                                          |
 | chef-winrm 2.5.0                       | https://github.com/WinRb/WinRM        | Apache License 2.0                       |
 | chef-winrm-elevated 1.2.5              | https://rubygems.org/gems/chef-winrm- | Apache License 2.0                       |
 |                                        |   elevated                            |                                          |
 | chef-winrm-fs 1.4.2                    | http://github.com/WinRb/winrm-fs      | Apache License 2.0                       |
 | chef-zero 15.1.0                       | https://github.com/sethvargo-cookbook | Apache License 2.0                       |
 |                                        |   s/chef-zero                         |                                          |
-| concurrent-ruby 1.3.6                  | http://www.concurrent-ruby.com        | MIT License                              |
 | cookstyle 8.6.10                       | https://github.com/chef/cookstyle     | Apache License 2.0                       |
 | corefoundation 0.3.13                  | http://github.com/fcheung/corefoundat | MIT License                              |
 |                                        |   ion                                 |                                          |
 | date 3.5.1                             | https://www.ruby-lang.org             | BSD 2-clause "Simplified" License        |
 | debug_inspector 1.2.0                  | https://github.com/banister/debug_ins | MIT License                              |
 |                                        |   pector                              |                                          |
+| declarative 0.0.20                     | http://rubygems.org/gems/declarative  | MIT License                              |
 | ed25519 1.4.0                          | https://github.com/cryptosphere/ed255 | MIT License                              |
 |                                        |   19                                  |                                          |
 | erubi 1.13.1                           | https://github.com/jeremyevans/erubi  | MIT License                              |
@@ -140,6 +143,18 @@ Components:
 | ffi-yajl 2.7.11                        | https://github.com/lamont-granquist/f | MIT License                              |
 |                                        |   fi-yajl                             |                                          |
 | fuzzyurl 0.9.0                         | https://github.com/gamache/fuzzyurl   | MIT License                              |
+| gcewinpass 1.1.0                       | https://github.com/chef-partners/gcew | Apache License 2.0                       |
+|                                        |   inpass                              |                                          |
+| google-api-ruby-client 0.18.0          | http://code.google.com/p/google-api-r | Apache License 2.0                       |
+|                                        |   uby-client/                         |                                          |
+| google-api-ruby-client 0.53.0          | http://code.google.com/p/google-api-r | Apache License 2.0                       |
+|                                        |   uby-client/                         |                                          |
+| googleauth 1.17.1                      | https://github.com/google/google-auth | Apache License 2.0                       |
+|                                        |   -library-ruby                       |                                          |
+| google-cloud-core 2.3.1                | http://googlecloudplatform.github.io/ | Apache License 2.0                       |
+|                                        |   google-cloud-ruby/                  |                                          |
+| google-logging-utils 0.2.0             | https://rubygems.org/gems/google-logg | Apache License 2.0                       |
+|                                        |   ing-utils                           |                                          |
 | gssapi 1.3.1                           | http://github.com/zenchild/gssapi     | MIT License                              |
 | Habitat core_acl 2.3.2                 |                                       | (GNU Lesser General Public License v2.1  |
 |                                        |                                       |   only AND GNU General Public License    |
@@ -191,6 +206,8 @@ Components:
 | jnunemaker's crack 1.0.1               | http://github.com/jnunemaker/crack    | MIT License                              |
 | JSON for Ruby 2.19.9                   | http://json.rubyforge.org/            | Ruby License                             |
 | knife 19.0.105                         | https://www.chef.io                   | Apache License 2.0                       |
+| knife-cloud 4.0.15                     | https://github.com/opscode/knife-clou | Apache License 2.0                       |
+|                                        |   d                                   |                                          |
 | language_server-protocol 3.17.0.5      | https://github.com/mtsmfm/language_se | MIT License                              |
 |                                        |   rver-protocol-ruby                  |                                          |
 | libyajl2 2.1.0                         | https://github.com/lamont-granquist/l | Apache License 2.0                       |
@@ -203,13 +220,16 @@ Components:
 |                                        |   urce                                |                                          |
 | mime-types-data 3.2026.0331            | https://github.com/mime-types/mime-ty | MIT License                              |
 |                                        |   pes-data                            |                                          |
+| mini_mime 1.1.5                        | https://github.com/discourse/mini_mim | MIT License                              |
+|                                        |   e                                   |                                          |
+| minitest 6.0.6                         | http://github.com/seattlerb/minitest  | MIT License                              |
 | mixlib-archive 1.3.3                   | https://chef.io                       | Apache License 2.0                       |
 | mixlib-authentication 3.0.10           | http://github.com/opscode/mixlib-auth | PSC Product License                      |
 |                                        |   entication                          |                                          |
 | mixlib-cli v2.1.8                      | https://www.chef.io/                  | PSC Product License                      |
 | mixlib-config 3.0.27                   | http://www.opscode.com                | PSC Product License                      |
 | mixlib-log 3.2.3                       | https://www.chef.io/                  | PSC Product License                      |
-| mixlib-shellout 3.3.9                  | https://github.com/opscode/mixlib-she | Apache License 2.0                       |
+| mixlib-shellout 3.4.10                 | https://github.com/opscode/mixlib-she | Apache License 2.0                       |
 |                                        |   llout                               |                                          |
 | multi_json 1.19.1                      | https://github.com/intridea/multi_jso | MIT License                              |
 |                                        |   n                                   |                                          |
@@ -226,7 +246,7 @@ Components:
 | net-ssh-multi 1.2.1                    | http://rubyforge.org/projects/net-ssh | MIT License                              |
 | nicksieger's multipart-post 2.4.1      | http://github.com/nicksieger/multipar | MIT License                              |
 |                                        |   t-post                              |                                          |
-| opscode-ohai 19.1.24                   | http://github.com/opscode/ohai/tree/m | Apache License 2.0                       |
+| opscode-ohai 19.1.37                   | http://github.com/opscode/ohai/tree/m | Apache License 2.0                       |
 |                                        |   aster                               |                                          |
 | ostruct 0.6.3                          | https://github.com/ruby/ostruct       | BSD 2-clause "Simplified" License        |
 | parser 3.3.11.1                        | http://github.com/whitequark/parser   | MIT License                              |
@@ -248,7 +268,11 @@ Components:
 | Rack 3.2.6                             | http://rack.github.com/               | MIT License                              |
 | rackup 2.3.1                           | https://github.com/rack/rackup        | MIT License                              |
 | Rake 13.4.2                            | https://github.com/ruby/rake          | MIT License                              |
+| rdp's os 1.1.4                         | http://github.com/rdp/os              | MIT License                              |
 | reline 0.6.3                           | https://github.com/ruby/reline        | BSD 2-clause "Simplified" License        |
+| representable 3.2.0                    | https://github.com/apotonick/represen | MIT License                              |
+|                                        |   table                               |                                          |
+| retriable 3.8.0                        | https://github.com/kamui/retriable    | MIT License                              |
 | RSpec 3.13.2                           | http://rspec.info/                    | MIT License                              |
 | RSpec 3.13.5                           | http://rspec.info/                    | MIT License                              |
 | RSpec 3.13.6                           | http://rspec.info/                    | MIT License                              |
@@ -261,10 +285,14 @@ Components:
 | ruby/benchmark 0.5.0                   | https://github.com/ruby/benchmark     | BSD 2-clause "Simplified" License        |
 | rubychan's coderay 1.1.3               | http://coderay.rubychan.de            | MIT License                              |
 | ruby csv 3.3.5                         | http://rubygems.org                   | BSD 2-clause "Simplified" License        |
+| ruby/drb 2.2.3                         | https://github.com/ruby/drb           | BSD 2-clause "Simplified" License        |
+| rubygems/gems 1.3.0                    | https://github.com/rubygems/gems      | MIT License                              |
+| ruby-i18n 1.15.1                       | https://github.com/ruby-i18n/i18n     | MIT License                              |
 | ruby/logger 1.5.3                      | https://github.com/ruby/logger        | BSD 2-clause "Simplified" License        |
 | ruby-mime-types 3.7.0                  | https://rubygems.org/gems/mime-types/ | MIT License                              |
 | ruby-net-ssh 7.3.2                     | http://net-ssh.github.com/net-ssh     | MIT License                              |
 | rubyntlm 0.6.5                         | https://github.com/winrb/rubyntlm     | MIT License                              |
+| Ruby on Rails 8.1.3                    | http://www.rubyonrails.org            | MIT License                              |
 | Ruby Public Suffix 6.0.2               | http://www.simonecarletti.com/blog/20 | MIT License                              |
 |                                        |   10/06/public-suffix-list-library-fo |                                          |
 |                                        |   r-ruby/                             |                                          |
@@ -272,6 +300,7 @@ Components:
 | RubyZip 2.4.1                          | http://sourceforge.net/projects/rubyz | BSD 2-clause "Simplified" License        |
 |                                        |   ip                                  |                                          |
 | savonrb/nori 2.7.1                     | https://github.com/savonrb/nori       | MIT License                              |
+| securerandom 0.4.1                     | https://github.com/ruby/securerandom  | BSD 2-clause "Simplified" License        |
 | semverse 3.0.2                         | https://github.com/berkshelf/semverse | Apache License 2.0                       |
 | sickill's rainbow 3.1.1                | http://sickill.net                    | MIT License                              |
 | socksify-ruby 1.8.1                    | http://socksify.rubyforge.org/        | BSD 2-clause "Simplified" License        |
@@ -282,12 +311,12 @@ Components:
 |                                        |   s                                   |                                          |
 | syslog-logger 1.6.8                    | http://github.com/ngmoco/syslog_logge | MIT License                              |
 |                                        |   r                                   |                                          |
-| technoweenie's faraday 2.14.2          | http://github.com/technoweenie/farada | MIT License                              |
+| technoweenie's faraday 2.14.3          | http://github.com/technoweenie/farada | MIT License                              |
 |                                        |   y                                   |                                          |
 | Thor 1.4.0                             | https://yehudakatz.com/               | MIT License                              |
 | timeout 0.6.1                          | https://github.com/celluloid/timeout  | BSD 2-clause "Simplified" License        |
 | timingfuction 0.4.2                    | http://rubygems.org                   | BSD 2-clause "Simplified" License        |
-| tomlrb 1.3.0                           | https://github.com/fbernier/tomlrb    | MIT License                              |
+| tomlrb 2.0.4                           | https://github.com/fbernier/tomlrb    | MIT License                              |
 | train-core 3.16.5                      | https://github.com/chef/train/        | Apache License 2.0                       |
 | train-rest 0.5.0                       | https://github.com/sgre-chef/train-re | PSC Product License                      |
 |                                        |   st                                  |                                          |
@@ -303,6 +332,8 @@ Components:
 | tty-table 0.12.0                       | https://github.com/peter-murach/tty-t | MIT License                              |
 |                                        |   able                                |                                          |
 | TwP's logging 2.4.0                    | http://logging.rubyforge.org/         | MIT License                              |
+| TZInfo 2.0.6                           | http://tzinfo.github.io/              | MIT License                              |
+| uber 0.1.0                             | https://github.com/apotonick/uber     | MIT License                              |
 | unf_ext 0.0.9.1                        | https://github.com/knu/ruby-unf_ext   | MIT License                              |
 | unicode-display_width 2.6.0            | https://github.com/janlelis/unicode-d | MIT License                              |
 |                                        |   isplay_width                        |                                          |
@@ -320,7 +351,7 @@ License Data and Text:
 -------------------------------------------------------------------------------------------------------------------------
 
 Apache License 2.0
-(Addressable URI parser 2.9.0, AWS SDK for Ruby 1.12.1, AWS SDK for Ruby 1.123.0, AWS SDK for Ruby 1.1235.0, AWS SDK for Ruby 1.218.0, AWS SDK for Ruby 1.4.0, aws-sdk-core-ruby 3.244.0, Chef 19.3.15, chef-licensing 1.4.1, chef-winrm 2.5.0, chef-winrm-elevated 1.2.5, chef-winrm-fs 1.4.2, chef-zero 15.1.0, cookstyle 8.6.10, faraday-http-cache 2.6.1, ffi-libarchive 1.1.14, jmespath rubygems 1.6.2, knife 19.0.105, libyajl2 2.1.0, license-acceptance 2.1.13, mixlib-archive 1.3.3, mixlib-shellout 3.3.9, opscode-ohai 19.1.24, semverse 3.0.2, sporkmonger's uuidtools 2.2.0, train-core 3.16.5, train-winrm 0.4.3, wmi-lite 1.0.7)
+(Addressable URI parser 2.9.0, AWS SDK for Ruby 1.12.1, AWS SDK for Ruby 1.123.0, AWS SDK for Ruby 1.1235.0, AWS SDK for Ruby 1.218.0, AWS SDK for Ruby 1.4.0, AWS SDK for Ruby 1.624.0, aws-sdk-core-ruby 3.252.0, Chef 19.3.15, chef-licensing 1.4.1, chef-vault 4.2.12, chef-winrm 2.5.0, chef-winrm-elevated 1.2.5, chef-winrm-fs 1.4.2, chef-zero 15.1.0, cookstyle 8.6.10, faraday-http-cache 2.6.1, ffi-libarchive 1.1.14, gcewinpass 1.1.0, google-api-ruby-client 0.18.0, google-api-ruby-client 0.53.0, google-cloud-core 2.3.1, google-logging-utils 0.2.0, googleauth 1.17.1, jmespath rubygems 1.6.2, knife 19.0.105, knife-cloud 4.0.15, libyajl2 2.1.0, license-acceptance 2.1.13, mixlib-archive 1.3.3, mixlib-shellout 3.4.10, opscode-ohai 19.1.37, semverse 3.0.2, sporkmonger's uuidtools 2.2.0, train-core 3.16.5, train-winrm 0.4.3, wmi-lite 1.0.7)
 
 Apache License
 Version 2.0, January 2004
@@ -506,7 +537,7 @@ third-party archives.
 ---
 
 BSD 2-clause "Simplified" License
-(abbrev 0.1.2, base64 0.3.0, bigdecimal 4.1.1, date 3.5.1, Habitat core_ruby3_4 3.4.8, Habitat core_ruby3_4-plus-devkit 3.4.8, HighLine 3.1.2, io-console 0.8.2, mutex_m 0.3.0, nahi's httpclient 2.9.0, net-ftp 0.3.9, net-http 0.9.1, net-protocol 0.2.2, ostruct 0.6.3, pstore 0.1.4, public_suffix_service 0.6.20240107, racc 1.8.1, reline 0.6.3, ruby csv 3.3.5, ruby/benchmark 0.5.0, ruby/logger 1.5.3, ruby/rexml 3.4.4, RubyZip 2.4.1, socksify-ruby 1.8.1, timeout 0.6.1, timingfuction 0.4.2, uri 1.0.4, webrick 1.9.2)
+(abbrev 0.1.2, base64 0.3.0, bigdecimal 4.1.1, date 3.5.1, Habitat core_ruby3_4 3.4.8, Habitat core_ruby3_4-plus-devkit 3.4.8, HighLine 3.1.2, io-console 0.8.2, mutex_m 0.3.0, nahi's httpclient 2.9.0, net-ftp 0.3.9, net-http 0.9.1, net-protocol 0.2.2, ostruct 0.6.3, pstore 0.1.4, public_suffix_service 0.6.20240107, racc 1.8.1, reline 0.6.3, ruby csv 3.3.5, ruby/benchmark 0.5.0, ruby/drb 2.2.3, ruby/logger 1.5.3, ruby/rexml 3.4.4, RubyZip 2.4.1, securerandom 0.4.1, socksify-ruby 1.8.1, timeout 0.6.1, timingfuction 0.4.2, uri 1.0.4, webrick 1.9.2)
 
 BSD Two Clause License
 ======================
@@ -3714,7 +3745,7 @@ this License. But first, please read
 ---
 
 MIT License
-(adamwiggins's rest-client 2.1.0, antw's iniparse 1.5.0, ast 2.4.3, bcrypt_pbkdf-ruby 1.1.2, bleything's plist 3.7.2, chef-gyoku 1.5.0, concurrent-ruby 1.3.6, corefoundation 0.3.13, debug_inspector 1.2.0, ed25519 1.4.0, erubi 1.13.1, erubis 2.7.0, faraday-follow_redirects 0.5.0, faraday-net_http 3.4.4, ffi-yajl 2.7.11, fuzzyurl 0.9.0, gssapi 1.3.1, Habitat core_libffi 3.4.7, Habitat core_libyaml 0.2.5, Habitat core_ncurses 6.5, halostatue/diff-lcs 1.6.2, hashdiff 1.2.1, hashie 5.1.0, http-accept 1.7.0, http-cookie 1.1.3, ipaddress-gem/ipaddress 0.8.3, jfelchner/ruby-progressbar 1.13.0, jimweirich's builder 3.3.0, jnunemaker's crack 1.0.1, language_server-protocol 3.17.0.5, lint_roller 1.1.0, little-plugger 1.1.4, method_source 1.1.0, mime-types-data 3.2026.0331, multi_json 1.19.1, mwunsch's prism 1.9.0, net-scp 4.1.0, net-sftp 4.0.0, net-ssh-gateway 2.0.0, net-ssh-multi 1.2.1, nicksieger's multipart-post 2.4.1, parser 3.3.11.1, Parslet 2.0.0, pastel 0.8.0, proxifier2 1.1.0, Pry REPL 0.16.0, pry-stack_explorer 0.6.3, Rack 3.2.6, rackup 2.3.1, Rake 13.4.2, RSpec 3.13.2, RSpec 3.13.5, RSpec 3.13.6, RSpec 3.13.8, rspec-its 2.0.0, rspec-support 3.13.7, rubocop 1.84.2, rubocop-ast 1.49.1, Ruby Public Suffix 6.0.2, ruby-mime-types 3.7.0, ruby-net-ssh 7.3.2, rubychan's coderay 1.1.3, rubyntlm 0.6.5, savonrb/nori 2.7.1, sickill's rainbow 3.1.1, strings 0.2.1, strings-ansi 0.2.0, syslog-logger 1.6.8, technoweenie's faraday 2.14.2, Thor 1.4.0, tomlrb 1.3.0, tty 0.23.1, tty 0.6.0, tty-command v0.7.0, tty-command v0.9.0, tty-cursor 0.7.1, tty-screen 0.8.2, tty-spinner 0.9.3, tty-table 0.12.0, TwP's logging 2.4.0, unf_ext 0.0.9.1, unicode-display_width 2.6.0, webmock 3.26.2, wisper v2.0.1)
+(adamwiggins's rest-client 2.1.0, antw's iniparse 1.5.0, ast 2.4.3, bcrypt_pbkdf-ruby 1.1.2, bleything's plist 3.7.2, chef-gyoku 1.5.0, corefoundation 0.3.13, debug_inspector 1.2.0, declarative 0.0.20, ed25519 1.4.0, erubi 1.13.1, erubis 2.7.0, faraday-follow_redirects 0.5.0, faraday-net_http 3.4.4, ffi-yajl 2.7.11, fuzzyurl 0.9.0, gssapi 1.3.1, Habitat core_libffi 3.4.7, Habitat core_libyaml 0.2.5, Habitat core_ncurses 6.5, halostatue/diff-lcs 1.6.2, hashdiff 1.2.1, hashie 5.1.0, http-accept 1.7.0, http-cookie 1.1.3, ipaddress-gem/ipaddress 0.8.3, jfelchner/ruby-progressbar 1.13.0, jimweirich's builder 3.3.0, jnunemaker's crack 1.0.1, language_server-protocol 3.17.0.5, lint_roller 1.1.0, little-plugger 1.1.4, method_source 1.1.0, mime-types-data 3.2026.0331, mini_mime 1.1.5, minitest 6.0.6, multi_json 1.19.1, mwunsch's prism 1.9.0, net-scp 4.1.0, net-sftp 4.0.0, net-ssh-gateway 2.0.0, net-ssh-multi 1.2.1, nicksieger's multipart-post 2.4.1, parser 3.3.11.1, Parslet 2.0.0, pastel 0.8.0, proxifier2 1.1.0, Pry REPL 0.16.0, pry-stack_explorer 0.6.3, Rack 3.2.6, rackup 2.3.1, Rake 13.4.2, rdp's os 1.1.4, representable 3.2.0, retriable 3.8.0, RSpec 3.13.2, RSpec 3.13.5, RSpec 3.13.6, RSpec 3.13.8, rspec-its 2.0.0, rspec-support 3.13.7, rubocop 1.84.2, rubocop-ast 1.49.1, Ruby on Rails 8.1.3, Ruby Public Suffix 6.0.2, ruby-i18n 1.15.1, ruby-mime-types 3.7.0, ruby-net-ssh 7.3.2, rubychan's coderay 1.1.3, rubygems/gems 1.3.0, rubyntlm 0.6.5, savonrb/nori 2.7.1, sickill's rainbow 3.1.1, strings 0.2.1, strings-ansi 0.2.0, syslog-logger 1.6.8, technoweenie's faraday 2.14.3, Thor 1.4.0, tomlrb 2.0.4, tty 0.23.1, tty 0.6.0, tty-command v0.7.0, tty-command v0.9.0, tty-cursor 0.7.1, tty-screen 0.8.2, tty-spinner 0.9.3, tty-table 0.12.0, TwP's logging 2.4.0, TZInfo 2.0.6, uber 0.1.0, unf_ext 0.0.9.1, unicode-display_width 2.6.0, webmock 3.26.2, wisper v2.0.1)
 
 The MIT License
 ===============
