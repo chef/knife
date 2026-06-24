@@ -1,16 +1,17 @@
 # Changelog
 
-<!-- latest_release 19.0.132 -->
-## [v19.0.132](https://github.com/chef/knife/tree/v19.0.132) (2026-06-22)
+<!-- latest_release 19.0.133 -->
+## [v19.0.133](https://github.com/chef/knife/tree/v19.0.133) (2026-06-24)
 
 #### Merged Pull Requests
-- Include knife plugins in Habitat package build [#179](https://github.com/chef/knife/pull/179) ([ashiqueps](https://github.com/ashiqueps))
+- Update NOTICE [#181](https://github.com/chef/knife/pull/181) ([nikhil2611](https://github.com/nikhil2611))
 <!-- latest_release -->
 
 <!-- release_rollup since=19.0.128 -->
 ### Changes not yet released to rubygems.org
 
 #### Merged Pull Requests
+- Update NOTICE [#181](https://github.com/chef/knife/pull/181) ([nikhil2611](https://github.com/nikhil2611)) <!-- 19.0.133 -->
 - Include knife plugins in Habitat package build [#179](https://github.com/chef/knife/pull/179) ([ashiqueps](https://github.com/ashiqueps)) <!-- 19.0.132 -->
 - Update faraday and ffi-yajl dependency constraints [#180](https://github.com/chef/knife/pull/180) ([nikhil2611](https://github.com/nikhil2611)) <!-- 19.0.131 -->
 - Bump actions/checkout from 6 to 7 [#175](https://github.com/chef/knife/pull/175) ([dependabot[bot]](https://github.com/dependabot[bot])) <!-- 19.0.130 -->
