@@ -1,25 +1,23 @@
 # Changelog
 
-<!-- latest_release 19.0.134 -->
-## [v19.0.134](https://github.com/chef/knife/tree/v19.0.134) (2026-06-25)
-
-#### Merged Pull Requests
-- Update ohai to 19.1.40 [#182](https://github.com/chef/knife/pull/182) ([nikhil2611](https://github.com/nikhil2611))
+<!-- latest_release -->
 <!-- latest_release -->
 
-<!-- release_rollup since=19.0.128 -->
-### Changes not yet released to rubygems.org
-
-#### Merged Pull Requests
-- Update ohai to 19.1.40 [#182](https://github.com/chef/knife/pull/182) ([nikhil2611](https://github.com/nikhil2611)) <!-- 19.0.134 -->
-- Update NOTICE [#181](https://github.com/chef/knife/pull/181) ([nikhil2611](https://github.com/nikhil2611)) <!-- 19.0.133 -->
-- Include knife plugins in Habitat package build [#179](https://github.com/chef/knife/pull/179) ([ashiqueps](https://github.com/ashiqueps)) <!-- 19.0.132 -->
-- Update faraday and ffi-yajl dependency constraints [#180](https://github.com/chef/knife/pull/180) ([nikhil2611](https://github.com/nikhil2611)) <!-- 19.0.131 -->
-- Bump actions/checkout from 6 to 7 [#175](https://github.com/chef/knife/pull/175) ([dependabot[bot]](https://github.com/dependabot[bot])) <!-- 19.0.130 -->
-- Bump chef-vault from 4.2.9 to 4.2.12 [#176](https://github.com/chef/knife/pull/176) ([dependabot[bot]](https://github.com/dependabot[bot])) <!-- 19.0.129 -->
+<!-- release_rollup -->
 <!-- release_rollup -->
 
 <!-- latest_stable_release -->
+## [v19.0.134](https://github.com/chef/knife/tree/v19.0.134) (2026-06-25)
+
+#### Merged Pull Requests
+- Bump chef-vault from 4.2.9 to 4.2.12 [#176](https://github.com/chef/knife/pull/176) ([dependabot[bot]](https://github.com/dependabot[bot]))
+- Bump actions/checkout from 6 to 7 [#175](https://github.com/chef/knife/pull/175) ([dependabot[bot]](https://github.com/dependabot[bot]))
+- Update faraday and ffi-yajl dependency constraints [#180](https://github.com/chef/knife/pull/180) ([nikhil2611](https://github.com/nikhil2611))
+- Include knife plugins in Habitat package build [#179](https://github.com/chef/knife/pull/179) ([ashiqueps](https://github.com/ashiqueps))
+- Update NOTICE [#181](https://github.com/chef/knife/pull/181) ([nikhil2611](https://github.com/nikhil2611))
+- Update ohai to 19.1.40 [#182](https://github.com/chef/knife/pull/182) ([nikhil2611](https://github.com/nikhil2611))
+<!-- latest_stable_release -->
+
 ## [v19.0.128](https://github.com/chef/knife/tree/v19.0.128) (2026-06-18)
 
 #### Merged Pull Requests
@@ -46,7 +44,6 @@
 - Fix do_after cleanup path for Appbundler gem layout in Linux Habitat plan [#171](https://github.com/chef/knife/pull/171) ([nikhil2611](https://github.com/nikhil2611))
 - Minor documentation fix to trigger version bump for knife release. [#173](https://github.com/chef/knife/pull/173) ([nikhil2611](https://github.com/nikhil2611))
 - Updated NOTICE for upcoming knife release [#174](https://github.com/chef/knife/pull/174) ([nikhil2611](https://github.com/nikhil2611))
-<!-- latest_stable_release -->
 
 ## [v19.0.105](https://github.com/chef/knife/tree/v19.0.105) (2026-04-08)
 
