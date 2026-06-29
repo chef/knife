@@ -333,6 +333,7 @@
     "dslocal",
     "DUPEUX",
     "DWORDLONG",
+    "DYLD",
     "DYNALINK",
     "DYNLINK",
     "EAGAIN",
