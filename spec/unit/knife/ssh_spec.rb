@@ -290,10 +290,13 @@ describe Chef::Knife::Ssh do
     let(:session_channel2) { double(:session_channel, request_pty: nil) }
 
     let(:session) { double(:session, loop: nil, close: nil) }
+    let(:progress_bar) { nil }
 
     let(:command) { "false" }
 
     before do
+      allow(@knife).to receive(:progress_bar).with(session).and_return(progress_bar)
+
       expect(execution_channel)
         .to receive(:on_request)
         .and_yield(nil, double(:data_stream, read_long: exit_status))
@@ -343,6 +346,81 @@ describe Chef::Knife::Ssh do
       it "returns a non-zero exit code" do
         expect(@knife.ssh_command(command, session)).to eq(2)
       end
+    end
+
+    context "with progress enabled" do
+      let(:progress_bar) { double(:progress_bar, increment: nil, increment_failed: nil, finish: nil, clear_bar: nil) }
+
+      context "both connections return 0" do
+        let(:exit_status) { 0 }
+        let(:exit_status2) { 0 }
+
+        it "marks both connections completed" do
+          expect(progress_bar).to receive(:increment).twice
+          expect(progress_bar).not_to receive(:increment_failed)
+          expect(progress_bar).to receive(:finish)
+
+          @knife.ssh_command(command, session)
+        end
+      end
+
+      context "one connection returns non-zero" do
+        let(:exit_status) { 1 }
+        let(:exit_status2) { 0 }
+
+        it "marks the failed connection" do
+          expect(progress_bar).to receive(:increment_failed).once
+          expect(progress_bar).to receive(:increment).once
+          expect(progress_bar).to receive(:finish)
+
+          @knife.ssh_command(command, session)
+        end
+      end
+    end
+  end
+
+  describe "#progress_bar" do
+    let(:session_list) { double(:session_list) }
+
+    it "does not inspect the session list when progress is disabled" do
+      @knife.config[:progress] = false
+
+      expect(session_list).not_to receive(:servers_for)
+      expect(@knife.progress_bar(session_list)).to be_nil
+    end
+
+    it "does not inspect the session list when stderr is not a TTY" do
+      @knife.config[:progress] = nil
+      allow($stderr).to receive(:tty?).and_return(false)
+
+      expect(session_list).not_to receive(:servers_for)
+      expect(@knife.progress_bar(session_list)).to be_nil
+    end
+
+    it "does not create a progress bar for a single server" do
+      @knife.config[:progress] = true
+      allow(session_list).to receive(:servers_for).and_return([double(:server)])
+
+      expect(Chef::Knife::SshProgressBar).not_to receive(:new)
+      expect(@knife.progress_bar(session_list)).to be_nil
+    end
+
+    it "creates a progress bar for multiple servers when progress is enabled" do
+      bar = double(:progress_bar)
+      @knife.config[:progress] = true
+      allow(session_list).to receive(:servers_for).and_return([double(:server), double(:server)])
+
+      expect(Chef::Knife::SshProgressBar).to receive(:new).with(2).and_return(bar)
+      expect(@knife.progress_bar(session_list)).to eq(bar)
+    end
+
+    it "creates a progress bar for a subsession" do
+      bar = double(:progress_bar)
+      subsession = Struct.new(:servers).new([double(:server), double(:server)])
+      @knife.config[:progress] = true
+
+      expect(Chef::Knife::SshProgressBar).to receive(:new).with(2).and_return(bar)
+      expect(@knife.progress_bar(subsession)).to eq(bar)
     end
   end
 

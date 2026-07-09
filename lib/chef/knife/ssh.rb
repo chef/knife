@@ -160,7 +160,7 @@ class Chef
           else
             @progress&.clear_bar
             ui.warn "Failed to connect to #{server.host} -- #{$!.class.name}: #{$!.message}"
-            @progress&.render
+            @progress&.increment_failed
             $!.backtrace.each { |l| Chef::Log.debug(l) }
           end
         end
@@ -383,8 +383,7 @@ class Chef
         exit_status = 0
         command = fixup_sudo(command)
         command.force_encoding("binary") if command.respond_to?(:force_encoding)
-        total_nodes = session_list.servers_for.size
-        @progress = progress_bar(total_nodes)
+        @progress = progress_bar(session_list)
         session_list.open_channel do |chan|
           if config[:on_error] && exit_status != 0
             chan.close
@@ -413,8 +412,13 @@ class Chef
                 stderr += data
               end
               ch.on_request "exit-status" do |ichannel, data|
-                exit_status = [exit_status, data.read_long].max
-                @progress&.increment
+                channel_exit_status = data.read_long
+                exit_status = [exit_status, channel_exit_status].max
+                if channel_exit_status == 0
+                  @progress&.increment
+                else
+                  @progress&.increment_failed
+                end
               end
             end
           end
@@ -423,6 +427,8 @@ class Chef
         @progress&.finish
         exit_status
       ensure
+        @progress&.clear_bar
+        @progress = nil
         session_list.close
       end
 
@@ -618,9 +624,13 @@ class Chef
         config[:ssh_gateway_identity] = get_stripped_unfrozen_value(config[:ssh_gateway_identity])
       end
 
-      def progress_bar(total)
+      def progress_bar(session_list)
         show = config[:progress].nil? ? $stderr.tty? : config[:progress]
-        return nil unless show && total > 1
+        return nil unless show
+
+        servers = session_list.respond_to?(:servers_for) ? session_list.servers_for : session_list.servers
+        total = servers.size
+        return nil unless total > 1
 
         SshProgressBar.new(total)
       end
