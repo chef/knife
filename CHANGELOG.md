@@ -1,9 +1,17 @@
 # Changelog
 
-<!-- latest_release -->
+<!-- latest_release 19.0.135 -->
+## [v19.0.135](https://github.com/chef/knife/tree/v19.0.135) (2026-07-15)
+
+#### Merged Pull Requests
+- Fix windows_bootstrap_context_spec flakiness on windows-2025 CI [#188](https://github.com/chef/knife/pull/188) ([sanjain-progress](https://github.com/sanjain-progress))
 <!-- latest_release -->
 
-<!-- release_rollup -->
+<!-- release_rollup since=19.0.134 -->
+### Changes not yet released to rubygems.org
+
+#### Merged Pull Requests
+- Fix windows_bootstrap_context_spec flakiness on windows-2025 CI [#188](https://github.com/chef/knife/pull/188) ([sanjain-progress](https://github.com/sanjain-progress)) <!-- 19.0.135 -->
 <!-- release_rollup -->
 
 <!-- latest_stable_release -->
