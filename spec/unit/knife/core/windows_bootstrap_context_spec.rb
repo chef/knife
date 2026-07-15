@@ -23,6 +23,14 @@ describe Chef::Knife::Core::WindowsBootstrapContext do
   let(:chef_config) { Chef::Config.save } # "dup" to a hash
   let(:bootstrap_context) { Chef::Knife::Core::WindowsBootstrapContext.new(config, nil, chef_config, nil) }
 
+  before do
+    # Stub path methods to return consistent values across all platforms.
+    # On actual Windows (e.g. windows-2025 CI), these methods may resolve
+    # to a different drive letter based on the gem installation path.
+    allow(ChefConfig::Config).to receive(:etc_chef_dir).with(windows: true).and_return("C:\\chef")
+    allow(ChefConfig::Config).to receive(:c_opscode_dir).and_return("C:\\opscode\\chef")
+  end
+
   describe "fips" do
     context "when fips is set" do
       before do
