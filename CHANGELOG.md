@@ -1,16 +1,17 @@
 # Changelog
 
-<!-- latest_release 19.0.135 -->
-## [v19.0.135](https://github.com/chef/knife/tree/v19.0.135) (2026-07-15)
+<!-- latest_release 19.0.136 -->
+## [v19.0.136](https://github.com/chef/knife/tree/v19.0.136) (2026-07-16)
 
 #### Merged Pull Requests
-- Fix windows_bootstrap_context_spec flakiness on windows-2025 CI [#188](https://github.com/chef/knife/pull/188) ([sanjain-progress](https://github.com/sanjain-progress))
+- Bump actions/labeler from 6.1.0 to 6.2.0 [#187](https://github.com/chef/knife/pull/187) ([dependabot[bot]](https://github.com/dependabot[bot]))
 <!-- latest_release -->
 
 <!-- release_rollup since=19.0.134 -->
 ### Changes not yet released to rubygems.org
 
 #### Merged Pull Requests
+- Bump actions/labeler from 6.1.0 to 6.2.0 [#187](https://github.com/chef/knife/pull/187) ([dependabot[bot]](https://github.com/dependabot[bot])) <!-- 19.0.136 -->
 - Fix windows_bootstrap_context_spec flakiness on windows-2025 CI [#188](https://github.com/chef/knife/pull/188) ([sanjain-progress](https://github.com/sanjain-progress)) <!-- 19.0.135 -->
 <!-- release_rollup -->
 
