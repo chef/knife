@@ -5,9 +5,9 @@ pkg_name=knife
 pkg_origin=chef
 ruby_pkg="core/ruby3_4"
 
-# Ruby version for gem directory structure
-# NOTE: Bundler normalizes Ruby versions to major.minor.0 format for gem compatibility.
-ruby_gem_version="3.4.0"
+# ruby_gem_version is set in do_before() once pkg_path_for is available.
+# Declared here so it is in scope for all build functions.
+ruby_gem_version=""
 
 pkg_description="knife is a command-line tool that provides an interface between a local chef-repo and the Chef Infra Server."
 pkg_deps=(${ruby_pkg} core/coreutils core/libarchive core/cacerts)
@@ -42,6 +42,11 @@ pkg_version() {
 
 do_before() {
   update_pkg_version
+  # Resolve the Ruby API version (e.g. 3.4.0) from the actual Habitat ruby binary.
+  # Must be done here rather than at plan top-level because pkg_path_for is not
+  # available until after package dependencies have been resolved.
+  ruby_gem_version="$($(pkg_path_for ${ruby_pkg})/bin/ruby -e 'print RbConfig::CONFIG["ruby_version"]')"
+  build_line "Resolved ruby_gem_version=${ruby_gem_version}"
 }
 
 do_unpack() {
@@ -141,7 +146,10 @@ export GEM_HOME="$pkg_prefix/vendor/ruby/${ruby_gem_version}"
 # (~/.gem/ruby/VERSION), and the Chef gem dir (~/.chef/gems) so that plugins installed
 # via 'gem install knife-<plugin>' or 'chef gem install knife-<plugin>' are found at
 # runtime without any additional configuration.
-export GEM_PATH="$pkg_prefix/vendor:\${HOME}/.gem/ruby/${ruby_gem_version}:\${HOME}/.chef/ruby/${ruby_gem_version}/gems"
+# vendor/ruby/VERSION — bundler-managed gem tree (train-core and all runtime deps)
+# vendor           — flat gem install tree (knife gem itself)
+# ~/.gem/ruby/VERSION and ~/.chef/ruby/VERSION/gems — user-installed plugins
+export GEM_PATH="$pkg_prefix/vendor:$pkg_prefix/vendor/ruby/${ruby_gem_version}:\${HOME}/.gem/ruby/${ruby_gem_version}:\${HOME}/.chef/ruby/${ruby_gem_version}/gems"
 export DYLD_LIBRARY_PATH="$(pkg_path_for core/libarchive)/lib:\$DYLD_LIBRARY_PATH"
 # SSL certificate verification - point OpenSSL to CA certificates
 export SSL_CERT_FILE="$(pkg_path_for core/cacerts)/ssl/certs/cacert.pem"
