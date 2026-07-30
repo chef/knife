@@ -137,8 +137,11 @@ do_install() {
 set -e
 # GEM_HOME points to the bundler-managed gem tree (where 'chef' and Gemfile deps live)
 export GEM_HOME="$pkg_prefix/vendor/ruby/${ruby_gem_version}"
-# GEM_PATH also includes the flat vendor tree (where gem install puts knife runtime deps)
-export GEM_PATH="$pkg_prefix/vendor"
+# GEM_PATH includes the flat vendor tree (knife runtime deps), the standard user gem dir
+# (~/.gem/ruby/VERSION), and the Chef gem dir (~/.chef/gems) so that plugins installed
+# via 'gem install knife-<plugin>' or 'chef gem install knife-<plugin>' are found at
+# runtime without any additional configuration.
+export GEM_PATH="$pkg_prefix/vendor:\${HOME}/.gem/ruby/${ruby_gem_version}:\${HOME}/.chef/ruby/${ruby_gem_version}/gems"
 export DYLD_LIBRARY_PATH="$(pkg_path_for core/libarchive)/lib:\$DYLD_LIBRARY_PATH"
 # SSL certificate verification - point OpenSSL to CA certificates
 export SSL_CERT_FILE="$(pkg_path_for core/cacerts)/ssl/certs/cacert.pem"
