@@ -31,7 +31,7 @@ pkg_build_deps=(
 )
 
 pkg_version() {
-  cat "../VERSION"
+  cat "$SRC_PATH/VERSION"
 }
 
 do_before() {
