@@ -39,6 +39,7 @@ pkg_version() {
 # the Linux ARM target), so source unpacking and file lookups below always
 # reference the correct location instead of assuming a fixed "..' depth.
 _repo_root() {
+  git config --global --add safe.directory '*' 2>/dev/null || true
   git -C "$PLAN_CONTEXT" rev-parse --show-toplevel
 }
 
