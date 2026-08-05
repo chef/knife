@@ -84,7 +84,7 @@ do_build() {
     # Set GEM_HOME to ruby version directory for cleanup script to find lint_roller gem
     export GEM_HOME="$pkg_prefix/vendor/ruby/${ruby_gem_version}"
     export GEM_PATH="$pkg_prefix/vendor"
-    ruby ./scripts/cleanup_lint_roller.rb
+    ruby ./scripts/cleanup_gem_lockfiles.rb
 
   popd
 }
