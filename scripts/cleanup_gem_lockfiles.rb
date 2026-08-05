@@ -3,9 +3,8 @@
 require "rubygems"
 
 # List of gems that ship with Gemfile.lock files that should be removed.
-# cspell:ignore googleauth jppv
-# The os gem (transitive via train -> googleauth -> os) ships a Gemfile.lock
-# referencing rake 0.9.6, triggering GHSA-jppv-gw3r-w3q8 false positives.
+# The os gem (transitive via train) ships a Gemfile.lock
+# referencing rake 0.9.6, triggering false positive security alerts.
 GEMS_WITH_LOCK_FILES = %w{lint_roller os}.freeze
 
 def cleanup_gem_lockfile(gem_name)
