@@ -694,6 +694,7 @@
     "localport",
     "localsystem",
     "localtime",
+    "lockfiles",
     "LOCKCOUNT",
     "logfile",
     "loginclass",
