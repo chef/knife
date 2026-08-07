@@ -1,16 +1,17 @@
 # Changelog
 
-<!-- latest_release 19.0.138 -->
-## [v19.0.138](https://github.com/chef/knife/tree/v19.0.138) (2026-07-21)
+<!-- latest_release 19.0.139 -->
+## [v19.0.139](https://github.com/chef/knife/tree/v19.0.139) (2026-08-07)
 
 #### Merged Pull Requests
-- CHEF-34747: Add macOS ARM64 (aarch64-darwin) Habitat plan [#185](https://github.com/chef/knife/pull/185) ([nikhil2611](https://github.com/nikhil2611))
+- CHEF-37544: Security fixes for gem lockfile cleanup and Habitat plan updates [#194](https://github.com/chef/knife/pull/194) ([nikhil2611](https://github.com/nikhil2611))
 <!-- latest_release -->
 
 <!-- release_rollup since=19.0.134 -->
 ### Changes not yet released to rubygems.org
 
 #### Merged Pull Requests
+- CHEF-37544: Security fixes for gem lockfile cleanup and Habitat plan updates [#194](https://github.com/chef/knife/pull/194) ([nikhil2611](https://github.com/nikhil2611)) <!-- 19.0.139 -->
 - CHEF-34747: Add macOS ARM64 (aarch64-darwin) Habitat plan [#185](https://github.com/chef/knife/pull/185) ([nikhil2611](https://github.com/nikhil2611)) <!-- 19.0.138 -->
 - Bump net-ssh from 7.3.2 to 7.3.3 [#186](https://github.com/chef/knife/pull/186) ([dependabot[bot]](https://github.com/dependabot[bot])) <!-- 19.0.137 -->
 - Bump actions/labeler from 6.1.0 to 6.2.0 [#187](https://github.com/chef/knife/pull/187) ([dependabot[bot]](https://github.com/dependabot[bot])) <!-- 19.0.136 -->
