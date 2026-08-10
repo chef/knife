@@ -235,7 +235,7 @@ class Chef::Application::Knife < Chef::Application
 
     if want_help?
       help_result = Chef::Knife.show_help(topic)
-      exitcode = 1 if help_result == :unknown_topic && exitcode.zero?
+      exitcode = 1 if help_result == :unknown_topic && exitcode == 0
     else
       Chef::Knife.list_commands
     end

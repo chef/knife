@@ -283,8 +283,8 @@ class Chef
 
     HELP_TOPIC_CATEGORIES = {
       "infra" => %w{node role environment tag},
-      "content" => %w{cookbook data\ bag recipe supermarket yaml},
-      "security" => %w{chef\ organization\ management acl group user client vault ssl},
+      "content" => ["cookbook", "data bag", "recipe", "supermarket", "yaml"],
+      "security" => ["chef organization management", "acl", "group", "user", "client", "vault", "ssl"],
       "remote" => %w{bootstrap ssh winrm wsman windows},
       "cloud" => %w{ec2 google},
       "repo" => %w{path-based raw serve},
