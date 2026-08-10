@@ -266,11 +266,42 @@ class Chef
 
     OFFICIAL_PLUGINS = %w{lpar openstack push rackspace vcenter}.freeze
 
+    HELP_TOPIC_ORDER = %w{all infra content security remote cloud repo ops plugins search}.freeze
+
+    HELP_TOPIC_HINTS = {
+      "all" => "full command list",
+      "infra" => "node, role, environment, tag",
+      "content" => "cookbook, data bag, recipe, supermarket, yaml",
+      "security" => "acl, group, user, client, vault, ssl",
+      "remote" => "bootstrap, ssh, winrm, wsman, windows",
+      "cloud" => "ec2, google",
+      "repo" => "path-based, raw, serve",
+      "ops" => "config, configure, rehash, license, exec, status",
+      "plugins" => "installed plugin command families",
+      "search" => "search",
+    }.freeze
+
+    HELP_TOPIC_CATEGORIES = {
+      "infra" => %w{node role environment tag},
+      "content" => %w{cookbook data\ bag recipe supermarket yaml},
+      "security" => %w{chef\ organization\ management acl group user client vault ssl},
+      "remote" => %w{bootstrap ssh winrm wsman windows},
+      "cloud" => %w{ec2 google},
+      "repo" => %w{path-based raw serve},
+      "ops" => %w{config configure rehash license exec status knife},
+      "search" => %w{search},
+    }.freeze
+
+    CORE_HELP_CATEGORIES = HELP_TOPIC_CATEGORIES.values.flatten.uniq.freeze
+
     class << self
-      def list_commands(preferred_category = nil)
-        category_desc = preferred_category ? preferred_category + " " : ""
+      def list_commands(preferred_category = nil, categories: nil, category_desc: nil)
+        category_desc ||= preferred_category ? preferred_category + " " : ""
         msg "Available #{category_desc}subcommands: (for details, knife SUB-COMMAND --help)\n\n"
-        subcommand_loader.list_commands(preferred_category).sort.each do |category, commands|
+        command_groups = subcommand_loader.list_commands(preferred_category)
+        command_groups = command_groups.select { |category, _| categories.include?(category) } if categories
+
+        command_groups.sort.each do |category, commands|
           next if /deprecated/i.match?(category)
 
           msg "** #{category.upcase} COMMANDS **"
@@ -280,6 +311,67 @@ class Chef
           end
           msg
         end
+      end
+
+      def normalize_help_topic(raw_topic)
+        return nil if raw_topic.nil?
+
+        topic = raw_topic.to_s.strip
+        return nil if topic.empty?
+
+        topic = topic[1..] if topic.start_with?("-")
+        topic = topic.downcase
+        topic = "plugins" if topic == "plugin"
+        topic
+      end
+
+      def show_help(topic = nil)
+        return show_help_topics if topic.nil?
+
+        normalized_topic = normalize_help_topic(topic)
+        return show_unknown_help_topic(topic) if normalized_topic.nil?
+
+        return list_commands if normalized_topic == "all"
+
+        if normalized_topic == "plugins"
+          show_plugin_help
+          return show_help_topics
+        end
+
+        categories = HELP_TOPIC_CATEGORIES[normalized_topic]
+        return show_unknown_help_topic(topic) unless categories
+
+        list_commands(nil, categories: categories, category_desc: normalized_topic + " ")
+        show_help_topics
+      end
+
+      def show_help_topics
+        msg "For help on specific knife commands, see the command groups below."
+        HELP_TOPIC_ORDER.each do |topic|
+          msg format("  knife --help -%-8s (%s)", topic, HELP_TOPIC_HINTS[topic])
+        end
+        msg
+        :ok
+      end
+
+      def show_plugin_help
+        all_categories = subcommand_loader.list_commands.keys
+        plugin_categories = all_categories - CORE_HELP_CATEGORIES
+        plugin_categories.reject! { |category| /deprecated/i.match?(category) }
+
+        if plugin_categories.empty?
+          msg "No plugin command groups detected in this environment."
+          return :ok
+        end
+
+        list_commands(nil, categories: plugin_categories, category_desc: "plugins ")
+      end
+
+      def show_unknown_help_topic(topic)
+        msg "Unknown help topic: #{topic}"
+        msg "Valid topics: #{HELP_TOPIC_ORDER.join(", ")}"
+        msg "Use: knife --help -all"
+        :unknown_topic
       end
 
       private
