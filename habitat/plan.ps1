@@ -93,6 +93,18 @@ function Invoke-Install {
         Write-BuildLine "** generating binstubs for knife"
         Invoke-Expression -Command "appbundler.bat $project_root $pkg_prefix/bin knife"
         If ($lastexitcode -ne 0) { Exit $lastexitcode }
+
+        Write-BuildLine "** patching binstubs for direct execution and dynamic plugin loading"
+        $binstubPatch = Get-Content -Path "$project_root\binstub_patch.rb"
+        Get-ChildItem "$pkg_prefix\bin" | Where-Object { $_.Extension -notin @(".bat", ".ps1") } | ForEach-Object {
+            $lines = Get-Content -Path $_.FullName
+            $matchLine = $lines | Select-String -Pattern 'require "rubygems"' | Select-Object -First 1
+            if ($matchLine) {
+                $lineNum = $matchLine.LineNumber  # 1-based; insert patch after this line
+                $newLines = $lines[0..($lineNum - 1)] + $binstubPatch + $lines[$lineNum..($lines.Count - 1)]
+                Set-Content -Path $_.FullName -Value $newLines
+            }
+        }
     } finally {
         Pop-Location
     }

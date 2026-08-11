@@ -3,11 +3,9 @@ export HAB_BLDR_CHANNEL="base-2025"
 export HAB_REFRESH_CHANNEL="base-2025"
 ruby_pkg="core/ruby3_4"
 
-# Ruby version for gem directory structure
-# NOTE: Bundler normalizes Ruby versions to major.minor.0 format for gem compatibility.
-# Even if running Ruby 3.4.2, Bundler creates ruby/3.4.0 directory structure.
-# This is standard behavior - gems built for 3.4.0 are compatible with 3.4.x patch versions.
-ruby_gem_version="3.4.0"
+# ruby_gem_version is set in do_before() once pkg_path_for is available.
+# Declared here so it is in scope for all build functions.
+ruby_gem_version=""
 
 pkg_name="knife"
 pkg_origin="chef"
@@ -36,6 +34,11 @@ pkg_version() {
 
 do_before() {
   update_pkg_version
+  # Resolve the Ruby API version (e.g. 3.4.0) from the actual Habitat ruby binary.
+  # Must be done here rather than at plan top-level because pkg_path_for is not
+  # available until after package dependencies have been resolved.
+  ruby_gem_version="$($(pkg_path_for ${ruby_pkg})/bin/ruby -e 'print RbConfig::CONFIG["ruby_version"]')"
+  build_line "Resolved ruby_gem_version=${ruby_gem_version}"
 }
 
 # Directories that contain executable binaries
@@ -143,8 +146,14 @@ do_install() {
 set -e
 # GEM_HOME points to the bundler-managed gem tree (where 'chef' and Gemfile deps live)
 export GEM_HOME="$pkg_prefix/vendor/ruby/${ruby_gem_version}"
-# GEM_PATH also includes the flat vendor tree (where gem install puts knife runtime deps)
-export GEM_PATH="$pkg_prefix/vendor"
+# GEM_PATH includes the flat vendor tree (knife runtime deps), the standard user gem dir
+# (~/.gem/ruby/VERSION), and the Chef gem dir (~/.chef/gems) so that plugins installed
+# via 'gem install knife-<plugin>' or 'chef gem install knife-<plugin>' are found at
+# runtime without any additional configuration.
+# vendor/ruby/VERSION — bundler-managed gem tree (train-core and all runtime deps)
+# vendor           — flat gem install tree (knife gem itself)
+# ~/.gem/ruby/VERSION and ~/.chef/ruby/VERSION/gems — user-installed plugins
+export GEM_PATH="$pkg_prefix/vendor:$pkg_prefix/vendor/ruby/${ruby_gem_version}:\${HOME}/.gem/ruby/${ruby_gem_version}:\${HOME}/.chef/ruby/${ruby_gem_version}/gems"
 exec $(pkg_path_for ${ruby_pkg})/bin/ruby $pkg_prefix/libexec/knife "\$@"
 EOF
   chmod -v 755 "$pkg_prefix/bin/knife"
