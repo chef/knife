@@ -1,14 +1,17 @@
 # Changelog
 
-<!-- latest_release 19.0.139 -->
-## [v19.0.139](https://github.com/chef/knife/tree/v19.0.139) (2026-08-07)
+<!-- latest_release 19.0.140 -->
+## [v19.0.140](https://github.com/chef/knife/tree/v19.0.140) (2026-08-11)
 
-#### Merged Pull Requests
-- CHEF-37544: Security fixes for gem lockfile cleanup and Habitat plan updates [#194](https://github.com/chef/knife/pull/194) ([nikhil2611](https://github.com/nikhil2611))
+#### Features & Enhancements
+- CHEF-37441: Add ~/.chef/ruby/VERSION/gems to GEM_PATH for dynamic plugin loading [#192](https://github.com/chef/knife/pull/192) ([sanghinitin](https://github.com/sanghinitin))
 <!-- latest_release -->
 
 <!-- release_rollup since=19.0.134 -->
 ### Changes not yet released to rubygems.org
+
+#### Features & Enhancements
+- CHEF-37441: Add ~/.chef/ruby/VERSION/gems to GEM_PATH for dynamic plugin loading [#192](https://github.com/chef/knife/pull/192) ([sanghinitin](https://github.com/sanghinitin)) <!-- 19.0.140 -->
 
 #### Merged Pull Requests
 - CHEF-37544: Security fixes for gem lockfile cleanup and Habitat plan updates [#194](https://github.com/chef/knife/pull/194) ([nikhil2611](https://github.com/nikhil2611)) <!-- 19.0.139 -->
