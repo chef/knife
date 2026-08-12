@@ -272,7 +272,7 @@ class Chef
       "all" => "full command list",
       "infra" => "node, role, environment, tag",
       "content" => "cookbook, data bag, recipe, supermarket, yaml",
-      "security" => "acl, group, user, client, vault, ssl",
+      "security" => "org, acl, group, user, client, vault, ssl",
       "remote" => "bootstrap, ssh, winrm, wsman, windows",
       "cloud" => "ec2, google",
       "repo" => "path-based, raw, serve",
@@ -284,7 +284,7 @@ class Chef
     HELP_TOPIC_CATEGORIES = {
       "infra" => %w{node role environment tag},
       "content" => ["cookbook", "data bag", "recipe", "supermarket", "yaml"],
-      "security" => ["chef organization management", "acl", "group", "user", "client", "vault", "ssl"],
+      "security" => ["CHEF ORGANIZATION MANAGEMENT", "acl", "group", "user", "client", "vault", "ssl"],
       "remote" => %w{bootstrap ssh winrm wsman windows},
       "cloud" => %w{ec2 google},
       "repo" => %w{path-based raw serve},
