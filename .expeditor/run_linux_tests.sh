@@ -162,7 +162,17 @@ fi
 
 echo "--- bundle install"
 
+# The "habitat" group (knife-ec2, knife-google, knife-windows, knife-vcenter)
+# is only needed for Habitat packaging, which is validated by a separate
+# pipeline (.expeditor/build.habitat.yml / habitat-test.pipeline.yml) and
+# never runs through this script. `rake spec` does not exercise those gems.
+# Installing them here unnecessarily pulls in knife-vcenter's rbvmomi ->
+# nokogiri dependency chain, whose precompiled native gem requires a newer
+# glibc than Rocky Linux 8 / RHEL 8 (glibc 2.28) ships, causing:
+#   GLIBC_2.29' not found (required by .../nokogiri.so)
+# Skipping the group avoids installing nokogiri at all for spec runs.
 bundle config --local path vendor/bundle
+bundle config --local without habitat
 bundle install --jobs=7 --retry=3
 
 echo "+++ bundle exec task"
