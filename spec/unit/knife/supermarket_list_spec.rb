@@ -230,5 +230,36 @@ describe Chef::Knife::SupermarketList do
       result = knife.get_cookbook_list
       expect(result).to eq({})
     end
+
+    it "should handle empty page in pagination (regression test for infinite loop)" do
+      # This regression test ensures pagination stops when an empty page is returned,
+      # preventing infinite recursion if the API returns empty items but total > start
+      first_response = {
+        "start" => 0,
+        "total" => 4,
+        "items" => first_page_data, # 2 items
+      }
+
+      # Second page returns empty items but total still indicates more results
+      # This should NOT cause infinite recursion
+      second_response = {
+        "start" => 2,
+        "total" => 4,
+        "items" => [], # Empty array - the edge case
+      }
+
+      expect(noauth_rest).to receive(:get)
+        .with("https://supermarket.chef.io/api/v1/cookbooks?items=9999999&start=0")
+        .and_return(first_response)
+      expect(noauth_rest).to receive(:get)
+        .with("https://supermarket.chef.io/api/v1/cookbooks?items=9999999&start=2")
+        .and_return(second_response)
+      # Should only call the API twice, not infinitely
+
+      result = knife.get_cookbook_list
+      # Should return only the items from the first page
+      expect(result.keys).to eq(%w{cookbook1 cookbook2})
+      expect(result.length).to eq(2)
+    end
   end
 end
