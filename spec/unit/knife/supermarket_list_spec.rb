@@ -67,4 +67,168 @@ describe Chef::Knife::SupermarketList do
       end
     end
   end
+
+  describe "pagination" do
+    let(:first_page_data) {
+      [
+        { "cookbook_name" => "cookbook1", "cookbook_maintainer" => "user1", "cookbook_description" => "Test 1", "cookbook" => "https://supermarket.chef.io/api/v1/cookbooks/cookbook1" },
+        { "cookbook_name" => "cookbook2", "cookbook_maintainer" => "user2", "cookbook_description" => "Test 2", "cookbook" => "https://supermarket.chef.io/api/v1/cookbooks/cookbook2" },
+      ]
+    }
+
+    let(:second_page_data) {
+      [
+        { "cookbook_name" => "cookbook3", "cookbook_maintainer" => "user3", "cookbook_description" => "Test 3", "cookbook" => "https://supermarket.chef.io/api/v1/cookbooks/cookbook3" },
+        { "cookbook_name" => "cookbook4", "cookbook_maintainer" => "user4", "cookbook_description" => "Test 4", "cookbook" => "https://supermarket.chef.io/api/v1/cookbooks/cookbook4" },
+      ]
+    }
+
+    let(:third_page_data) {
+      [
+        { "cookbook_name" => "cookbook5", "cookbook_maintainer" => "user5", "cookbook_description" => "Test 5", "cookbook" => "https://supermarket.chef.io/api/v1/cookbooks/cookbook5" },
+      ]
+    }
+
+    before do
+      allow(knife.ui).to receive(:stdout).and_return(stdout)
+      allow(knife).to receive(:noauth_rest).and_return(noauth_rest)
+      knife.configure_chef
+    end
+
+    it "should handle pagination with multiple pages correctly" do
+      # First page: 2 items, total is 5
+      first_response = {
+        "start" => 0,
+        "total" => 5,
+        "items" => first_page_data,
+      }
+
+      # Second page: 2 items, total is 5
+      second_response = {
+        "start" => 2,
+        "total" => 5,
+        "items" => second_page_data,
+      }
+
+      # Third page: 1 item, total is 5 (last page)
+      third_response = {
+        "start" => 4,
+        "total" => 5,
+        "items" => third_page_data,
+      }
+
+      # Verify that the API is called with correct parameters for each page
+      expect(noauth_rest).to receive(:get)
+        .with("https://supermarket.chef.io/api/v1/cookbooks?items=9999999&start=0")
+        .and_return(first_response)
+      expect(noauth_rest).to receive(:get)
+        .with("https://supermarket.chef.io/api/v1/cookbooks?items=9999999&start=2")
+        .and_return(second_response)
+      expect(noauth_rest).to receive(:get)
+        .with("https://supermarket.chef.io/api/v1/cookbooks?items=9999999&start=4")
+        .and_return(third_response)
+
+      result = knife.get_cookbook_list
+      expect(result.keys).to eq(["cookbook1", "cookbook2", "cookbook3", "cookbook4", "cookbook5"])
+    end
+
+    it "should calculate next_start correctly based on cr[\"items\"].length" do
+      # When items returned is less than the items parameter, next_start should be based on actual items returned
+      first_response = {
+        "start" => 0,
+        "total" => 3,
+        "items" => first_page_data, # 2 items returned
+      }
+
+      second_response = {
+        "start" => 2,
+        "total" => 3,
+        "items" => [third_page_data[0]], # 1 item in second page (last page)
+      }
+
+      expect(noauth_rest).to receive(:get)
+        .with("https://supermarket.chef.io/api/v1/cookbooks?items=9999999&start=0")
+        .and_return(first_response)
+      expect(noauth_rest).to receive(:get)
+        .with("https://supermarket.chef.io/api/v1/cookbooks?items=9999999&start=2")
+        .and_return(second_response)
+
+      result = knife.get_cookbook_list
+      expect(result.length).to eq(3)
+      expect(result.keys).to eq(["cookbook1", "cookbook2", "cookbook5"])
+    end
+
+    it "should respect sort_by parameter across pages" do
+      knife.config[:sort_by] = "recently_updated"
+
+      first_response = {
+        "start" => 0,
+        "total" => 4,
+        "items" => first_page_data,
+      }
+
+      second_response = {
+        "start" => 2,
+        "total" => 4,
+        "items" => second_page_data[0..1], # Last 2 items
+      }
+
+      expect(noauth_rest).to receive(:get)
+        .with("https://supermarket.chef.io/api/v1/cookbooks?items=9999999&start=0&order=recently_updated")
+        .and_return(first_response)
+      expect(noauth_rest).to receive(:get)
+        .with("https://supermarket.chef.io/api/v1/cookbooks?items=9999999&start=2&order=recently_updated")
+        .and_return(second_response)
+
+      result = knife.get_cookbook_list
+      expect(result.length).to eq(4)
+    end
+
+    it "should respect owned_by parameter across pages" do
+      knife.config[:owned_by] = "testuser"
+
+      first_response = {
+        "start" => 0,
+        "total" => 2,
+        "items" => first_page_data,
+      }
+
+      expect(noauth_rest).to receive(:get)
+        .with("https://supermarket.chef.io/api/v1/cookbooks?items=9999999&start=0&user=testuser")
+        .and_return(first_response)
+
+      result = knife.get_cookbook_list
+      expect(result.length).to eq(2)
+    end
+
+    it "should handle single page result (no pagination needed)" do
+      single_response = {
+        "start" => 0,
+        "total" => 2,
+        "items" => first_page_data,
+      }
+
+      expect(noauth_rest).to receive(:get)
+        .with("https://supermarket.chef.io/api/v1/cookbooks?items=9999999&start=0")
+        .and_return(single_response)
+
+      result = knife.get_cookbook_list
+      expect(result.length).to eq(2)
+    end
+
+    it "should handle empty result" do
+      empty_response = {
+        "start" => 0,
+        "total" => 0,
+        "items" => [],
+      }
+
+      expect(noauth_rest).to receive(:get)
+        .with("https://supermarket.chef.io/api/v1/cookbooks?items=9999999&start=0")
+        .and_return(empty_response)
+
+      result = knife.get_cookbook_list
+      expect(result).to eq({})
+    end
+  end
 end
