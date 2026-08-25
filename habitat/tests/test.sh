@@ -33,6 +33,7 @@ plugin_checks=(
   "ec2:Available ec2 subcommands"
   "google:Available google subcommands"
   "windows:Available windows subcommands"
+  "vcenter:Available vcenter subcommands"
 )
 
 for plugin_check in "${plugin_checks[@]}"; do
