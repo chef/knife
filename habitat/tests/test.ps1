@@ -31,7 +31,8 @@ Write-Output "Verifying bundled knife plugins are available"
 $plugin_checks = @(
     @{name = "ec2"; pattern = "Available ec2 subcommands"},
     @{name = "google"; pattern = "Available google subcommands"},
-    @{name = "windows"; pattern = "Available windows subcommands"}
+    @{name = "windows"; pattern = "Available windows subcommands"},
+    @{name = "vcenter"; pattern = "Available vcenter subcommands"}
 )
 
 foreach ($check in $plugin_checks) {
