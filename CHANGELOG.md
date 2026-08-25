@@ -1,10 +1,10 @@
 # Changelog
 
-<!-- latest_release 19.0.142 -->
-## [v19.0.142](https://github.com/chef/knife/tree/v19.0.142) (2026-08-25)
+<!-- latest_release 19.0.143 -->
+## [v19.0.143](https://github.com/chef/knife/tree/v19.0.143) (2026-08-25)
 
 #### Merged Pull Requests
-- Bump knife-google from 5.0.15 to 5.0.17 [#197](https://github.com/chef/knife/pull/197) ([dependabot[bot]](https://github.com/dependabot[bot]))
+- Adding knife-vcenter to the knife hab pkg [#198](https://github.com/chef/knife/pull/198) ([ashiqueps](https://github.com/ashiqueps))
 <!-- latest_release -->
 
 <!-- release_rollup since=19.0.134 -->
@@ -14,6 +14,7 @@
 - CHEF-37441: Add ~/.chef/ruby/VERSION/gems to GEM_PATH for dynamic plugin loading [#192](https://github.com/chef/knife/pull/192) ([sanghinitin](https://github.com/sanghinitin)) <!-- 19.0.140 -->
 
 #### Merged Pull Requests
+- Adding knife-vcenter to the knife hab pkg [#198](https://github.com/chef/knife/pull/198) ([ashiqueps](https://github.com/ashiqueps)) <!-- 19.0.143 -->
 - Bump knife-google from 5.0.15 to 5.0.17 [#197](https://github.com/chef/knife/pull/197) ([dependabot[bot]](https://github.com/dependabot[bot])) <!-- 19.0.142 -->
 - Bump webmock from 3.26.2 to 3.26.3 [#200](https://github.com/chef/knife/pull/200) ([dependabot[bot]](https://github.com/dependabot[bot])) <!-- 19.0.141 -->
 - CHEF-37544: Security fixes for gem lockfile cleanup and Habitat plan updates [#194](https://github.com/chef/knife/pull/194) ([nikhil2611](https://github.com/nikhil2611)) <!-- 19.0.139 -->
