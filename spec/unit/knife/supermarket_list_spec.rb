@@ -129,7 +129,7 @@ describe Chef::Knife::SupermarketList do
         .and_return(third_response)
 
       result = knife.get_cookbook_list
-      expect(result.keys).to eq(["cookbook1", "cookbook2", "cookbook3", "cookbook4", "cookbook5"])
+      expect(result.keys).to eq(%w{cookbook1 cookbook2 cookbook3 cookbook4 cookbook5})
     end
 
     it "should calculate next_start correctly based on cr[\"items\"].length" do
@@ -155,7 +155,7 @@ describe Chef::Knife::SupermarketList do
 
       result = knife.get_cookbook_list
       expect(result.length).to eq(3)
-      expect(result.keys).to eq(["cookbook1", "cookbook2", "cookbook5"])
+      expect(result.keys).to eq(%w{cookbook1 cookbook2 cookbook5})
     end
 
     it "should respect sort_by parameter across pages" do
