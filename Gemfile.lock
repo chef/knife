@@ -187,7 +187,7 @@ GEM
     crack (1.0.1)
       bigdecimal
       rexml
-    csv (3.3.5)
+    csv (3.3.6)
     date (3.5.1)
     debug_inspector (1.2.0)
     declarative (0.0.20)
@@ -371,8 +371,6 @@ GEM
       time
     net-http (0.9.1)
       uri (>= 0.11.1)
-    net-http-persistent (4.0.8)
-      connection_pool (>= 2.2.4, < 4)
     net-protocol (0.2.2)
       timeout
     net-scp (4.1.0)
