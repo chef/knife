@@ -64,11 +64,12 @@ class Chef
         cr["items"].each do |cookbook|
           cookbook_collection[cookbook["cookbook_name"]] = cookbook["cookbook"]
         end
-        new_start = start + items
-        if new_start < cr["total"]
-          get_cookbook_list(items, new_start, cookbook_collection)
-        else
+        new_start = start + cr["items"].length
+        # Guard against infinite loop: stop pagination if no items are returned or no progress can be made
+        if cr["items"].empty? || new_start >= cr["total"]
           cookbook_collection
+        else
+          get_cookbook_list(items, new_start, cookbook_collection)
         end
       end
     end
