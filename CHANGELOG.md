@@ -1,10 +1,10 @@
 # Changelog
 
-<!-- latest_release 19.0.144 -->
-## [v19.0.144](https://github.com/chef/knife/tree/v19.0.144) (2026-08-25)
+<!-- latest_release 19.0.145 -->
+## [v19.0.145](https://github.com/chef/knife/tree/v19.0.145) (2026-08-27)
 
 #### Merged Pull Requests
-- CHEF-37332: add Linux ARM Habitat validation in Expeditor pipeline [#193](https://github.com/chef/knife/pull/193) ([sanjain-progress](https://github.com/sanjain-progress))
+- Fix pagination for supermarket list [#201](https://github.com/chef/knife/pull/201) ([nikhil2611](https://github.com/nikhil2611))
 <!-- latest_release -->
 
 <!-- release_rollup since=19.0.134 -->
@@ -14,6 +14,7 @@
 - CHEF-37441: Add ~/.chef/ruby/VERSION/gems to GEM_PATH for dynamic plugin loading [#192](https://github.com/chef/knife/pull/192) ([sanghinitin](https://github.com/sanghinitin)) <!-- 19.0.140 -->
 
 #### Merged Pull Requests
+- Fix pagination for supermarket list [#201](https://github.com/chef/knife/pull/201) ([nikhil2611](https://github.com/nikhil2611)) <!-- 19.0.145 -->
 - CHEF-37332: add Linux ARM Habitat validation in Expeditor pipeline [#193](https://github.com/chef/knife/pull/193) ([sanjain-progress](https://github.com/sanjain-progress)) <!-- 19.0.144 -->
 - Adding knife-vcenter to the knife hab pkg [#198](https://github.com/chef/knife/pull/198) ([ashiqueps](https://github.com/ashiqueps)) <!-- 19.0.143 -->
 - Bump knife-google from 5.0.15 to 5.0.17 [#197](https://github.com/chef/knife/pull/197) ([dependabot[bot]](https://github.com/dependabot[bot])) <!-- 19.0.142 -->
