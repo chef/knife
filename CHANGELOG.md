@@ -1,10 +1,10 @@
 # Changelog
 
-<!-- latest_release 19.0.146 -->
-## [v19.0.146](https://github.com/chef/knife/tree/v19.0.146) (2026-08-27)
+<!-- latest_release 19.0.147 -->
+## [v19.0.147](https://github.com/chef/knife/tree/v19.0.147) (2026-08-28)
 
 #### Merged Pull Requests
-- Bump csv from 3.3.5 to 3.3.6 [#191](https://github.com/chef/knife/pull/191) ([dependabot[bot]](https://github.com/dependabot[bot]))
+- Bump actions/labeler from 6.2.0 to 7.0.0 [#190](https://github.com/chef/knife/pull/190) ([dependabot[bot]](https://github.com/dependabot[bot]))
 <!-- latest_release -->
 
 <!-- release_rollup since=19.0.134 -->
@@ -14,6 +14,7 @@
 - CHEF-37441: Add ~/.chef/ruby/VERSION/gems to GEM_PATH for dynamic plugin loading [#192](https://github.com/chef/knife/pull/192) ([sanghinitin](https://github.com/sanghinitin)) <!-- 19.0.140 -->
 
 #### Merged Pull Requests
+- Bump actions/labeler from 6.2.0 to 7.0.0 [#190](https://github.com/chef/knife/pull/190) ([dependabot[bot]](https://github.com/dependabot[bot])) <!-- 19.0.147 -->
 - Bump csv from 3.3.5 to 3.3.6 [#191](https://github.com/chef/knife/pull/191) ([dependabot[bot]](https://github.com/dependabot[bot])) <!-- 19.0.146 -->
 - Fix pagination for supermarket list [#201](https://github.com/chef/knife/pull/201) ([nikhil2611](https://github.com/nikhil2611)) <!-- 19.0.145 -->
 - CHEF-37332: add Linux ARM Habitat validation in Expeditor pipeline [#193](https://github.com/chef/knife/pull/193) ([sanjain-progress](https://github.com/sanjain-progress)) <!-- 19.0.144 -->
