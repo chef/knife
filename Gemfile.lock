@@ -371,8 +371,6 @@ GEM
       time
     net-http (0.9.1)
       uri (>= 0.11.1)
-    net-http-persistent (4.0.8)
-      connection_pool (>= 2.2.4, < 4)
     net-protocol (0.2.2)
       timeout
     net-scp (4.1.0)
@@ -594,7 +592,7 @@ GEM
     vsphere-automation-vcenter (0.4.7)
       vsphere-automation-cis (~> 0.4.6)
       vsphere-automation-runtime (~> 0.4.6)
-    webmock (3.26.3)
+    webmock (3.26.4)
       addressable (>= 2.8.0)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
