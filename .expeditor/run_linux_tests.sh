@@ -11,11 +11,15 @@ install_dependencies() {
 	if command -v apt-get >/dev/null 2>&1; then
 		echo "--- installing native dependencies via apt-get"
 
-		# Debian 11 (bullseye) reached EOL on 2026-08-31, so its Release
-		# files (particularly bullseye-security) are no longer refreshed
-		# and `apt-get update` fails with "Release file ... is expired".
-		# Scope the workaround to Debian 11 only so other apt-based
-		# platforms (e.g. Ubuntu) keep the normal signature freshness check.
+		# Debian 11 (bullseye) reached EOL on 2026-08-31. Its live
+		# deb.debian.org / debian-security repos no longer publish fresh
+		# Release files (causing "Release file ... is expired") and their
+		# package indexes have drifted out of sync with each other,
+		# leading to 404s and unmet-dependency version conflicts on
+		# install. Scope a workaround to Debian 11 only, pointing it at
+		# the pinned, fully-consistent snapshot.debian.org mirror that
+		# Debian's official images already ship (commented out) for this
+		# purpose. Other apt-based platforms (e.g. Ubuntu) are untouched.
 		local os_id="" os_version_id=""
 		if [ -r /etc/os-release ]; then
 			# shellcheck disable=SC1091
@@ -24,8 +28,12 @@ install_dependencies() {
 			os_version_id="${VERSION_ID:-}"
 		fi
 
-		if [ "$os_id" = "debian" ] && [ "$os_version_id" = "11" ]; then
-			echo "--- detected Debian 11 (bullseye, EOL); allowing expired Release files"
+		if [ "$os_id" = "debian" ] && [ "$os_version_id" = "11" ] && [ -f /etc/apt/sources.list ]; then
+			echo "--- detected Debian 11 (bullseye, EOL); switching to snapshot.debian.org"
+			sed -i \
+				-e 's|^# deb http://snapshot.debian.org|deb http://snapshot.debian.org|' \
+				-e 's|^deb http://deb.debian.org|# deb http://deb.debian.org|' \
+				/etc/apt/sources.list
 			apt-get update -y -o Acquire::Check-Valid-Until=false
 		else
 			apt-get update -y
