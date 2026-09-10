@@ -10,7 +10,27 @@ export LANG=C.UTF-8 LANGUAGE=C.UTF-8
 install_dependencies() {
 	if command -v apt-get >/dev/null 2>&1; then
 		echo "--- installing native dependencies via apt-get"
-		apt-get update -y
+
+		# Debian 11 (bullseye) reached EOL on 2026-08-31, so its Release
+		# files (particularly bullseye-security) are no longer refreshed
+		# and `apt-get update` fails with "Release file ... is expired".
+		# Scope the workaround to Debian 11 only so other apt-based
+		# platforms (e.g. Ubuntu) keep the normal signature freshness check.
+		local os_id="" os_version_id=""
+		if [ -r /etc/os-release ]; then
+			# shellcheck disable=SC1091
+			. /etc/os-release
+			os_id="${ID:-}"
+			os_version_id="${VERSION_ID:-}"
+		fi
+
+		if [ "$os_id" = "debian" ] && [ "$os_version_id" = "11" ]; then
+			echo "--- detected Debian 11 (bullseye, EOL); allowing expired Release files"
+			apt-get update -y -o Acquire::Check-Valid-Until=false
+		else
+			apt-get update -y
+		fi
+
 		DEBIAN_FRONTEND=noninteractive apt-get install -y \
 			build-essential \
 			curl \
