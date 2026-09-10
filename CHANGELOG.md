@@ -1,10 +1,10 @@
 # Changelog
 
-<!-- latest_release 19.0.147 -->
-## [v19.0.147](https://github.com/chef/knife/tree/v19.0.147) (2026-08-28)
+<!-- latest_release 19.0.148 -->
+## [v19.0.148](https://github.com/chef/knife/tree/v19.0.148) (2026-09-08)
 
 #### Merged Pull Requests
-- Bump actions/labeler from 6.2.0 to 7.0.0 [#190](https://github.com/chef/knife/pull/190) ([dependabot[bot]](https://github.com/dependabot[bot]))
+- Bump cookstyle from 8.7.6 to 9.0.0 [#202](https://github.com/chef/knife/pull/202) ([dependabot[bot]](https://github.com/dependabot[bot]))
 <!-- latest_release -->
 
 <!-- release_rollup since=19.0.134 -->
@@ -14,6 +14,7 @@
 - CHEF-37441: Add ~/.chef/ruby/VERSION/gems to GEM_PATH for dynamic plugin loading [#192](https://github.com/chef/knife/pull/192) ([sanghinitin](https://github.com/sanghinitin)) <!-- 19.0.140 -->
 
 #### Merged Pull Requests
+- Bump cookstyle from 8.7.6 to 9.0.0 [#202](https://github.com/chef/knife/pull/202) ([dependabot[bot]](https://github.com/dependabot[bot])) <!-- 19.0.148 -->
 - Bump actions/labeler from 6.2.0 to 7.0.0 [#190](https://github.com/chef/knife/pull/190) ([dependabot[bot]](https://github.com/dependabot[bot])) <!-- 19.0.147 -->
 - Bump csv from 3.3.5 to 3.3.6 [#191](https://github.com/chef/knife/pull/191) ([dependabot[bot]](https://github.com/dependabot[bot])) <!-- 19.0.146 -->
 - Fix pagination for supermarket list [#201](https://github.com/chef/knife/pull/201) ([nikhil2611](https://github.com/nikhil2611)) <!-- 19.0.145 -->
