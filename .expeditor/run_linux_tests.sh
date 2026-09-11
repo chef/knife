@@ -12,14 +12,16 @@ install_dependencies() {
 		echo "--- installing native dependencies via apt-get"
 
 		# Debian 11 (bullseye) reached EOL on 2026-08-31. Its live
-		# deb.debian.org / debian-security repos no longer publish fresh
-		# Release files (causing "Release file ... is expired") and their
-		# package indexes have drifted out of sync with each other,
+		# deb.debian.org / security.debian.org repos no longer publish
+		# fresh Release files (causing "Release file ... is expired") and
+		# their package indexes have drifted out of sync with each other,
 		# leading to 404s and unmet-dependency version conflicts on
-		# install. Scope a workaround to Debian 11 only, pointing it at
-		# the pinned, fully-consistent snapshot.debian.org mirror that
-		# Debian's official images already ship (commented out) for this
-		# purpose. Other apt-based platforms (e.g. Ubuntu) are untouched.
+		# install. Scope a workaround to Debian 11 only: disable every
+		# live repo definition (classic sources.list *and* deb822
+		# sources.list.d/*.sources, regardless of host) and replace them
+		# with an explicit, pinned, internally-consistent
+		# snapshot.debian.org mirror. Other apt-based platforms (e.g.
+		# Ubuntu) are untouched.
 		local os_id="" os_version_id=""
 		if [ -r /etc/os-release ]; then
 			# shellcheck disable=SC1091
@@ -28,12 +30,39 @@ install_dependencies() {
 			os_version_id="${VERSION_ID:-}"
 		fi
 
-		if [ "$os_id" = "debian" ] && [ "$os_version_id" = "11" ] && [ -f /etc/apt/sources.list ]; then
+		if [ "$os_id" = "debian" ] && [ "$os_version_id" = "11" ]; then
 			echo "--- detected Debian 11 (bullseye, EOL); switching to snapshot.debian.org"
-			sed -i \
-				-e 's|^# deb http://snapshot.debian.org|deb http://snapshot.debian.org|' \
-				-e 's|^deb http://deb.debian.org|# deb http://deb.debian.org|' \
-				/etc/apt/sources.list
+
+			# Pin to a snapshot taken shortly before bullseye's EOL date
+			# so all three components (main/security/updates) are
+			# guaranteed to be internally consistent with each other.
+			local snapshot_ts="20260824T000000Z"
+
+			# Disable any live repo definitions, in whatever form/location
+			# they exist, instead of relying on a specific commented-out
+			# line being present.
+			if [ -f /etc/apt/sources.list ]; then
+				sed -i -E \
+					's~^deb(-src)? https?://(deb|security)\.debian\.org/.*~# &~' \
+					/etc/apt/sources.list
+			fi
+			if [ -d /etc/apt/sources.list.d ]; then
+				for f in /etc/apt/sources.list.d/*.list /etc/apt/sources.list.d/*.sources; do
+					[ -e "$f" ] || continue
+					if grep -Eq 'https?://(deb|security)\.debian\.org' "$f" 2>/dev/null; then
+						mv "$f" "$f.disabled"
+					fi
+				done
+			fi
+
+			# Write an explicit, known-good snapshot source rather than
+			# assuming the image already ships one to uncomment.
+			cat >/etc/apt/sources.list.d/debian-11-eol-snapshot.list <<-EOF
+			deb http://snapshot.debian.org/archive/debian/${snapshot_ts} bullseye main
+			deb http://snapshot.debian.org/archive/debian-security/${snapshot_ts} bullseye-security main
+			deb http://snapshot.debian.org/archive/debian/${snapshot_ts} bullseye-updates main
+			EOF
+
 			apt-get update -y -o Acquire::Check-Valid-Until=false
 		else
 			apt-get update -y
