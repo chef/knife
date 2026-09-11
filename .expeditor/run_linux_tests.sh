@@ -43,7 +43,7 @@ install_dependencies() {
 			# line being present.
 			if [ -f /etc/apt/sources.list ]; then
 				sed -i -E \
-					's~^deb(-src)? https?://(deb|security)\.debian\.org/.*~# &~' \
+					's~^[[:space:]]*deb(-src)?[[:space:]]+(\[[^]]*\][[:space:]]+)?https?://(deb|security)\.debian\.org/.*~# &~' \
 					/etc/apt/sources.list
 			fi
 			if [ -d /etc/apt/sources.list.d ]; then
