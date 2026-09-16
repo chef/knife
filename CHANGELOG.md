@@ -1,10 +1,10 @@
 # Changelog
 
-<!-- latest_release 19.0.148 -->
-## [v19.0.148](https://github.com/chef/knife/tree/v19.0.148) (2026-09-08)
+<!-- latest_release 19.0.149 -->
+## [v19.0.149](https://github.com/chef/knife/tree/v19.0.149) (2026-09-16)
 
 #### Merged Pull Requests
-- Bump cookstyle from 8.7.6 to 9.0.0 [#202](https://github.com/chef/knife/pull/202) ([dependabot[bot]](https://github.com/dependabot[bot]))
+- CHEF-37672 Fix debian-11 CI failures from expired bullseye-security Release file- #205 [#206](https://github.com/chef/knife/pull/206) ([sanjain-progress](https://github.com/sanjain-progress))
 <!-- latest_release -->
 
 <!-- release_rollup since=19.0.134 -->
@@ -14,6 +14,7 @@
 - CHEF-37441: Add ~/.chef/ruby/VERSION/gems to GEM_PATH for dynamic plugin loading [#192](https://github.com/chef/knife/pull/192) ([sanghinitin](https://github.com/sanghinitin)) <!-- 19.0.140 -->
 
 #### Merged Pull Requests
+- CHEF-37672 Fix debian-11 CI failures from expired bullseye-security Release file- #205 [#206](https://github.com/chef/knife/pull/206) ([sanjain-progress](https://github.com/sanjain-progress)) <!-- 19.0.149 -->
 - Bump cookstyle from 8.7.6 to 9.0.0 [#202](https://github.com/chef/knife/pull/202) ([dependabot[bot]](https://github.com/dependabot[bot])) <!-- 19.0.148 -->
 - Bump actions/labeler from 6.2.0 to 7.0.0 [#190](https://github.com/chef/knife/pull/190) ([dependabot[bot]](https://github.com/dependabot[bot])) <!-- 19.0.147 -->
 - Bump csv from 3.3.5 to 3.3.6 [#191](https://github.com/chef/knife/pull/191) ([dependabot[bot]](https://github.com/dependabot[bot])) <!-- 19.0.146 -->
