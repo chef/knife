@@ -342,6 +342,14 @@ class Chef
         command.sub(/^sudo/, "sudo -p 'knife sudo password: '")
       end
 
+      # Classic sudo prints the -p prompt verbatim. sudo-rs, the default sudo on
+      # Ubuntu 25.10 and later, wraps it as "[sudo: <prompt>] Password:".
+      SUDO_PASSWORD_PROMPT = /^(\[sudo: )?knife sudo password: /
+
+      def sudo_password_prompt?(data)
+        SUDO_PASSWORD_PROMPT.match?(data)
+      end
+
       def print_data(host, data)
         @buffers ||= {}
         if (leftover = @buffers[host])
@@ -390,7 +398,7 @@ class Chef
 
               ch.on_data do |ichannel, data|
                 print_data(ichannel.connection[:prefix], data)
-                if /^knife sudo password: /.match?(data)
+                if sudo_password_prompt?(data)
                   print_data(ichannel.connection[:prefix], "\n")
                   ichannel.send_data("#{get_password}\n")
                 end

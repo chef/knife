@@ -282,6 +282,20 @@ describe Chef::Knife::Ssh do
     end
   end
 
+  describe "#sudo_password_prompt?" do
+    it "recognises the prompt classic sudo prints" do
+      expect(@knife.sudo_password_prompt?("knife sudo password: ")).to be true
+    end
+
+    it "recognises the prompt sudo-rs prints" do
+      expect(@knife.sudo_password_prompt?("[sudo: knife sudo password: ] Password: ")).to be true
+    end
+
+    it "ignores other output" do
+      expect(@knife.sudo_password_prompt?("some command output\n")).to be false
+    end
+  end
+
   describe "#ssh_command" do
     let(:execution_channel) { double(:execution_channel, on_data: nil, on_extended_data: nil) }
     let(:session_channel) { double(:session_channel, request_pty: nil) }
