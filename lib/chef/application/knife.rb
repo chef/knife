@@ -212,8 +212,10 @@ class Chef::Application::Knife < Chef::Application
   def print_help_and_exit(exitcode = 1, fatal_message = nil)
     Chef::Log.error(fatal_message) if fatal_message
 
+    topic = help_topic
+
     begin
-      parse_options
+      parse_options if topic.nil?
     rescue OptionParser::InvalidOption => e
       puts "#{e}\n"
     end
@@ -226,10 +228,29 @@ class Chef::Application::Knife < Chef::Application
       puts
     end
 
-    puts opt_parser
-    puts
-    Chef::Knife.list_commands
+    if topic.nil? || topic == "all"
+      puts opt_parser
+      puts
+    end
+
+    if want_help?
+      help_result = Chef::Knife.show_help(topic)
+      exitcode = 1 if help_result == :unknown_topic && exitcode == 0
+    else
+      Chef::Knife.list_commands
+    end
+
     exit exitcode
+  end
+
+  def help_topic
+    return nil unless want_help?
+
+    raw_topic = ARGV[1]
+    return nil if raw_topic.nil? || raw_topic.empty?
+    return nil if raw_topic.start_with?("--")
+
+    Chef::Knife.normalize_help_topic(raw_topic)
   end
 
 end
