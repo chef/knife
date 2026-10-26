@@ -48,4 +48,5 @@ group :habitat do
   gem "knife-google", "~> 5.0.17"
   gem "knife-windows", "~> 5.0.7"
   gem "knife-vcenter", "~> 5.0", ">= 5.1.1"
+  gem "knife-azure", "~> 5.0"
 end
