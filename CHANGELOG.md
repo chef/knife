@@ -1,10 +1,10 @@
 # Changelog
 
-<!-- latest_release 19.0.150 -->
-## [v19.0.150](https://github.com/chef/knife/tree/v19.0.150) (2026-10-07)
+<!-- latest_release 19.0.151 -->
+## [v19.0.151](https://github.com/chef/knife/tree/v19.0.151) (2026-10-26)
 
 #### Merged Pull Requests
-- Update chef-winrm-fs and rubyzip [#210](https://github.com/chef/knife/pull/210) ([sanjain-progress](https://github.com/sanjain-progress))
+- CHEF-32109: Integrate knife-azure plugin with knife hab pkg [#213](https://github.com/chef/knife/pull/213) ([nikhil2611](https://github.com/nikhil2611))
 <!-- latest_release -->
 
 <!-- release_rollup since=19.0.134 -->
@@ -14,6 +14,7 @@
 - CHEF-37441: Add ~/.chef/ruby/VERSION/gems to GEM_PATH for dynamic plugin loading [#192](https://github.com/chef/knife/pull/192) ([sanghinitin](https://github.com/sanghinitin)) <!-- 19.0.140 -->
 
 #### Merged Pull Requests
+- CHEF-32109: Integrate knife-azure plugin with knife hab pkg [#213](https://github.com/chef/knife/pull/213) ([nikhil2611](https://github.com/nikhil2611)) <!-- 19.0.151 -->
 - Update chef-winrm-fs and rubyzip [#210](https://github.com/chef/knife/pull/210) ([sanjain-progress](https://github.com/sanjain-progress)) <!-- 19.0.150 -->
 - CHEF-37672 Fix debian-11 CI failures from expired bullseye-security Release file- #205 [#206](https://github.com/chef/knife/pull/206) ([sanjain-progress](https://github.com/sanjain-progress)) <!-- 19.0.149 -->
 - Bump cookstyle from 8.7.6 to 9.0.0 [#202](https://github.com/chef/knife/pull/202) ([dependabot[bot]](https://github.com/dependabot[bot])) <!-- 19.0.148 -->
