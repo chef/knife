@@ -44,7 +44,39 @@ describe Chef::Application::Knife do
     @knife = Chef::Application::Knife.new
     allow(@knife).to receive(:puts)
     allow(@knife).to receive(:trap)
+    allow(Chef::Knife).to receive(:show_help).and_return(:ok)
+    allow(Chef::Knife).to receive(:normalize_help_topic).and_call_original
     allow(Chef::Knife).to receive(:list_commands)
+  end
+
+  it "shows short help topics for --help" do
+    with_argv("--help") do
+      expect(@knife).to receive(:puts).with(@knife.opt_parser)
+      expect(Chef::Knife).to receive(:show_help).with(nil).and_return(:ok)
+      expect { @knife.run }.to raise_error(SystemExit) { |e| expect(e.status).to eq(0) }
+    end
+  end
+
+  it "routes --help -all to the full help topic" do
+    with_argv("--help", "-all") do
+      expect(Chef::Knife).to receive(:show_help).with("all").and_return(:ok)
+      expect { @knife.run }.to raise_error(SystemExit) { |e| expect(e.status).to eq(0) }
+    end
+  end
+
+  it "routes --help TOPIC to topic help" do
+    with_argv("--help", "cloud") do
+      expect(@knife).not_to receive(:puts).with(@knife.opt_parser)
+      expect(Chef::Knife).to receive(:show_help).with("cloud").and_return(:ok)
+      expect { @knife.run }.to raise_error(SystemExit) { |e| expect(e.status).to eq(0) }
+    end
+  end
+
+  it "exits non-zero for unknown help topics" do
+    with_argv("--help", "-unknown-topic") do
+      expect(Chef::Knife).to receive(:show_help).with("unknown-topic").and_return(:unknown_topic)
+      expect { @knife.run }.to raise_error(SystemExit) { |e| expect(e.status).to eq(1) }
+    end
   end
 
   it "should exit 1 and print the options if no arguments are given at all" do
