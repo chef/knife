@@ -397,9 +397,12 @@ class Chef
               raise ArgumentError, "Cannot execute #{command}" unless success
 
               ch.on_data do |ichannel, data|
-                print_data(ichannel.connection[:prefix], data)
-                if sudo_password_prompt?(data)
-                  print_data(ichannel.connection[:prefix], "\n")
+                host = ichannel.connection[:prefix]
+                print_data(host, data)
+                # Match the unterminated line print_data has buffered rather than
+                # this chunk alone: Net::SSH may deliver the prompt in pieces.
+                if sudo_password_prompt?(@buffers[host].to_s)
+                  print_data(host, "\n")
                   ichannel.send_data("#{get_password}\n")
                 end
               end

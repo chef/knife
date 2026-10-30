@@ -296,6 +296,60 @@ describe Chef::Knife::Ssh do
     end
   end
 
+  describe "#ssh_command answering the sudo password prompt" do
+    let(:connection) { { prefix: "foo" } }
+    let(:execution_channel) { double(:execution_channel, connection: connection, on_extended_data: nil) }
+    let(:session_channel) { double(:session_channel, request_pty: nil) }
+    let(:session) { double(:session, loop: nil, close: nil) }
+
+    before do
+      @knife.instance_variable_set(:@longest, connection[:prefix].length)
+      allow(@knife.ui).to receive(:msg)
+      allow(@knife).to receive(:prompt_for_password).and_return("s3cret")
+
+      expect(execution_channel)
+        .to receive(:on_request)
+        .and_yield(nil, double(:data_stream, read_long: 0))
+
+      expect(session_channel)
+        .to receive(:exec)
+        .with("sudo -p 'knife sudo password: ' chef-client")
+        .and_yield(execution_channel, true)
+
+      expect(session)
+        .to receive(:open_channel)
+        .and_yield(session_channel)
+    end
+
+    # Delivers each chunk to the channel's on_data handler in turn, as Net::SSH
+    # does when the remote output arrives in several packets.
+    def run_with_output(*chunks)
+      on_data = expect(execution_channel).to receive(:on_data)
+      chunks.each { |chunk| on_data.and_yield(execution_channel, chunk.dup) }
+      @knife.ssh_command("sudo chef-client", session)
+    end
+
+    it "sends the password once when the prompt arrives in one chunk" do
+      expect(execution_channel).to receive(:send_data).with("s3cret\n").once
+      run_with_output("knife sudo password: ")
+    end
+
+    it "sends the password once when the prompt follows other output in the same chunk" do
+      expect(execution_channel).to receive(:send_data).with("s3cret\n").once
+      run_with_output("Starting Chef Infra Client\nknife sudo password: ")
+    end
+
+    it "sends the password once when the sudo-rs prompt is split across chunks" do
+      expect(execution_channel).to receive(:send_data).with("s3cret\n").once
+      run_with_output("[sudo: knife sudo pass", "word: ] Password: ")
+    end
+
+    it "does not send the password for ordinary output" do
+      expect(execution_channel).not_to receive(:send_data)
+      run_with_output("Starting Chef Infra Client\n", "Resolving cookbooks for run list")
+    end
+  end
+
   describe "#ssh_command" do
     let(:execution_channel) { double(:execution_channel, on_data: nil, on_extended_data: nil) }
     let(:session_channel) { double(:session_channel, request_pty: nil) }
