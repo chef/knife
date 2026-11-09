@@ -29,7 +29,6 @@ jobs:
           - ubuntu-24.04
           - windows-2022
           - windows-2025
-          - macos-14
           - macos-15
         ruby: ["3.4"]
     runs-on: ${{ matrix.os }}
