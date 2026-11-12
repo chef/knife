@@ -44,7 +44,7 @@ jobs:
 
       - name: Install Habitat CLI
         run: |
-          curl https://raw.githubusercontent.com/habitat-sh/habitat/main/components/hab/install.sh | sudo -E bash -s -- -t aarch64-darwin
+          curl https://raw.githubusercontent.com/habitat-sh/habitat/main/components/hab/install.sh | sudo -E bash -s
           hab license accept
           hab --version
 
