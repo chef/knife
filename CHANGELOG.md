@@ -1,40 +1,38 @@
 # Changelog
 
-<!-- latest_release 19.0.153 -->
-## [v19.0.153](https://github.com/chef/knife/tree/v19.0.153) (2026-11-16)
-
-#### Merged Pull Requests
-- update NOTICE file [#228](https://github.com/chef/knife/pull/228) ([sanjain-progress](https://github.com/sanjain-progress))
+<!-- latest_release -->
 <!-- latest_release -->
 
-<!-- release_rollup since=19.0.134 -->
-### Changes not yet released to rubygems.org
-
-#### Features & Enhancements
-- CHEF-37441: Add ~/.chef/ruby/VERSION/gems to GEM_PATH for dynamic plugin loading [#192](https://github.com/chef/knife/pull/192) ([sanghinitin](https://github.com/sanghinitin)) <!-- 19.0.140 -->
-
-#### Merged Pull Requests
-- update NOTICE file [#228](https://github.com/chef/knife/pull/228) ([sanjain-progress](https://github.com/sanjain-progress)) <!-- 19.0.153 -->
-- Fixed the macos habitat build pipeline [#230](https://github.com/chef/knife/pull/230) ([ashiqueps](https://github.com/ashiqueps)) <!-- 19.0.152 -->
-- CHEF-32109: Integrate knife-azure plugin with knife hab pkg [#213](https://github.com/chef/knife/pull/213) ([nikhil2611](https://github.com/nikhil2611)) <!-- 19.0.151 -->
-- Update chef-winrm-fs and rubyzip [#210](https://github.com/chef/knife/pull/210) ([sanjain-progress](https://github.com/sanjain-progress)) <!-- 19.0.150 -->
-- CHEF-37672 Fix debian-11 CI failures from expired bullseye-security Release file- #205 [#206](https://github.com/chef/knife/pull/206) ([sanjain-progress](https://github.com/sanjain-progress)) <!-- 19.0.149 -->
-- Bump cookstyle from 8.7.6 to 9.0.0 [#202](https://github.com/chef/knife/pull/202) ([dependabot[bot]](https://github.com/dependabot[bot])) <!-- 19.0.148 -->
-- Bump actions/labeler from 6.2.0 to 7.0.0 [#190](https://github.com/chef/knife/pull/190) ([dependabot[bot]](https://github.com/dependabot[bot])) <!-- 19.0.147 -->
-- Bump csv from 3.3.5 to 3.3.6 [#191](https://github.com/chef/knife/pull/191) ([dependabot[bot]](https://github.com/dependabot[bot])) <!-- 19.0.146 -->
-- Fix pagination for supermarket list [#201](https://github.com/chef/knife/pull/201) ([nikhil2611](https://github.com/nikhil2611)) <!-- 19.0.145 -->
-- CHEF-37332: add Linux ARM Habitat validation in Expeditor pipeline [#193](https://github.com/chef/knife/pull/193) ([sanjain-progress](https://github.com/sanjain-progress)) <!-- 19.0.144 -->
-- Adding knife-vcenter to the knife hab pkg [#198](https://github.com/chef/knife/pull/198) ([ashiqueps](https://github.com/ashiqueps)) <!-- 19.0.143 -->
-- Bump knife-google from 5.0.15 to 5.0.17 [#197](https://github.com/chef/knife/pull/197) ([dependabot[bot]](https://github.com/dependabot[bot])) <!-- 19.0.142 -->
-- Bump webmock from 3.26.2 to 3.26.3 [#200](https://github.com/chef/knife/pull/200) ([dependabot[bot]](https://github.com/dependabot[bot])) <!-- 19.0.141 -->
-- CHEF-37544: Security fixes for gem lockfile cleanup and Habitat plan updates [#194](https://github.com/chef/knife/pull/194) ([nikhil2611](https://github.com/nikhil2611)) <!-- 19.0.139 -->
-- CHEF-34747: Add macOS ARM64 (aarch64-darwin) Habitat plan [#185](https://github.com/chef/knife/pull/185) ([nikhil2611](https://github.com/nikhil2611)) <!-- 19.0.138 -->
-- Bump net-ssh from 7.3.2 to 7.3.3 [#186](https://github.com/chef/knife/pull/186) ([dependabot[bot]](https://github.com/dependabot[bot])) <!-- 19.0.137 -->
-- Bump actions/labeler from 6.1.0 to 6.2.0 [#187](https://github.com/chef/knife/pull/187) ([dependabot[bot]](https://github.com/dependabot[bot])) <!-- 19.0.136 -->
-- Fix windows_bootstrap_context_spec flakiness on windows-2025 CI [#188](https://github.com/chef/knife/pull/188) ([sanjain-progress](https://github.com/sanjain-progress)) <!-- 19.0.135 -->
+<!-- release_rollup -->
 <!-- release_rollup -->
 
 <!-- latest_stable_release -->
+## [v19.0.153](https://github.com/chef/knife/tree/v19.0.153) (2026-11-16)
+
+#### Features & Enhancements
+- CHEF-37441: Add ~/.chef/ruby/VERSION/gems to GEM_PATH for dynamic plugin loading [#192](https://github.com/chef/knife/pull/192) ([sanghinitin](https://github.com/sanghinitin))
+
+#### Merged Pull Requests
+- Fix windows_bootstrap_context_spec flakiness on windows-2025 CI [#188](https://github.com/chef/knife/pull/188) ([sanjain-progress](https://github.com/sanjain-progress))
+- Bump actions/labeler from 6.1.0 to 6.2.0 [#187](https://github.com/chef/knife/pull/187) ([dependabot[bot]](https://github.com/dependabot[bot]))
+- Bump net-ssh from 7.3.2 to 7.3.3 [#186](https://github.com/chef/knife/pull/186) ([dependabot[bot]](https://github.com/dependabot[bot]))
+- CHEF-34747: Add macOS ARM64 (aarch64-darwin) Habitat plan [#185](https://github.com/chef/knife/pull/185) ([nikhil2611](https://github.com/nikhil2611))
+- CHEF-37544: Security fixes for gem lockfile cleanup and Habitat plan updates [#194](https://github.com/chef/knife/pull/194) ([nikhil2611](https://github.com/nikhil2611))
+- Bump webmock from 3.26.2 to 3.26.3 [#200](https://github.com/chef/knife/pull/200) ([dependabot[bot]](https://github.com/dependabot[bot]))
+- Bump knife-google from 5.0.15 to 5.0.17 [#197](https://github.com/chef/knife/pull/197) ([dependabot[bot]](https://github.com/dependabot[bot]))
+- Adding knife-vcenter to the knife hab pkg [#198](https://github.com/chef/knife/pull/198) ([ashiqueps](https://github.com/ashiqueps))
+- CHEF-37332: add Linux ARM Habitat validation in Expeditor pipeline [#193](https://github.com/chef/knife/pull/193) ([sanjain-progress](https://github.com/sanjain-progress))
+- Fix pagination for supermarket list [#201](https://github.com/chef/knife/pull/201) ([nikhil2611](https://github.com/nikhil2611))
+- Bump csv from 3.3.5 to 3.3.6 [#191](https://github.com/chef/knife/pull/191) ([dependabot[bot]](https://github.com/dependabot[bot]))
+- Bump actions/labeler from 6.2.0 to 7.0.0 [#190](https://github.com/chef/knife/pull/190) ([dependabot[bot]](https://github.com/dependabot[bot]))
+- Bump cookstyle from 8.7.6 to 9.0.0 [#202](https://github.com/chef/knife/pull/202) ([dependabot[bot]](https://github.com/dependabot[bot]))
+- CHEF-37672 Fix debian-11 CI failures from expired bullseye-security Release file- #205 [#206](https://github.com/chef/knife/pull/206) ([sanjain-progress](https://github.com/sanjain-progress))
+- Update chef-winrm-fs and rubyzip [#210](https://github.com/chef/knife/pull/210) ([sanjain-progress](https://github.com/sanjain-progress))
+- CHEF-32109: Integrate knife-azure plugin with knife hab pkg [#213](https://github.com/chef/knife/pull/213) ([nikhil2611](https://github.com/nikhil2611))
+- Fixed the macos habitat build pipeline [#230](https://github.com/chef/knife/pull/230) ([ashiqueps](https://github.com/ashiqueps))
+- update NOTICE file [#228](https://github.com/chef/knife/pull/228) ([sanjain-progress](https://github.com/sanjain-progress))
+<!-- latest_stable_release -->
+
 ## [v19.0.134](https://github.com/chef/knife/tree/v19.0.134) (2026-06-25)
 
 #### Merged Pull Requests
@@ -44,7 +42,6 @@
 - Include knife plugins in Habitat package build [#179](https://github.com/chef/knife/pull/179) ([ashiqueps](https://github.com/ashiqueps))
 - Update NOTICE [#181](https://github.com/chef/knife/pull/181) ([nikhil2611](https://github.com/nikhil2611))
 - Update ohai to 19.1.40 [#182](https://github.com/chef/knife/pull/182) ([nikhil2611](https://github.com/nikhil2611))
-<!-- latest_stable_release -->
 
 ## [v19.0.128](https://github.com/chef/knife/tree/v19.0.128) (2026-06-18)
 
