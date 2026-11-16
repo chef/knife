@@ -9,7 +9,7 @@ PATH
       ed25519 (>= 1.2, < 2.0)
       erubis (~> 2.7)
       ffi (>= 1.15, < 1.18.0)
-      ffi-yajl (>= 2.2, < 3.0)
+      ffi-yajl (>= 2.2, < 4.0)
       highline (>= 1.6.9, < 4)
       license-acceptance (>= 1.0.5, < 3)
       mixlib-archive (>= 0.4, < 2.0)
@@ -220,7 +220,7 @@ GEM
     ffi (1.17.4-x86_64-linux-musl)
     ffi-libarchive (1.1.14)
       ffi (~> 1.0)
-    ffi-yajl (2.7.11)
+    ffi-yajl (3.0.1)
       libyajl2 (>= 2.1)
     fuzzyurl (0.9.0)
     gcewinpass (1.1.0)
@@ -384,8 +384,6 @@ GEM
       time
     net-http (0.9.1)
       uri (>= 0.11.1)
-    net-http-persistent (4.0.8)
-      connection_pool (>= 2.2.4, < 4)
     net-protocol (0.2.2)
       timeout
     net-scp (4.1.0)
@@ -417,12 +415,12 @@ GEM
     nori (2.9.1)
       bigdecimal
       stringio
-    ohai (19.1.40)
+    ohai (19.1.53)
       base64
       chef-config (>= 14.12, < 20)
       chef-utils (>= 16.0, < 20)
       ffi (>= 1.15.5)
-      ffi-yajl (>= 2.2, < 3.0)
+      ffi-yajl (>= 2.2, < 4.0, != 3.0.0)
       ipaddress
       mixlib-cli (>= 1.7.0)
       mixlib-config (>= 2.0, < 4.0)
