@@ -1,10 +1,10 @@
 # Changelog
 
-<!-- latest_release 19.0.152 -->
-## [v19.0.152](https://github.com/chef/knife/tree/v19.0.152) (2026-11-12)
+<!-- latest_release 19.0.153 -->
+## [v19.0.153](https://github.com/chef/knife/tree/v19.0.153) (2026-11-16)
 
 #### Merged Pull Requests
-- Fixed the macos habitat build pipeline [#230](https://github.com/chef/knife/pull/230) ([ashiqueps](https://github.com/ashiqueps))
+- update NOTICE file [#228](https://github.com/chef/knife/pull/228) ([sanjain-progress](https://github.com/sanjain-progress))
 <!-- latest_release -->
 
 <!-- release_rollup since=19.0.134 -->
@@ -14,6 +14,7 @@
 - CHEF-37441: Add ~/.chef/ruby/VERSION/gems to GEM_PATH for dynamic plugin loading [#192](https://github.com/chef/knife/pull/192) ([sanghinitin](https://github.com/sanghinitin)) <!-- 19.0.140 -->
 
 #### Merged Pull Requests
+- update NOTICE file [#228](https://github.com/chef/knife/pull/228) ([sanjain-progress](https://github.com/sanjain-progress)) <!-- 19.0.153 -->
 - Fixed the macos habitat build pipeline [#230](https://github.com/chef/knife/pull/230) ([ashiqueps](https://github.com/ashiqueps)) <!-- 19.0.152 -->
 - CHEF-32109: Integrate knife-azure plugin with knife hab pkg [#213](https://github.com/chef/knife/pull/213) ([nikhil2611](https://github.com/nikhil2611)) <!-- 19.0.151 -->
 - Update chef-winrm-fs and rubyzip [#210](https://github.com/chef/knife/pull/210) ([sanjain-progress](https://github.com/sanjain-progress)) <!-- 19.0.150 -->
